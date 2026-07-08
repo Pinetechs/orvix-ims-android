@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.OrvixIMS" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/orvix_primary</item>
+        <item name="colorPrimaryDark">@color/orvix_primary_dark</item>
+        <item name="colorAccent">@color/orvix_accent</item>
+        <item name="android:fontFamily">sans</item>
+        <item name="android:windowBackground">@color/orvix_background</item>
+    </style>
+</resources>

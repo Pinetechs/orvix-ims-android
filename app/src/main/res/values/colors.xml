@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="orvix_primary">#0B4F6C</color>
+    <color name="orvix_primary_dark">#083A4F</color>
+    <color name="orvix_accent">#01BAEF</color>
+    <color name="orvix_background">#F5F7FA</color>
+    <color name="orvix_text_primary">#17202A</color>
+    <color name="orvix_text_secondary">#5D6D7E</color>
+    <color name="white">#FFFFFF</color>
+    <color name="danger">#C0392B</color>
+    <color name="success">#1E8449</color>
+    <color name="warning">#B7950B</color>
+</resources>
