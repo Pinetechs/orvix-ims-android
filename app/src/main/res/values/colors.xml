@@ -1,13 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="orvix_primary">#0B4F6C</color>
-    <color name="orvix_primary_dark">#083A4F</color>
-    <color name="orvix_accent">#01BAEF</color>
+    <!-- ORVIX IMS Enterprise Palette -->
+    <color name="orvix_navy">#0D1B2A</color>
+    <color name="orvix_primary_dark">#0A1F44</color>
+    <color name="orvix_primary">#2563EB</color>
+    <color name="orvix_primary_alt">#3B82F6</color>
+    <color name="orvix_accent">#107CFF</color>
+    <color name="orvix_accent_light">#E0F2FE</color>
+    <color name="orvix_blue_50">#EFF6FF</color>
+    <color name="orvix_blue_100">#DBEAFE</color>
+
     <color name="orvix_background">#F5F7FA</color>
-    <color name="orvix_text_primary">#17202A</color>
-    <color name="orvix_text_secondary">#5D6D7E</color>
+    <color name="orvix_bg_light">#F5F7FA</color>
+    <color name="orvix_surface">#FFFFFF</color>
+    <color name="orvix_surface_soft">#F8FAFC</color>
+    <color name="orvix_border">#E6ECF5</color>
+    <color name="orvix_border_strong">#CBD5E1</color>
+
+    <color name="orvix_black">#0F172A</color>
+    <color name="orvix_text_main">#1E293B</color>
+    <color name="orvix_text_sub">#64748B</color>
+    <color name="orvix_text_muted">#94A3B8</color>
+    <color name="orvix_text_primary">#1E293B</color>
+    <color name="orvix_text_secondary">#64748B</color>
+
+    <color name="success">#10B981</color>
+    <color name="success_soft">#DCFCE7</color>
+    <color name="warning">#F59E0B</color>
+    <color name="warning_soft">#FEF3C7</color>
+    <color name="danger">#EF4444</color>
+    <color name="danger_soft">#FEE2E2</color>
+    <color name="purple">#7C3AED</color>
+    <color name="purple_soft">#EDE9FE</color>
     <color name="white">#FFFFFF</color>
-    <color name="danger">#C0392B</color>
-    <color name="success">#1E8449</color>
-    <color name="warning">#B7950B</color>
+
+    <color name="gradient_start">#0A1F44</color>
+    <color name="gradient_middle">#1D4ED8</color>
+    <color name="gradient_end">#3B82F6</color>
 </resources>

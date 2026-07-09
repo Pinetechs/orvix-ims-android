@@ -63,9 +63,15 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
         }
 
         void bind(AppInventoryLocationResponse item) {
-            codeTextView.setText(item.getCode() != null ? item.getCode() : "-");
-            nameTextView.setText(item.getName() != null ? item.getName() : "Location");
-            descriptionTextView.setText(item.getDescription() != null ? item.getDescription() : "");
+            String code = item.getCode() != null ? item.getCode() : "-";
+            String name = item.getName() != null ? item.getName() : "Location";
+            String description = item.getDescription() != null && !item.getDescription().trim().isEmpty()
+                    ? item.getDescription()
+                    : "Ready for inventory scanning";
+
+            codeTextView.setText(code);
+            nameTextView.setText(name);
+            descriptionTextView.setText(description);
 
             itemView.setOnClickListener(v -> {
                 if (listener != null) {

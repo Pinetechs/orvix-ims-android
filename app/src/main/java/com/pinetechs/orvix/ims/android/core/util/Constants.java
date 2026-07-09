@@ -5,12 +5,26 @@ public final class Constants {
     private Constants() {
     }
 
-    // Emulator uses 10.0.2.2 to access your computer localhost.
-    // For real device/UROVO, replace with your PC/server IP, e.g. http://192.168.1.50:8080/
-    public static final String BASE_URL = "http://10.0.2.2:8080/";
+    /**
+     * Change this value to the public Bootstrap Service URL when deployed.
+     * Emulator localhost uses 10.0.2.2.
+     */
+    public static final String BOOTSTRAP_BASE_URL = "http://192.168.0.106:8081/";
 
     public static final String PREF_NAME = "orvix_ims_session";
+
     public static final String KEY_ACCESS_TOKEN = "access_token";
     public static final String KEY_USERNAME = "username";
     public static final String KEY_USER_TYPE = "user_type";
+
+    public static final String KEY_CLIENT_CODE = "client_code";
+    public static final String KEY_CLIENT_NAME = "client_name";
+    public static final String KEY_API_BASE_URL = "api_base_url";
+    public static final String KEY_LOGO_URL = "logo_url";
+    public static final String KEY_MIN_SUPPORTED_ANDROID_VERSION_CODE = "min_supported_android_version_code";
+    public static final String KEY_LATEST_ANDROID_VERSION_CODE = "latest_android_version_code";
+    public static final String KEY_FORCE_UPDATE = "force_update";
+    public static final String KEY_ANDROID_APK_URL = "android_apk_url";
+    public static final String KEY_RELEASE_NOTES = "release_notes";
+    public static final String KEY_LANGUAGE = "app_language";
 }
