@@ -19,6 +19,7 @@ import com.pinetechs.orvix.ims.android.core.util.LocaleHelper;
 import com.pinetechs.orvix.ims.android.core.util.VersionUtils;
 import com.pinetechs.orvix.ims.android.task.presentation.TaskListActivity;
 
+// Refactored Splash Logic
 public class SplashActivity extends AppCompatActivity {
 
     @Override
