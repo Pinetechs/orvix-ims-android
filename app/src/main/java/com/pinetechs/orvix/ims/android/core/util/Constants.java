@@ -14,8 +14,12 @@ public final class Constants {
     public static final String PREF_NAME = "orvix_ims_session";
 
     public static final String KEY_ACCESS_TOKEN = "access_token";
+    public static final String KEY_USER_ID = "user_id";
     public static final String KEY_USERNAME = "username";
+    public static final String KEY_FULL_NAME = "full_name";
     public static final String KEY_USER_TYPE = "user_type";
+    public static final String KEY_PERMISSIONS = "user_permissions";
+    public static final String KEY_COMPANY_NAMES = "company_names";
 
     public static final String KEY_CLIENT_CODE = "client_code";
     public static final String KEY_CLIENT_NAME = "client_name";

@@ -22,6 +22,14 @@ public final class ApiClient {
     }
 
     public static Retrofit getClient(Context context) {
+        return getClient(context, true);
+    }
+
+    public static Retrofit getPublicClient(Context context) {
+        return getClient(context, false);
+    }
+
+    private static Retrofit getClient(Context context, boolean includeAuthInterceptor) {
         SessionManager sessionManager = new SessionManager(context);
         String baseUrl = sessionManager.getApiBaseUrl();
 
@@ -29,7 +37,7 @@ public final class ApiClient {
             throw new IllegalStateException("Client API Base URL is not configured. Open SetupActivity first.");
         }
 
-        return getClient(context, baseUrl, true);
+        return getClient(context, baseUrl, includeAuthInterceptor);
     }
 
     public static Retrofit getBootstrapClient(Context context) {
@@ -49,7 +57,6 @@ public final class ApiClient {
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
         OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder()
-                .addInterceptor(loggingInterceptor)
                 .connectTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)
                 .writeTimeout(30, TimeUnit.SECONDS);
@@ -57,6 +64,8 @@ public final class ApiClient {
         if (includeAuthInterceptor) {
             clientBuilder.addInterceptor(new AuthInterceptor(context));
         }
+
+        clientBuilder.addInterceptor(loggingInterceptor);
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(baseUrl)

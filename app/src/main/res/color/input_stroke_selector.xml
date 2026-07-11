@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- الحالة المعطلة -->
+    <item android:color="@color/orvix_disabled" android:state_enabled="false" />
+    <!-- الحالة المفعلة (عند التركيز) -->
+    <item android:color="@color/orvix_primary" android:state_focused="true" />
+    <!-- الحالة العادية -->
+    <item android:color="@color/orvix_border_strong" />
+</selector>

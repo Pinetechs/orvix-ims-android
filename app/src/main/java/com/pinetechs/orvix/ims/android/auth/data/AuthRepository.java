@@ -18,7 +18,7 @@ public class AuthRepository {
     private final AuthApi authApi;
 
     public AuthRepository(Context context) {
-        this.authApi = ApiClient.getClient(context).create(AuthApi.class);
+        this.authApi = ApiClient.getPublicClient(context).create(AuthApi.class);
     }
 
     public void login(String username, String password, RepositoryCallback<LoginResponse> callback) {

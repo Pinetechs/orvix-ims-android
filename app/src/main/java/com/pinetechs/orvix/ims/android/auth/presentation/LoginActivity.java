@@ -40,6 +40,8 @@ public class LoginActivity extends AppCompatActivity {
     private LoginViewModel viewModel;
     private TextInputEditText usernameEditText;
     private TextInputEditText passwordEditText;
+    private com.google.android.material.textfield.TextInputLayout usernameInputLayout;
+    private com.google.android.material.textfield.TextInputLayout passwordInputLayout;
     private Button loginButton;
     private ProgressBar progressBar;
     private TextView clientNameTextView;
@@ -60,6 +62,8 @@ public class LoginActivity extends AppCompatActivity {
 
         usernameEditText = findViewById(R.id.usernameEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
+        usernameInputLayout = findViewById(R.id.usernameInputLayout);
+        passwordInputLayout = findViewById(R.id.passwordInputLayout);
         loginButton = findViewById(R.id.loginButton);
         clientNameTextView = findViewById(R.id.clientNameTextView);
         progressBar = findViewById(R.id.progressBar);
@@ -177,8 +181,8 @@ public class LoginActivity extends AppCompatActivity {
     private void setLoading(boolean loading) {
         progressBar.setVisibility(loading ? View.VISIBLE : View.GONE);
         loginButton.setEnabled(!loading);
-        usernameEditText.setEnabled(!loading);
-        passwordEditText.setEnabled(!loading);
+        usernameInputLayout.setEnabled(!loading);
+        passwordInputLayout.setEnabled(!loading);
     }
 
     private void changeClient() {

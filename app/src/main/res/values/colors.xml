@@ -33,6 +33,8 @@
     <color name="purple">#7C3AED</color>
     <color name="purple_soft">#EDE9FE</color>
     <color name="white">#FFFFFF</color>
+    <color name="orvix_disabled">#E2E8F0</color>
+    <color name="orvix_disabled_text">#94A3B8</color>
 
     <color name="gradient_start">#0A1F44</color>
     <color name="gradient_middle">#1D4ED8</color>

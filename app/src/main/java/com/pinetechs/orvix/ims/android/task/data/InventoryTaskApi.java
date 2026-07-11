@@ -11,9 +11,9 @@ import retrofit2.http.Path;
 
 public interface InventoryTaskApi {
 
-    @GET("api/app/inventory/tasks")
+    @GET("app/inventory/tasks")
     Call<List<AppInventoryTaskResponse>> getMyTasks();
 
-    @GET("api/app/inventory/tasks/{taskId}/locations")
+    @GET("app/inventory/tasks/{taskId}/locations")
     Call<List<AppInventoryLocationResponse>> getTaskLocations(@Path("taskId") Long taskId);
 }

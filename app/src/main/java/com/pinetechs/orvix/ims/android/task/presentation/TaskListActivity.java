@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.pinetechs.orvix.ims.android.R;
 import com.pinetechs.orvix.ims.android.auth.presentation.LoginActivity;
@@ -24,6 +25,7 @@ public class TaskListActivity extends AppCompatActivity {
 
     private TaskListViewModel viewModel;
     private TaskListAdapter adapter;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private ProgressBar progressBar;
     private TextView emptyTextView;
     private Button logoutButton;
@@ -38,6 +40,7 @@ public class TaskListActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         emptyTextView = findViewById(R.id.emptyTextView);
         logoutButton = findViewById(R.id.logoutButton);
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
 
         RecyclerView recyclerView = findViewById(R.id.tasksRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -46,6 +49,7 @@ public class TaskListActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         logoutButton.setOnClickListener(v -> logout());
+        swipeRefreshLayout.setOnRefreshListener(() -> viewModel.loadTasks());
 
         observeTasks();
         viewModel.loadTasks();
@@ -58,15 +62,19 @@ public class TaskListActivity extends AppCompatActivity {
             }
 
             if (state.getStatus() == Resource.Status.LOADING) {
-                progressBar.setVisibility(View.VISIBLE);
+                if (!swipeRefreshLayout.isRefreshing()) {
+                    progressBar.setVisibility(View.VISIBLE);
+                }
                 emptyTextView.setVisibility(View.GONE);
             } else if (state.getStatus() == Resource.Status.SUCCESS) {
                 progressBar.setVisibility(View.GONE);
+                swipeRefreshLayout.setRefreshing(false);
                 adapter.submitList(state.getData());
                 boolean empty = state.getData() == null || state.getData().isEmpty();
                 emptyTextView.setVisibility(empty ? View.VISIBLE : View.GONE);
             } else if (state.getStatus() == Resource.Status.ERROR) {
                 progressBar.setVisibility(View.GONE);
+                swipeRefreshLayout.setRefreshing(false);
                 Toast.makeText(this, state.getMessage(), Toast.LENGTH_LONG).show();
                 emptyTextView.setVisibility(View.VISIBLE);
                 emptyTextView.setText("Failed to load tasks");
