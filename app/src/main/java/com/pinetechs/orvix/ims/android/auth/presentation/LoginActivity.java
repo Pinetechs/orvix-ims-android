@@ -177,6 +177,8 @@ public class LoginActivity extends AppCompatActivity {
     private void setLoading(boolean loading) {
         progressBar.setVisibility(loading ? View.VISIBLE : View.GONE);
         loginButton.setEnabled(!loading);
+        usernameEditText.setEnabled(!loading);
+        passwordEditText.setEnabled(!loading);
     }
 
     private void changeClient() {

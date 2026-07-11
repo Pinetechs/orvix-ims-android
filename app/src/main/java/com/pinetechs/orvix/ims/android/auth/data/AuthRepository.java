@@ -36,6 +36,7 @@ public class AuthRepository {
 
             @Override
             public void onFailure(@NonNull Call<LoginResponse> call, @NonNull Throwable t) {
+
                 callback.onError(t.getMessage() != null ? t.getMessage() : "Connection failed");
             }
         });
