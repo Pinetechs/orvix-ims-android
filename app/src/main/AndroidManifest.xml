@@ -26,6 +26,18 @@
             android:exported="false" />
 
         <activity
+            android:name=".location.presentation.vehicle.VehicleLocationActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".location.presentation.sparepart.SparePartBranchActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".location.presentation.asset.AssetLocationActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".location.presentation.LocationSelectionActivity"
             android:exported="false" />
 

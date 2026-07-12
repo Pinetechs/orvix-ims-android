@@ -1,4 +1,4 @@
-package com.pinetechs.orvix.ims.android.location.presentation;
+package com.pinetechs.orvix.ims.android.location.presentation.sparepart;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,87 +11,86 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.pinetechs.orvix.ims.android.R;
 import com.pinetechs.orvix.ims.android.core.util.Resource;
+import com.pinetechs.orvix.ims.android.location.data.sparepart.SparePartBranchResponse;
 import com.pinetechs.orvix.ims.android.scan.presentation.ScanActivity;
-import com.pinetechs.orvix.ims.android.task.data.dto.AppInventoryLocationResponse;
 
-public class LocationSelectionActivity extends AppCompatActivity {
+public class SparePartBranchActivity extends AppCompatActivity {
 
-    public static final String EXTRA_TASK_ID = "task_id";
-    public static final String EXTRA_TASK_NUMBER = "task_number";
-    public static final String EXTRA_INVENTORY_DOMAIN = "inventory_domain";
-
-    private LocationSelectionViewModel viewModel;
-    private LocationAdapter adapter;
+    private SparePartBranchViewModel viewModel;
+    private SparePartBranchAdapter adapter;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private ProgressBar progressBar;
     private TextView emptyTextView;
     private TextView titleTextView;
 
     private Long taskId;
     private String taskNumber;
-    private String inventoryDomain;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_location_selection);
+        setContentView(R.layout.activity_branch_sparepart);
 
-        taskId = getIntent().hasExtra(EXTRA_TASK_ID) ? getIntent().getLongExtra(EXTRA_TASK_ID, -1L) : null;
-        if (taskId != null && taskId == -1L) {
-            taskId = null;
-        }
-        taskNumber = getIntent().getStringExtra(EXTRA_TASK_NUMBER);
-        inventoryDomain = getIntent().getStringExtra(EXTRA_INVENTORY_DOMAIN);
+        taskId = getIntent().getLongExtra("task_id", -1L);
+        if (taskId == -1L) taskId = null;
+        taskNumber = getIntent().getStringExtra("task_number");
 
-        viewModel = new ViewModelProvider(this).get(LocationSelectionViewModel.class);
+        viewModel = new ViewModelProvider(this).get(SparePartBranchViewModel.class);
 
         titleTextView = findViewById(R.id.titleTextView);
         progressBar = findViewById(R.id.progressBar);
         emptyTextView = findViewById(R.id.emptyTextView);
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         RecyclerView recyclerView = findViewById(R.id.locationsRecyclerView);
 
-        titleTextView.setText((taskNumber != null ? taskNumber : "Task") + " - Select Location");
+        if (taskNumber != null) {
+            titleTextView.setText(taskNumber + " - Branches");
+        }
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new LocationAdapter(this::openScanScreen);
+        adapter = new SparePartBranchAdapter(this::openScanScreen);
         recyclerView.setAdapter(adapter);
 
-        observeLocations();
-        viewModel.loadLocations(taskId);
+        swipeRefreshLayout.setOnRefreshListener(() -> viewModel.loadBranches(taskId));
+
+        observeBranches();
+        viewModel.loadBranches(taskId);
     }
 
-    private void observeLocations() {
-        viewModel.getLocationsState().observe(this, state -> {
-            if (state == null) {
-                return;
-            }
+    private void observeBranches() {
+        viewModel.getBranchesState().observe(this, state -> {
+            if (state == null) return;
 
             if (state.getStatus() == Resource.Status.LOADING) {
-                progressBar.setVisibility(View.VISIBLE);
+                if (!swipeRefreshLayout.isRefreshing()) progressBar.setVisibility(View.VISIBLE);
                 emptyTextView.setVisibility(View.GONE);
             } else if (state.getStatus() == Resource.Status.SUCCESS) {
                 progressBar.setVisibility(View.GONE);
+                swipeRefreshLayout.setRefreshing(false);
                 adapter.submitList(state.getData());
                 boolean empty = state.getData() == null || state.getData().isEmpty();
                 emptyTextView.setVisibility(empty ? View.VISIBLE : View.GONE);
             } else if (state.getStatus() == Resource.Status.ERROR) {
                 progressBar.setVisibility(View.GONE);
+                swipeRefreshLayout.setRefreshing(false);
                 Toast.makeText(this, state.getMessage(), Toast.LENGTH_LONG).show();
                 emptyTextView.setVisibility(View.VISIBLE);
-                emptyTextView.setText("Failed to load locations");
+                emptyTextView.setText("Failed to load branches");
             }
         });
     }
 
-    private void openScanScreen(AppInventoryLocationResponse location) {
+    private void openScanScreen(SparePartBranchResponse branch) {
         Intent intent = new Intent(this, ScanActivity.class);
-        intent.putExtra(ScanActivity.EXTRA_TASK_ID, taskId);
-        intent.putExtra(ScanActivity.EXTRA_TASK_NUMBER, taskNumber);
-        intent.putExtra(ScanActivity.EXTRA_INVENTORY_DOMAIN, inventoryDomain);
-        intent.putExtra(ScanActivity.EXTRA_LOCATION_CODE, location.getCode());
-        intent.putExtra(ScanActivity.EXTRA_LOCATION_NAME, location.getName());
+        intent.putExtra("task_id", taskId);
+        intent.putExtra("task_number", taskNumber);
+        intent.putExtra("domain", "SPARE_PART");
+        intent.putExtra("branch_code", branch.getCode());
+        intent.putExtra("branch_name", branch.getName());
         startActivity(intent);
     }
 }

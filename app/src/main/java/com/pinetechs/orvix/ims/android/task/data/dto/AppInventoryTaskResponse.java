@@ -3,13 +3,20 @@ package com.pinetechs.orvix.ims.android.task.data.dto;
 public class AppInventoryTaskResponse {
 
     private Long id;
+    private Long assignmentId;
     private String taskNumber;
+    private String taskName;
+    private String description;
     private String inventoryDomain;
     private String status;
+    private Long companyId;
+    private String companyCode;
     private String companyName;
-    private int plannedRecords;
-    private int scannedRecords;
-    private int mismatchRecords;
+    private String startDate;
+    private int totalRecords;
+    private int processedRecords;
+    private double progress;
+    private String assignedAt;
 
     public Long getId() {
         return id;
@@ -19,12 +26,36 @@ public class AppInventoryTaskResponse {
         this.id = id;
     }
 
+    public Long getAssignmentId() {
+        return assignmentId;
+    }
+
+    public void setAssignmentId(Long assignmentId) {
+        this.assignmentId = assignmentId;
+    }
+
     public String getTaskNumber() {
         return taskNumber;
     }
 
     public void setTaskNumber(String taskNumber) {
         this.taskNumber = taskNumber;
+    }
+
+    public String getTaskName() {
+        return taskName;
+    }
+
+    public void setTaskName(String taskName) {
+        this.taskName = taskName;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getInventoryDomain() {
@@ -43,6 +74,22 @@ public class AppInventoryTaskResponse {
         this.status = status;
     }
 
+    public Long getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(Long companyId) {
+        this.companyId = companyId;
+    }
+
+    public String getCompanyCode() {
+        return companyCode;
+    }
+
+    public void setCompanyCode(String companyCode) {
+        this.companyCode = companyCode;
+    }
+
     public String getCompanyName() {
         return companyName;
     }
@@ -51,27 +98,43 @@ public class AppInventoryTaskResponse {
         this.companyName = companyName;
     }
 
-    public int getPlannedRecords() {
-        return plannedRecords;
+    public String getStartDate() {
+        return startDate;
     }
 
-    public void setPlannedRecords(int plannedRecords) {
-        this.plannedRecords = plannedRecords;
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
     }
 
-    public int getScannedRecords() {
-        return scannedRecords;
+    public int getTotalRecords() {
+        return totalRecords;
     }
 
-    public void setScannedRecords(int scannedRecords) {
-        this.scannedRecords = scannedRecords;
+    public void setTotalRecords(int totalRecords) {
+        this.totalRecords = totalRecords;
     }
 
-    public int getMismatchRecords() {
-        return mismatchRecords;
+    public int getProcessedRecords() {
+        return processedRecords;
     }
 
-    public void setMismatchRecords(int mismatchRecords) {
-        this.mismatchRecords = mismatchRecords;
+    public void setProcessedRecords(int processedRecords) {
+        this.processedRecords = processedRecords;
+    }
+
+    public double getProgress() {
+        return progress;
+    }
+
+    public void setProgress(double progress) {
+        this.progress = progress;
+    }
+
+    public String getAssignedAt() {
+        return assignedAt;
+    }
+
+    public void setAssignedAt(String assignedAt) {
+        this.assignedAt = assignedAt;
     }
 }

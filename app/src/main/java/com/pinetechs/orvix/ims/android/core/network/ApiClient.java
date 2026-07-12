@@ -37,7 +37,15 @@ public final class ApiClient {
             throw new IllegalStateException("Client API Base URL is not configured. Open SetupActivity first.");
         }
 
-        return getClient(context, baseUrl, includeAuthInterceptor);
+        // بناء المسار الموحد للخدمات: Base URL + api/app/v1/
+        String serviceUrl = normalizeBaseUrl(baseUrl);
+        if (serviceUrl.endsWith("/api/")) {
+            serviceUrl += "app/v1/";
+        } else if (!serviceUrl.endsWith("/api/app/v1/")) {
+            serviceUrl += "api/app/v1/";
+        }
+
+        return getClient(context, serviceUrl, includeAuthInterceptor);
     }
 
     public static Retrofit getBootstrapClient(Context context) {

@@ -9,30 +9,32 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.pinetechs.orvix.ims.android.core.util.Resource;
 import com.pinetechs.orvix.ims.android.task.data.InventoryTaskRepository;
-import com.pinetechs.orvix.ims.android.task.data.dto.AppInventoryTaskResponse;
-
-import java.util.List;
+import com.pinetechs.orvix.ims.android.task.data.dto.AppInventoryTaskSliceResponse;
 
 public class TaskListViewModel extends AndroidViewModel {
 
     private final InventoryTaskRepository repository;
-    private final MutableLiveData<Resource<List<AppInventoryTaskResponse>>> tasksState = new MutableLiveData<>(Resource.idle());
+    private final MutableLiveData<Resource<AppInventoryTaskSliceResponse>> tasksState = new MutableLiveData<>(Resource.idle());
 
     public TaskListViewModel(@NonNull Application application) {
         super(application);
         this.repository = new InventoryTaskRepository(application);
     }
 
-    public LiveData<Resource<List<AppInventoryTaskResponse>>> getTasksState() {
+    public LiveData<Resource<AppInventoryTaskSliceResponse>> getTasksState() {
         return tasksState;
     }
 
     public void loadTasks() {
+        loadTasks(false);
+    }
+
+    public void loadTasks(boolean includeCompleted) {
         tasksState.setValue(Resource.loading());
 
-        repository.getMyTasks(new InventoryTaskRepository.RepositoryCallback<List<AppInventoryTaskResponse>>() {
+        repository.getMyTasks(0, 50, includeCompleted, new InventoryTaskRepository.RepositoryCallback<AppInventoryTaskSliceResponse>() {
             @Override
-            public void onSuccess(List<AppInventoryTaskResponse> data) {
+            public void onSuccess(AppInventoryTaskSliceResponse data) {
                 tasksState.setValue(Resource.success(data));
             }
 

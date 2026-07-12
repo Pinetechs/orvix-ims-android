@@ -18,8 +18,11 @@ import com.pinetechs.orvix.ims.android.R;
 import com.pinetechs.orvix.ims.android.auth.presentation.LoginActivity;
 import com.pinetechs.orvix.ims.android.core.storage.SessionManager;
 import com.pinetechs.orvix.ims.android.core.util.Resource;
-import com.pinetechs.orvix.ims.android.location.presentation.LocationSelectionActivity;
+import com.pinetechs.orvix.ims.android.location.presentation.asset.AssetLocationActivity;
+import com.pinetechs.orvix.ims.android.location.presentation.sparepart.SparePartBranchActivity;
+import com.pinetechs.orvix.ims.android.location.presentation.vehicle.VehicleLocationActivity;
 import com.pinetechs.orvix.ims.android.task.data.dto.AppInventoryTaskResponse;
+import com.pinetechs.orvix.ims.android.task.data.dto.AppInventoryTaskSliceResponse;
 
 public class TaskListActivity extends AppCompatActivity {
 
@@ -28,7 +31,10 @@ public class TaskListActivity extends AppCompatActivity {
     private SwipeRefreshLayout swipeRefreshLayout;
     private ProgressBar progressBar;
     private TextView emptyTextView;
+    private TextView welcomeTextView;
+    private TextView assignedTasksCount, readyTasksCount, inProgressTasksCount, completedTasksCount;
     private Button logoutButton;
+    private boolean showingCompleted = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,11 +42,25 @@ public class TaskListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_task_list);
 
         viewModel = new ViewModelProvider(this).get(TaskListViewModel.class);
+        SessionManager sessionManager = new SessionManager(this);
 
         progressBar = findViewById(R.id.progressBar);
         emptyTextView = findViewById(R.id.emptyTextView);
+        welcomeTextView = findViewById(R.id.welcomeTextView);
         logoutButton = findViewById(R.id.logoutButton);
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
+
+        assignedTasksCount = findViewById(R.id.assignedTasksCount);
+        readyTasksCount = findViewById(R.id.readyTasksCount);
+        inProgressTasksCount = findViewById(R.id.inProgressTasksCount);
+        completedTasksCount = findViewById(R.id.completedTasksCount);
+
+        setupClickListeners();
+
+        if (welcomeTextView != null) {
+            String fullName = sessionManager.getFullName();
+            welcomeTextView.setText("Welcome, " + (fullName != null ? fullName : "User"));
+        }
 
         RecyclerView recyclerView = findViewById(R.id.tasksRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -48,11 +68,29 @@ public class TaskListActivity extends AppCompatActivity {
         adapter = new TaskListAdapter(this::openLocationSelection);
         recyclerView.setAdapter(adapter);
 
-        logoutButton.setOnClickListener(v -> logout());
-        swipeRefreshLayout.setOnRefreshListener(() -> viewModel.loadTasks());
+        swipeRefreshLayout.setOnRefreshListener(() -> viewModel.loadTasks(showingCompleted));
 
         observeTasks();
-        viewModel.loadTasks();
+        viewModel.loadTasks(showingCompleted);
+    }
+
+    private void setupClickListeners() {
+        logoutButton.setOnClickListener(v -> logout());
+        
+        // Toggle when clicking on History box
+        View historyBox = findViewById(R.id.historyBox);
+        if (historyBox != null) {
+            historyBox.setOnClickListener(v -> {
+                showingCompleted = !showingCompleted;
+                
+                // Visual feedback for the selected mode
+                historyBox.setAlpha(showingCompleted ? 1.0f : 0.6f);
+                
+                viewModel.loadTasks(showingCompleted);
+            });
+            // Initial state: slightly faded when not active
+            historyBox.setAlpha(showingCompleted ? 1.0f : 0.6f);
+        }
     }
 
     private void observeTasks() {
@@ -69,9 +107,19 @@ public class TaskListActivity extends AppCompatActivity {
             } else if (state.getStatus() == Resource.Status.SUCCESS) {
                 progressBar.setVisibility(View.GONE);
                 swipeRefreshLayout.setRefreshing(false);
-                adapter.submitList(state.getData());
-                boolean empty = state.getData() == null || state.getData().isEmpty();
-                emptyTextView.setVisibility(empty ? View.VISIBLE : View.GONE);
+                
+                AppInventoryTaskSliceResponse data = state.getData();
+                if (data != null) {
+                    updateHeaderStats(data);
+                    if (data.getTasks() != null) {
+                        adapter.submitList(data.getTasks().getContent());
+                        boolean empty = data.getTasks().getContent() == null || data.getTasks().getContent().isEmpty();
+                        emptyTextView.setVisibility(empty ? View.VISIBLE : View.GONE);
+                        if (empty) {
+                            emptyTextView.setText(showingCompleted ? "No completed tasks yet." : "No active tasks assigned to you.");
+                        }
+                    }
+                }
             } else if (state.getStatus() == Resource.Status.ERROR) {
                 progressBar.setVisibility(View.GONE);
                 swipeRefreshLayout.setRefreshing(false);
@@ -82,11 +130,32 @@ public class TaskListActivity extends AppCompatActivity {
         });
     }
 
+    private void updateHeaderStats(AppInventoryTaskSliceResponse data) {
+        if (assignedTasksCount != null) assignedTasksCount.setText(String.valueOf(data.getAssignedTasks()));
+        if (readyTasksCount != null) readyTasksCount.setText(String.valueOf(data.getReadyToStartTasks()));
+        if (inProgressTasksCount != null) inProgressTasksCount.setText(String.valueOf(data.getInProgressTasks()));
+        if (completedTasksCount != null) completedTasksCount.setText(String.valueOf(data.getCompletedTasks()));
+    }
+
     private void openLocationSelection(AppInventoryTaskResponse task) {
-        Intent intent = new Intent(this, LocationSelectionActivity.class);
-        intent.putExtra(LocationSelectionActivity.EXTRA_TASK_ID, task.getId());
-        intent.putExtra(LocationSelectionActivity.EXTRA_TASK_NUMBER, task.getTaskNumber());
-        intent.putExtra(LocationSelectionActivity.EXTRA_INVENTORY_DOMAIN, task.getInventoryDomain());
+        String domain = task.getInventoryDomain() != null ? task.getInventoryDomain().toUpperCase() : "";
+        Intent intent;
+
+        switch (domain) {
+            case "SPARE_PART":
+                intent = new Intent(this, SparePartBranchActivity.class);
+                break;
+            case "ASSET":
+                intent = new Intent(this, AssetLocationActivity.class);
+                break;
+            case "VEHICLE":
+            default:
+                intent = new Intent(this, VehicleLocationActivity.class);
+                break;
+        }
+
+        intent.putExtra("task_id", task.getId());
+        intent.putExtra("task_number", task.getTaskNumber());
         startActivity(intent);
     }
 
@@ -95,5 +164,6 @@ public class TaskListActivity extends AppCompatActivity {
         Intent intent = new Intent(this, LoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
+        finish();
     }
 }

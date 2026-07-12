@@ -1,19 +1,17 @@
 package com.pinetechs.orvix.ims.android.task.data;
 
-import com.pinetechs.orvix.ims.android.task.data.dto.AppInventoryLocationResponse;
-import com.pinetechs.orvix.ims.android.task.data.dto.AppInventoryTaskResponse;
-
-import java.util.List;
+import com.pinetechs.orvix.ims.android.task.data.dto.AppInventoryTaskSliceResponse;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
-import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface InventoryTaskApi {
 
-    @GET("app/inventory/tasks")
-    Call<List<AppInventoryTaskResponse>> getMyTasks();
-
-    @GET("app/inventory/tasks/{taskId}/locations")
-    Call<List<AppInventoryLocationResponse>> getTaskLocations(@Path("taskId") Long taskId);
+    @GET("tasks")
+    Call<AppInventoryTaskSliceResponse> getMyTasks(
+            @Query("page") int page,
+            @Query("size") int size,
+            @Query("includeCompleted") boolean includeCompleted
+    );
 }

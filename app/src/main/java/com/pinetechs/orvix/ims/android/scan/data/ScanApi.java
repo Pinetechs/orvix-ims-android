@@ -10,6 +10,6 @@ import retrofit2.http.Path;
 
 public interface ScanApi {
 
-    @POST("api/app/inventory/tasks/{taskId}/scan")
+    @POST("inventory/tasks/{taskId}/scan")
     Call<ScanResponse> scan(@Path("taskId") Long taskId, @Body ScanRequest request);
 }
