@@ -18,9 +18,7 @@ import com.pinetechs.orvix.ims.android.R;
 import com.pinetechs.orvix.ims.android.auth.presentation.LoginActivity;
 import com.pinetechs.orvix.ims.android.core.storage.SessionManager;
 import com.pinetechs.orvix.ims.android.core.util.Resource;
-import com.pinetechs.orvix.ims.android.location.presentation.asset.AssetLocationActivity;
-import com.pinetechs.orvix.ims.android.location.presentation.sparepart.SparePartBranchActivity;
-import com.pinetechs.orvix.ims.android.location.presentation.vehicle.VehicleLocationActivity;
+import com.pinetechs.orvix.ims.android.workarea.presentation.WorkAreaActivity;
 import com.pinetechs.orvix.ims.android.task.data.dto.AppInventoryTaskResponse;
 import com.pinetechs.orvix.ims.android.task.data.dto.AppInventoryTaskSliceResponse;
 
@@ -138,24 +136,12 @@ public class TaskListActivity extends AppCompatActivity {
     }
 
     private void openLocationSelection(AppInventoryTaskResponse task) {
-        String domain = task.getInventoryDomain() != null ? task.getInventoryDomain().toUpperCase() : "";
-        Intent intent;
-
-        switch (domain) {
-            case "SPARE_PART":
-                intent = new Intent(this, SparePartBranchActivity.class);
-                break;
-            case "ASSET":
-                intent = new Intent(this, AssetLocationActivity.class);
-                break;
-            case "VEHICLE":
-            default:
-                intent = new Intent(this, VehicleLocationActivity.class);
-                break;
-        }
-
+        Intent intent = new Intent(this, WorkAreaActivity.class);
         intent.putExtra("task_id", task.getId());
         intent.putExtra("task_number", task.getTaskNumber());
+        intent.putExtra("task_name", task.getTaskName());
+        intent.putExtra("company_name", task.getCompanyName());
+        intent.putExtra("inventory_domain", task.getInventoryDomain());
         startActivity(intent);
     }
 

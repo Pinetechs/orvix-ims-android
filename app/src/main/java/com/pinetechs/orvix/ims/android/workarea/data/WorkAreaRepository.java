@@ -1,25 +1,25 @@
-package com.pinetechs.orvix.ims.android.location.data.vehicle;
+package com.pinetechs.orvix.ims.android.workarea.data;
 
 import android.content.Context;
 import androidx.annotation.NonNull;
 import com.pinetechs.orvix.ims.android.core.network.ApiClient;
 import com.pinetechs.orvix.ims.android.core.network.ApiErrorUtils;
-import java.util.List;
+import com.pinetechs.orvix.ims.android.workarea.data.dto.WorkAreaSliceResponse;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class VehicleLocationRepository {
-    private final VehicleLocationApi api;
+public class WorkAreaRepository {
+    private final WorkAreaApi api;
 
-    public VehicleLocationRepository(Context context) {
-        this.api = ApiClient.getClient(context).create(VehicleLocationApi.class);
+    public WorkAreaRepository(Context context) {
+        this.api = ApiClient.getClient(context).create(WorkAreaApi.class);
     }
 
-    public void getLocations(Long taskId, RepositoryCallback<List<VehicleLocationResponse>> callback) {
-        api.getLocations(taskId).enqueue(new Callback<List<VehicleLocationResponse>>() {
+    public void getWorkAreas(Long taskId, int page, int size, RepositoryCallback<WorkAreaSliceResponse> callback) {
+        api.getWorkAreas(taskId, page, size).enqueue(new Callback<WorkAreaSliceResponse>() {
             @Override
-            public void onResponse(@NonNull Call<List<VehicleLocationResponse>> call, @NonNull Response<List<VehicleLocationResponse>> response) {
+            public void onResponse(@NonNull Call<WorkAreaSliceResponse> call, @NonNull Response<WorkAreaSliceResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     callback.onSuccess(response.body());
                 } else {
@@ -28,7 +28,7 @@ public class VehicleLocationRepository {
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<VehicleLocationResponse>> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<WorkAreaSliceResponse> call, @NonNull Throwable t) {
                 callback.onError(t.getMessage() != null ? t.getMessage() : "Connection failed");
             }
         });
