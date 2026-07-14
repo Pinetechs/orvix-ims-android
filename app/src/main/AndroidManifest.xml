@@ -22,6 +22,18 @@
             android:exported="false" />
 
         <activity
+            android:name=".scan.presentation.vehicle.VehicleScanActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".scan.presentation.sparepart.SparePartScanActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".scan.presentation.asset.AssetScanActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".scan.presentation.ScanActivity"
             android:exported="false" />
 

@@ -1,29 +1,24 @@
-package com.pinetechs.orvix.ims.android.scan.data;
+package com.pinetechs.orvix.ims.android.scan.data.vehicle;
 
 import android.content.Context;
-
 import androidx.annotation.NonNull;
-
 import com.pinetechs.orvix.ims.android.core.network.ApiClient;
 import com.pinetechs.orvix.ims.android.core.network.ApiErrorUtils;
 import com.pinetechs.orvix.ims.android.scan.data.dto.ScanRequest;
 import com.pinetechs.orvix.ims.android.scan.data.dto.ScanResponse;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ScanRepository {
+public class VehicleScanRepository {
+    private final VehicleScanApi api;
 
-    private final ScanApi api;
-
-    public ScanRepository(Context context) {
-        this.api = ApiClient.getClient(context).create(ScanApi.class);
+    public VehicleScanRepository(Context context) {
+        this.api = ApiClient.getClient(context).create(VehicleScanApi.class);
     }
 
-    public void scan(Long taskId, String barcode, String locationCode, String scanType, RepositoryCallback<ScanResponse> callback) {
-        ScanRequest request = new ScanRequest(barcode, locationCode, scanType);
-
+    public void scanVehicle(Long taskId, String barcode, String locationCode, String type, RepositoryCallback<ScanResponse> callback) {
+        ScanRequest request = new ScanRequest(barcode, locationCode, type);
         api.scan(taskId, request).enqueue(new Callback<ScanResponse>() {
             @Override
             public void onResponse(@NonNull Call<ScanResponse> call, @NonNull Response<ScanResponse> response) {

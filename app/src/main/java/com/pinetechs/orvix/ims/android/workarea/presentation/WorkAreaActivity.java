@@ -17,7 +17,9 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.pinetechs.orvix.ims.android.R;
 import com.pinetechs.orvix.ims.android.core.util.Resource;
 import com.pinetechs.orvix.ims.android.workarea.data.dto.WorkAreaResponse;
-import com.pinetechs.orvix.ims.android.scan.presentation.ScanActivity;
+import com.pinetechs.orvix.ims.android.scan.presentation.vehicle.VehicleScanActivity;
+import com.pinetechs.orvix.ims.android.scan.presentation.sparepart.SparePartScanActivity;
+import com.pinetechs.orvix.ims.android.scan.presentation.asset.AssetScanActivity;
 
 public class WorkAreaActivity extends AppCompatActivity {
 
@@ -127,13 +129,26 @@ public class WorkAreaActivity extends AppCompatActivity {
     }
 
     private void openScanScreen(WorkAreaResponse workArea) {
-        Intent intent = new Intent(this, ScanActivity.class);
+        String domain = inventoryDomain != null ? inventoryDomain.toUpperCase() : "";
+        Intent intent;
+
+        switch (domain) {
+            case "SPARE_PART":
+                intent = new Intent(this, SparePartScanActivity.class);
+                break;
+            case "ASSET":
+                intent = new Intent(this, AssetScanActivity.class);
+                break;
+            case "VEHICLE":
+            default:
+                intent = new Intent(this, VehicleScanActivity.class);
+                break;
+        }
+
         intent.putExtra("task_id", taskId);
         intent.putExtra("task_number", taskNumber);
-        intent.putExtra("domain", inventoryDomain);
-        intent.putExtra("work_area_id", workArea.getId());
-        intent.putExtra("work_area_code", workArea.getCode());
-        intent.putExtra("work_area_name", workArea.getName());
+        intent.putExtra("location_code", workArea.getCode());
+        intent.putExtra("location_name", workArea.getName());
         startActivity(intent);
     }
 }
