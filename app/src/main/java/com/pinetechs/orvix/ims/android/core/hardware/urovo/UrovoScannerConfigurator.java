@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.pinetechs.orvix.ims.android.core.hardware.model.BarcodeSymbology;
 import com.pinetechs.orvix.ims.android.core.hardware.model.ScannerProfile;
+import com.pinetechs.orvix.ims.android.core.hardware.model.ScannerProfileDefaults;
 import com.pinetechs.orvix.ims.android.core.hardware.model.ScannerProfileSettings;
 import com.pinetechs.orvix.ims.android.core.hardware.model.ScannerSymbologySettings;
 import com.pinetechs.orvix.ims.android.core.storage.SessionManager;
@@ -65,6 +66,15 @@ final class UrovoScannerConfigurator {
         );
 
         return outputModeApplied && intentSettingsApplied;
+    }
+
+    static void applySymbologyDetectionMode(ScanManager scanManager) {
+        if (scanManager == null) return;
+
+        ScannerProfileSettings detectionSettings =
+                ScannerProfileDefaults.forSymbologyDetection();
+        applyProfile(scanManager, ScannerProfile.GENERAL, detectionSettings);
+        Log.d(TAG, "Applied permissive symbology detection mode");
     }
 
     static void applyProfile(

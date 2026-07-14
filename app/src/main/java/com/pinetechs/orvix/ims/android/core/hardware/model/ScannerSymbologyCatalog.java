@@ -149,6 +149,13 @@ public final class ScannerSymbologyCatalog {
         return BY_TYPE.get(symbology);
     }
 
+    public static boolean isCoreDefault(BarcodeSymbology symbology) {
+        return symbology == BarcodeSymbology.CODE39
+                || symbology == BarcodeSymbology.CODE128
+                || symbology == BarcodeSymbology.QRCODE
+                || symbology == BarcodeSymbology.DATAMATRIX;
+    }
+
     private static ScannerSymbologyDefinition def(
             BarcodeSymbology symbology,
             ScannerOptionDefinition... options

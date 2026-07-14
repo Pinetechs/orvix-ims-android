@@ -93,23 +93,11 @@ public class ScannerProfileSettings {
         this.maxScanLength = maxScanLength;
     }
 
-    public void setScanLengthRange(int minimumLength, int maximumLength) {
-        if (!ScannerProfileDefaults.isValidLengthRange(minimumLength, maximumLength)) {
-            throw new IllegalArgumentException(
-                    "Invalid scanner length range: " + minimumLength + "-" + maximumLength
-            );
-        }
-        this.minScanLength = minimumLength;
-        this.maxScanLength = maximumLength;
-    }
-
     public ScannerProfileSettings mergeWithDefaults(ScannerProfileSettings defaults) {
         ScannerProfileSettings merged = defaults != null ? defaults.copy() : new ScannerProfileSettings();
         merged.showCapturedImage = this.showCapturedImage;
-        if (ScannerProfileDefaults.isValidLengthRange(this.minScanLength, this.maxScanLength)) {
-            merged.minScanLength = this.minScanLength;
-            merged.maxScanLength = this.maxScanLength;
-        }
+        merged.minScanLength = this.minScanLength;
+        merged.maxScanLength = this.maxScanLength;
 
         for (Map.Entry<String, ScannerSymbologySettings> entry : getSymbologies().entrySet()) {
             BarcodeSymbology symbology = BarcodeSymbology.fromStorageName(entry.getKey());

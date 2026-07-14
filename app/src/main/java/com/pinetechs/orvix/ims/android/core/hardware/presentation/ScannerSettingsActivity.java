@@ -22,7 +22,6 @@ import com.pinetechs.orvix.ims.android.core.hardware.ScannerFactory;
 import com.pinetechs.orvix.ims.android.core.hardware.model.BarcodeSymbology;
 import com.pinetechs.orvix.ims.android.core.hardware.model.ScannerBeepMode;
 import com.pinetechs.orvix.ims.android.core.hardware.model.ScannerProfile;
-import com.pinetechs.orvix.ims.android.core.hardware.model.ScannerProfileDefaults;
 import com.pinetechs.orvix.ims.android.core.hardware.model.ScannerProfileSettings;
 import com.pinetechs.orvix.ims.android.core.hardware.model.ScannerSymbologySettings;
 import com.pinetechs.orvix.ims.android.core.storage.SessionManager;
@@ -209,42 +208,13 @@ public class ScannerSettingsActivity extends AppCompatActivity {
     }
 
     private void captureSelectedProfile() {
-        ScannerProfileSettings settings = profileSettings.get(selectedProfile);
-        if (settings == null) return;
-
-        settings.setShowCapturedImage(showCapturedImageSwitch.isChecked());
-
-        ScannerProfileSettings defaults = ScannerProfileDefaults.forProfile(selectedProfile);
-        int minimumLength = parseLengthOrDefault(
-                profileMinLengthEditText,
-                defaults.getMinScanLength()
-        );
-        int maximumLength = parseLengthOrDefault(
-                profileMaxLengthEditText,
-                defaults.getMaxScanLength()
-        );
-
-        if (!ScannerProfileDefaults.isValidLengthRange(minimumLength, maximumLength)) {
-            minimumLength = defaults.getMinScanLength();
-            maximumLength = defaults.getMaxScanLength();
-            profileMinLengthEditText.setText(String.valueOf(minimumLength));
-            profileMaxLengthEditText.setText(String.valueOf(maximumLength));
-            Toast.makeText(
-                    this,
-                    "Invalid scan length range. Profile defaults were restored.",
-                    Toast.LENGTH_SHORT
-            ).show();
-        }
-
-        settings.setScanLengthRange(minimumLength, maximumLength);
-    }
-
-    private int parseLengthOrDefault(TextInputEditText editText, int defaultValue) {
+        ScannerProfileSettings s = profileSettings.get(selectedProfile);
+        if (s == null) return;
+        s.setShowCapturedImage(showCapturedImageSwitch.isChecked());
         try {
-            return Integer.parseInt(textOf(editText));
-        } catch (NumberFormatException ignored) {
-            return defaultValue;
-        }
+            s.setMinScanLength(Integer.parseInt(textOf(profileMinLengthEditText)));
+            s.setMaxScanLength(Integer.parseInt(textOf(profileMaxLengthEditText)));
+        } catch (Exception ignored) {}
     }
 
     private void saveSettings() {

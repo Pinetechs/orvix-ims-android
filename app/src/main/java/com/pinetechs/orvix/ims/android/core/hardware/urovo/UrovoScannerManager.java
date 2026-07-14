@@ -17,6 +17,9 @@ import com.pinetechs.orvix.ims.android.core.hardware.model.ScannerProfileSetting
 import com.pinetechs.orvix.ims.android.core.storage.SessionManager;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.Set;
 
 public class UrovoScannerManager implements ScannerInterface {
 
@@ -35,6 +38,7 @@ public class UrovoScannerManager implements ScannerInterface {
     private ScannerProfile profile;
     private boolean scannerOpen;
     private boolean receiverRegistered;
+    private boolean symbologyDetectionMode;
     private Context activeDecodeContext;
 
     public UrovoScannerManager(Context context) {
@@ -111,6 +115,11 @@ public class UrovoScannerManager implements ScannerInterface {
             return true;
         }
 
+        // Keep detection mode permissive until the detection session explicitly exits.
+        if (symbologyDetectionMode) {
+            return true;
+        }
+
         try {
             ScannerProfileSettings settings = sessionManager.getScannerProfileSettings(this.profile);
             UrovoScannerConfigurator.applyProfile(scanManager, this.profile, settings);
@@ -125,6 +134,61 @@ public class UrovoScannerManager implements ScannerInterface {
     @Override
     public ScannerProfile getProfile() {
         return profile;
+    }
+
+    @Override
+    public boolean enterSymbologyDetectionMode() {
+        try {
+            if (!init()) return false;
+            UrovoScannerConfigurator.applySymbologyDetectionMode(scanManager);
+            symbologyDetectionMode = true;
+            Log.d(TAG, "Entered symbology detection mode; supported="
+                    + getSupportedSymbologies().size());
+            return true;
+        } catch (Exception exception) {
+            Log.e(TAG, "Failed to enter symbology detection mode", exception);
+            symbologyDetectionMode = false;
+            return false;
+        }
+    }
+
+    @Override
+    public boolean exitSymbologyDetectionMode() {
+        if (!symbologyDetectionMode) return true;
+
+        symbologyDetectionMode = false;
+        try {
+            if (scanManager == null || !scannerOpen) return true;
+            ScannerProfileSettings settings = sessionManager.getScannerProfileSettings(profile);
+            UrovoScannerConfigurator.applyProfile(scanManager, profile, settings);
+            Log.d(TAG, "Exited detection mode and restored profile: " + profile.name());
+            return true;
+        } catch (Exception exception) {
+            Log.e(TAG, "Failed to restore scanner profile after detection", exception);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean isSymbologyDetectionMode() {
+        return symbologyDetectionMode;
+    }
+
+    @Override
+    public Set<BarcodeSymbology> getSupportedSymbologies() {
+        if (scanManager == null || !scannerOpen) return Collections.emptySet();
+
+        EnumSet<BarcodeSymbology> supported = EnumSet.noneOf(BarcodeSymbology.class);
+        for (BarcodeSymbology genericType : BarcodeSymbology.values()) {
+            Symbology urovoType = UrovoSymbologyAdapter.toUrovo(genericType);
+            if (urovoType == null) continue;
+            try {
+                if (scanManager.isSymbologySupported(urovoType)) supported.add(genericType);
+            } catch (RuntimeException exception) {
+                Log.w(TAG, "Could not query support for " + genericType, exception);
+            }
+        }
+        return Collections.unmodifiableSet(supported);
     }
 
     @Override
@@ -184,6 +248,7 @@ public class UrovoScannerManager implements ScannerInterface {
         } catch (Exception exception) {
             Log.w(TAG, "Failed to close UROVO scanner cleanly", exception);
         } finally {
+            symbologyDetectionMode = false;
             scannerOpen = false;
             scanManager = null;
         }
@@ -256,8 +321,13 @@ public class UrovoScannerManager implements ScannerInterface {
             typeId = intent.getByteExtra(ScanManager.BARCODE_TYPE_TAG, (byte) 0) & 0xFF;
         }
 
-        Symbology symbology = Symbology.fromInt(typeId);
-        BarcodeSymbology genericType = UrovoSymbologyAdapter.fromUrovo(symbology);
-        return genericType != null ? genericType.getStorageName() : "UNKNOWN";
+        try {
+            Symbology symbology = Symbology.fromInt(typeId);
+            BarcodeSymbology genericType = UrovoSymbologyAdapter.fromUrovo(symbology);
+            return genericType != null ? genericType.getStorageName() : "UNKNOWN";
+        } catch (RuntimeException exception) {
+            Log.w(TAG, "Unknown UROVO symbology code: " + typeId, exception);
+            return "UNKNOWN";
+        }
     }
 }

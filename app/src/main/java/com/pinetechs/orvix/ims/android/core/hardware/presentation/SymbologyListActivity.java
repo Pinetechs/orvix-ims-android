@@ -13,9 +13,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -24,12 +24,13 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.gson.Gson;
 import com.pinetechs.orvix.ims.android.R;
+import com.pinetechs.orvix.ims.android.core.hardware.ScannerFactory;
+import com.pinetechs.orvix.ims.android.core.hardware.ScannerInterface;
 import com.pinetechs.orvix.ims.android.core.hardware.model.BarcodeSymbology;
 import com.pinetechs.orvix.ims.android.core.hardware.model.ScannerOptionDefinition;
 import com.pinetechs.orvix.ims.android.core.hardware.model.ScannerOptionKey;
 import com.pinetechs.orvix.ims.android.core.hardware.model.ScannerOptionType;
 import com.pinetechs.orvix.ims.android.core.hardware.model.ScannerProfile;
-import com.pinetechs.orvix.ims.android.core.hardware.model.ScannerProfileDefaults;
 import com.pinetechs.orvix.ims.android.core.hardware.model.ScannerProfileSettings;
 import com.pinetechs.orvix.ims.android.core.hardware.model.ScannerSymbologyCatalog;
 import com.pinetechs.orvix.ims.android.core.hardware.model.ScannerSymbologyDefinition;
@@ -41,6 +42,7 @@ import java.util.EnumMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class SymbologyListActivity extends AppCompatActivity {
 
@@ -49,8 +51,15 @@ public class SymbologyListActivity extends AppCompatActivity {
     private ScannerProfileSettings settings;
     private LinearLayout symbologyContainer;
     private ChipGroup filterChipGroup;
+    private MaterialButton detectSymbologyButton;
+    private TextView detectionStatusTextView;
     private String currentFilter = "ALL";
-    private final Map<BarcodeSymbology, SymbologyRow> symbologyRows = new EnumMap<>(BarcodeSymbology.class);
+    private final Map<BarcodeSymbology, SymbologyRow> symbologyRows =
+            new EnumMap<>(BarcodeSymbology.class);
+
+    private ScannerInterface detectionScanner;
+    private boolean detectionActive;
+    private boolean detectionResultVisible;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,8 +74,18 @@ public class SymbologyListActivity extends AppCompatActivity {
             return;
         }
 
-        profile = ScannerProfile.valueOf(profileStr);
-        settings = gson.fromJson(settingsJson, ScannerProfileSettings.class);
+        try {
+            profile = ScannerProfile.valueOf(profileStr);
+            settings = gson.fromJson(settingsJson, ScannerProfileSettings.class);
+        } catch (RuntimeException exception) {
+            finish();
+            return;
+        }
+
+        if (settings == null) {
+            finish();
+            return;
+        }
 
         initViews();
         renderSymbologyRows();
@@ -75,11 +94,21 @@ public class SymbologyListActivity extends AppCompatActivity {
     private void initViews() {
         symbologyContainer = findViewById(R.id.symbologyContainer);
         filterChipGroup = findViewById(R.id.filterChipGroup);
+        detectSymbologyButton = findViewById(R.id.detectSymbologyButton);
+        detectionStatusTextView = findViewById(R.id.detectionStatusTextView);
+
         TextView profileTv = findViewById(R.id.profileTextView);
         profileTv.setText("Profile: " + profile.getDisplayName());
 
-        findViewById(R.id.backButton).setOnClickListener(v -> finish());
+        findViewById(R.id.backButton).setOnClickListener(v -> {
+            stopDetectionSession();
+            finish();
+        });
         findViewById(R.id.doneButton).setOnClickListener(v -> saveAndFinish());
+        detectSymbologyButton.setOnClickListener(v -> {
+            if (detectionActive) stopDetectionSession();
+            else startDetectionSession();
+        });
 
         setupFilterChips();
     }
@@ -96,6 +125,142 @@ public class SymbologyListActivity extends AppCompatActivity {
                 renderSymbologyRows();
             });
             filterChipGroup.addView(chip);
+        }
+    }
+
+    private void startDetectionSession() {
+        stopDetectionSession();
+        detectionResultVisible = false;
+
+        ScannerInterface scanner = ScannerFactory.getScanner(this, profile);
+        scanner.setOnScanListener((data, type) ->
+                detectSymbologyButton.post(() -> handleDetectedBarcode(data, type))
+        );
+
+        if (!scanner.init()) {
+            scanner.close();
+            showDetectionUnavailable("The hardware scanner could not be initialized.");
+            return;
+        }
+
+        scanner.register(this);
+        if (!scanner.enterSymbologyDetectionMode()) {
+            scanner.unregister(this);
+            scanner.close();
+            showDetectionUnavailable("This scanner provider does not support detection mode.");
+            return;
+        }
+
+        detectionScanner = scanner;
+        detectionActive = true;
+
+        Set<BarcodeSymbology> supported = scanner.getSupportedSymbologies();
+        detectionStatusTextView.setText(
+                "Detection mode is active. Scan one sample barcode. "
+                        + supported.size() + " barcode types are supported by this device."
+        );
+        detectSymbologyButton.setText("Stop");
+    }
+
+    private void showDetectionUnavailable(String message) {
+        detectionStatusTextView.setText(message);
+        detectSymbologyButton.setText("Detect");
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+    }
+
+    private void handleDetectedBarcode(String value, String typeName) {
+        if (!detectionActive || detectionResultVisible) return;
+
+        detectionResultVisible = true;
+        BarcodeSymbology detectedType = BarcodeSymbology.fromStorageName(typeName);
+        stopDetectionSession();
+
+        if (detectedType == null) {
+            showUnknownDetectionResult(value, typeName);
+            return;
+        }
+
+        ScannerSymbologySettings detectedSettings =
+                settings.getOrCreateSymbologySettings(detectedType);
+        boolean alreadyEnabled = detectedSettings.isEnabled();
+
+        StringBuilder message = new StringBuilder();
+        message.append("Value\n").append(value)
+                .append("\n\nSymbology\n").append(detectedType.getDisplayName())
+                .append("\n\nLength\n").append(value != null ? value.length() : 0)
+                .append(" characters");
+
+        if (alreadyEnabled) {
+            message.append("\n\nThis symbology is already enabled in the ")
+                    .append(profile.getDisplayName()).append(" profile.");
+        } else {
+            message.append("\n\nAdd this symbology to the ")
+                    .append(profile.getDisplayName())
+                    .append(" profile using its safe default options?");
+        }
+
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this)
+                .setTitle("Detected " + detectedType.getDisplayName())
+                .setMessage(message.toString())
+                .setNegativeButton("Close", (dialog, which) -> detectionResultVisible = false)
+                .setNeutralButton("Scan another", (dialog, which) -> {
+                    detectionResultVisible = false;
+                    startDetectionSession();
+                });
+
+        if (!alreadyEnabled) {
+            builder.setPositiveButton("Add to profile", (dialog, which) -> {
+                detectedSettings.setEnabled(true);
+                detectionResultVisible = false;
+                renderSymbologyRows();
+                detectionStatusTextView.setText(
+                        detectedType.getDisplayName() + " was added to "
+                                + profile.getDisplayName() + " with default options."
+                );
+                Toast.makeText(
+                        this,
+                        detectedType.getDisplayName() + " enabled",
+                        Toast.LENGTH_SHORT
+                ).show();
+            });
+        } else {
+            builder.setPositiveButton("Done", (dialog, which) -> detectionResultVisible = false);
+        }
+
+        builder.setOnCancelListener(dialog -> detectionResultVisible = false);
+        builder.show();
+    }
+
+    private void showUnknownDetectionResult(String value, String rawType) {
+        String message = "The scanner decoded the value, but its type could not be mapped "
+                + "to the Orvix symbology catalog.\n\nValue\n"
+                + value + "\n\nProvider type\n" + rawType;
+
+        new MaterialAlertDialogBuilder(this)
+                .setTitle("Unknown barcode type")
+                .setMessage(message)
+                .setNegativeButton("Close", (dialog, which) -> detectionResultVisible = false)
+                .setPositiveButton("Scan another", (dialog, which) -> {
+                    detectionResultVisible = false;
+                    startDetectionSession();
+                })
+                .setOnCancelListener(dialog -> detectionResultVisible = false)
+                .show();
+    }
+
+    private void stopDetectionSession() {
+        ScannerInterface scanner = detectionScanner;
+        detectionScanner = null;
+        detectionActive = false;
+        detectSymbologyButton.setText("Detect");
+
+        if (scanner != null) {
+            try {
+                scanner.exitSymbologyDetectionMode();
+            } finally {
+                scanner.unregister(this);
+                scanner.close();
+            }
         }
     }
 
@@ -118,7 +283,8 @@ public class SymbologyListActivity extends AppCompatActivity {
             symbologyContainer.addView(createSectionLabel(entry.getKey() + " SYMBOLOGIES"));
             for (ScannerSymbologyDefinition definition : entry.getValue()) {
                 BarcodeSymbology symbology = definition.getSymbology();
-                ScannerSymbologySettings typeSettings = settings.getOrCreateSymbologySettings(symbology);
+                ScannerSymbologySettings typeSettings =
+                        settings.getOrCreateSymbologySettings(symbology);
                 SymbologyRow row = createSymbologyRow(definition, typeSettings);
                 symbologyRows.put(symbology, row);
                 symbologyContainer.addView(row.root);
@@ -136,12 +302,18 @@ public class SymbologyListActivity extends AppCompatActivity {
         return label;
     }
 
-    private SymbologyRow createSymbologyRow(ScannerSymbologyDefinition definition, ScannerSymbologySettings typeSettings) {
+    private SymbologyRow createSymbologyRow(
+            ScannerSymbologyDefinition definition,
+            ScannerSymbologySettings typeSettings
+    ) {
         LinearLayout root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);
         root.setPadding(dp(12), dp(8), dp(8), dp(8));
         root.setBackgroundResource(R.drawable.bg_input_soft);
-        LinearLayout.LayoutParams rootParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams rootParams = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        );
         rootParams.bottomMargin = dp(8);
         root.setLayoutParams(rootParams);
 
@@ -153,7 +325,11 @@ public class SymbologyListActivity extends AppCompatActivity {
         enabledSwitch.setText(definition.getSymbology().getDisplayName());
         enabledSwitch.setTextColor(getResources().getColor(R.color.orvix_black));
         enabledSwitch.setChecked(typeSettings.isEnabled());
-        enabledSwitch.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+        enabledSwitch.setLayoutParams(new LinearLayout.LayoutParams(
+                0,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                1f
+        ));
         top.addView(enabledSwitch);
 
         Button configureButton = new Button(this);
@@ -163,7 +339,10 @@ public class SymbologyListActivity extends AppCompatActivity {
         configureButton.setMinWidth(0);
         configureButton.setPadding(dp(10), 0, dp(10), 0);
         configureButton.setVisibility(definition.hasOptions() ? View.VISIBLE : View.GONE);
-        top.addView(configureButton, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, dp(42)));
+        top.addView(
+                configureButton,
+                new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, dp(42))
+        );
         root.addView(top);
 
         TextView summary = new TextView(this);
@@ -179,11 +358,17 @@ public class SymbologyListActivity extends AppCompatActivity {
             typeSettings.setEnabled(checked);
             updateRowSummary(row, definition, typeSettings);
         });
-        configureButton.setOnClickListener(v -> showSymbologyOptionsDialog(definition, typeSettings, row));
+        configureButton.setOnClickListener(
+                v -> showSymbologyOptionsDialog(definition, typeSettings, row)
+        );
         return row;
     }
 
-    private void showSymbologyOptionsDialog(ScannerSymbologyDefinition definition, ScannerSymbologySettings typeSettings, SymbologyRow row) {
+    private void showSymbologyOptionsDialog(
+            ScannerSymbologyDefinition definition,
+            ScannerSymbologySettings typeSettings,
+            SymbologyRow row
+    ) {
         ScrollView scrollView = new ScrollView(this);
         LinearLayout content = new LinearLayout(this);
         content.setOrientation(LinearLayout.VERTICAL);
@@ -192,7 +377,10 @@ public class SymbologyListActivity extends AppCompatActivity {
 
         Map<ScannerOptionKey, OptionEditor> editors = new EnumMap<>(ScannerOptionKey.class);
         for (ScannerOptionDefinition option : definition.getOptions()) {
-            if (option.getKey() == ScannerOptionKey.MIN_LENGTH || option.getKey() == ScannerOptionKey.MAX_LENGTH) continue;
+            if (option.getKey() == ScannerOptionKey.MIN_LENGTH
+                    || option.getKey() == ScannerOptionKey.MAX_LENGTH) {
+                continue;
+            }
             OptionEditor editor = createOptionEditor(option, typeSettings);
             editors.put(option.getKey(), editor);
             content.addView(editor.root);
@@ -203,16 +391,22 @@ public class SymbologyListActivity extends AppCompatActivity {
                 .setView(scrollView)
                 .setNegativeButton("Cancel", null)
                 .setPositiveButton("Apply", (dialog, which) -> {
-                    if (saveOptionEditors(definition, typeSettings, editors)) {
+                    if (saveOptionEditors(typeSettings, editors)) {
                         updateRowSummary(row, definition, typeSettings);
                     }
                 }).show();
     }
 
-    private OptionEditor createOptionEditor(ScannerOptionDefinition option, ScannerSymbologySettings typeSettings) {
+    private OptionEditor createOptionEditor(
+            ScannerOptionDefinition option,
+            ScannerSymbologySettings typeSettings
+    ) {
         LinearLayout root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        );
         params.bottomMargin = dp(12);
         root.setLayoutParams(params);
 
@@ -227,68 +421,113 @@ public class SymbologyListActivity extends AppCompatActivity {
             root.addView(sw);
             inputView = sw;
         } else if (option.getType() == ScannerOptionType.INTEGER) {
-            TextInputLayout il = new TextInputLayout(this);
-            il.setHint(option.getDisplayName());
-            TextInputEditText et = new TextInputEditText(il.getContext());
-            et.setInputType(InputType.TYPE_CLASS_NUMBER);
-            et.setText(currentValue);
-            il.addView(et);
-            root.addView(il);
-            inputView = et;
+            TextInputLayout inputLayout = new TextInputLayout(this);
+            inputLayout.setHint(option.getDisplayName());
+            TextInputEditText editText = new TextInputEditText(inputLayout.getContext());
+            editText.setInputType(InputType.TYPE_CLASS_NUMBER);
+            editText.setText(currentValue);
+            inputLayout.addView(editText);
+            root.addView(inputLayout);
+            inputView = editText;
         } else {
-            TextView t = new TextView(this);
-            t.setText(option.getDisplayName());
-            t.setTextSize(13);
-            root.addView(t);
-            Spinner s = new Spinner(this);
+            TextView title = new TextView(this);
+            title.setText(option.getDisplayName());
+            title.setTextSize(13);
+            root.addView(title);
+
+            Spinner spinner = new Spinner(this);
             List<String> labels = new ArrayList<>(option.getChoices().values());
-            ArrayAdapter<String> ad = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, labels);
-            ad.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            s.setAdapter(ad);
-            s.setSelection(new ArrayList<>(option.getChoices().keySet()).indexOf(currentValue));
-            s.setTag(new ArrayList<>(option.getChoices().keySet()));
-            root.addView(s, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(50)));
-            inputView = s;
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                    this,
+                    android.R.layout.simple_spinner_item,
+                    labels
+            );
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinner.setAdapter(adapter);
+
+            List<String> keys = new ArrayList<>(option.getChoices().keySet());
+            int selectedIndex = keys.indexOf(currentValue);
+            spinner.setSelection(Math.max(0, selectedIndex));
+            spinner.setTag(keys);
+            root.addView(
+                    spinner,
+                    new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(50))
+            );
+            inputView = spinner;
         }
         return new OptionEditor(option, root, inputView);
     }
 
-    private boolean saveOptionEditors(ScannerSymbologyDefinition def, ScannerSymbologySettings typeSettings, Map<ScannerOptionKey, OptionEditor> editors) {
-        for (OptionEditor ed : editors.values()) {
-            String val;
-            if (ed.definition.getType() == ScannerOptionType.BOOLEAN) {
-                val = String.valueOf(((SwitchMaterial) ed.input).isChecked());
-            } else if (ed.definition.getType() == ScannerOptionType.INTEGER) {
-                val = ((TextInputEditText) ed.input).getText().toString();
+    @SuppressWarnings("unchecked")
+    private boolean saveOptionEditors(
+            ScannerSymbologySettings typeSettings,
+            Map<ScannerOptionKey, OptionEditor> editors
+    ) {
+        for (OptionEditor editor : editors.values()) {
+            String value;
+            if (editor.definition.getType() == ScannerOptionType.BOOLEAN) {
+                value = String.valueOf(((SwitchMaterial) editor.input).isChecked());
+            } else if (editor.definition.getType() == ScannerOptionType.INTEGER) {
+                CharSequence text = ((TextInputEditText) editor.input).getText();
+                value = text != null ? text.toString().trim() : "";
+                if (value.isEmpty()) {
+                    Toast.makeText(
+                            this,
+                            editor.definition.getDisplayName() + " is required",
+                            Toast.LENGTH_SHORT
+                    ).show();
+                    return false;
+                }
             } else {
-                val = ((List<String>) ed.input.getTag()).get(((Spinner) ed.input).getSelectedItemPosition());
+                List<String> keys = (List<String>) editor.input.getTag();
+                value = keys.get(((Spinner) editor.input).getSelectedItemPosition());
             }
-            typeSettings.setOption(ed.definition.getKey(), val);
+            typeSettings.setOption(editor.definition.getKey(), value);
         }
         return true;
     }
 
-    private void updateRowSummary(SymbologyRow row, ScannerSymbologyDefinition definition, ScannerSymbologySettings typeSettings) {
-        StringBuilder sb = new StringBuilder(definition.getSymbology().getCategory());
-        if (ScannerProfileDefaults.isDefaultEnabled(profile, definition.getSymbology())) {
-            sb.append(" • Profile default");
+    private void updateRowSummary(
+            SymbologyRow row,
+            ScannerSymbologyDefinition definition,
+            ScannerSymbologySettings typeSettings
+    ) {
+        StringBuilder summary = new StringBuilder(definition.getSymbology().getCategory());
+        if (ScannerSymbologyCatalog.isCoreDefault(definition.getSymbology())) {
+            summary.append(" • Standard default");
         }
         if (definition.findOption(ScannerOptionKey.MIN_LENGTH) != null) {
-            sb.append(" • Global length ").append(settings.getMinScanLength()).append("–").append(settings.getMaxScanLength());
+            summary.append(" • Global length ")
+                    .append(settings.getMinScanLength())
+                    .append("–")
+                    .append(settings.getMaxScanLength());
         }
-        if (!typeSettings.isEnabled()) sb.append(" • Disabled");
-        row.summary.setText(sb.toString());
+        if (!typeSettings.isEnabled()) summary.append(" • Disabled");
+        row.summary.setText(summary.toString());
     }
 
     private void saveAndFinish() {
+        stopDetectionSession();
         Intent data = new Intent();
         data.putExtra(Constants.EXTRA_SCANNER_SETTINGS_JSON, gson.toJson(settings));
         setResult(RESULT_OK, data);
         finish();
     }
 
-    private int dp(int px) {
-        return (int) (px * getResources().getDisplayMetrics().density);
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (detectionActive) stopDetectionSession();
+    }
+
+    @Override
+    protected void onDestroy() {
+        stopDetectionSession();
+        super.onDestroy();
+    }
+
+    private int dp(int value) {
+        return (int) (value * getResources().getDisplayMetrics().density);
     }
 
     private static class SymbologyRow {
@@ -296,8 +535,17 @@ public class SymbologyListActivity extends AppCompatActivity {
         final SwitchMaterial enabledSwitch;
         final Button configureButton;
         final TextView summary;
-        SymbologyRow(View root, SwitchMaterial es, Button cb, TextView sm) {
-            this.root = root; this.enabledSwitch = es; this.configureButton = cb; this.summary = sm;
+
+        SymbologyRow(
+                View root,
+                SwitchMaterial enabledSwitch,
+                Button configureButton,
+                TextView summary
+        ) {
+            this.root = root;
+            this.enabledSwitch = enabledSwitch;
+            this.configureButton = configureButton;
+            this.summary = summary;
         }
     }
 
@@ -305,8 +553,11 @@ public class SymbologyListActivity extends AppCompatActivity {
         final ScannerOptionDefinition definition;
         final View root;
         final View input;
-        OptionEditor(ScannerOptionDefinition def, View r, View i) {
-            this.definition = def; this.root = r; this.input = i;
+
+        OptionEditor(ScannerOptionDefinition definition, View root, View input) {
+            this.definition = definition;
+            this.root = root;
+            this.input = input;
         }
     }
 }
