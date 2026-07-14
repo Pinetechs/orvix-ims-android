@@ -31,4 +31,16 @@ public final class Constants {
     public static final String KEY_ANDROID_APK_URL = "android_apk_url";
     public static final String KEY_RELEASE_NOTES = "release_notes";
     public static final String KEY_LANGUAGE = "app_language";
+
+    // Scanner Settings
+    public static final String KEY_SCANNER_BEEP = "scanner_beep";
+    public static final String KEY_SCANNER_VIBRATE = "scanner_vibrate";
+    public static final String KEY_UROVO_INTENT_ACTION = "urovo_intent_action";
+    public static final String KEY_UROVO_DATA_TAG = "urovo_data_tag";
+    public static final String KEY_UROVO_TYPE_TAG = "urovo_type_tag";
+
+    // Defaults
+    public static final String DEFAULT_UROVO_ACTION = "android.intent.ACTION_DECODE_DATA";
+    public static final String DEFAULT_UROVO_DATA_TAG = "barcode_string";
+    public static final String DEFAULT_UROVO_TYPE_TAG = "barcodeType";
 }

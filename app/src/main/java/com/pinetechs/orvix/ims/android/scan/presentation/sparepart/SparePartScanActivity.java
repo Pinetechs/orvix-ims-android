@@ -85,7 +85,7 @@ public class SparePartScanActivity extends AppCompatActivity {
 
     private void initScanner() {
         scannerManager = ScannerFactory.getScanner(this);
-        scannerManager.setOnScanListener(data -> {
+        scannerManager.setOnScanListener((data, type) -> {
             runOnUiThread(() -> {
                 barcodeEditText.setText(data);
                 performScan();

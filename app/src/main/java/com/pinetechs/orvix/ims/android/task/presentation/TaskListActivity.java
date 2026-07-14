@@ -16,6 +16,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.pinetechs.orvix.ims.android.R;
 import com.pinetechs.orvix.ims.android.auth.presentation.LoginActivity;
+import com.pinetechs.orvix.ims.android.core.hardware.ScannerSettingsActivity;
 import com.pinetechs.orvix.ims.android.core.storage.SessionManager;
 import com.pinetechs.orvix.ims.android.core.util.Resource;
 import com.pinetechs.orvix.ims.android.workarea.presentation.WorkAreaActivity;
@@ -31,7 +32,7 @@ public class TaskListActivity extends AppCompatActivity {
     private TextView emptyTextView;
     private TextView welcomeTextView;
     private TextView assignedTasksCount, readyTasksCount, inProgressTasksCount, completedTasksCount;
-    private Button logoutButton;
+    private Button logoutButton, settingsButton;
     private boolean showingCompleted = false;
 
     @Override
@@ -46,6 +47,7 @@ public class TaskListActivity extends AppCompatActivity {
         emptyTextView = findViewById(R.id.emptyTextView);
         welcomeTextView = findViewById(R.id.welcomeTextView);
         logoutButton = findViewById(R.id.logoutButton);
+        settingsButton = findViewById(R.id.settingsButton);
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
 
         assignedTasksCount = findViewById(R.id.assignedTasksCount);
@@ -74,7 +76,11 @@ public class TaskListActivity extends AppCompatActivity {
 
     private void setupClickListeners() {
         logoutButton.setOnClickListener(v -> logout());
-        
+        settingsButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this, ScannerSettingsActivity.class);
+            startActivity(intent);
+        });
+
         // Toggle when clicking on History box
         View historyBox = findViewById(R.id.historyBox);
         if (historyBox != null) {

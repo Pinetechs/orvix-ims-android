@@ -6,19 +6,23 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.device.ScanManager;
 import android.device.scanner.configuration.PropertyID;
+import android.device.scanner.configuration.Symbology;
+
+import androidx.core.content.ContextCompat;
+
+import com.pinetechs.orvix.ims.android.core.storage.SessionManager;
 
 public class UrovoScannerManager implements ScannerInterface {
 
     private final Context context;
+    private final SessionManager sessionManager;
     private ScanManager scanManager;
     private OnScanListener listener;
     private boolean isScannerOpen = false;
 
-    private static final String ACTION_DECODE = ScanManager.ACTION_DECODE;
-    private static final String BARCODE_STRING_TAG = ScanManager.BARCODE_STRING_TAG;
-
     public UrovoScannerManager(Context context) {
         this.context = context.getApplicationContext();
+        this.sessionManager = new SessionManager(context);
     }
 
     @Override
@@ -30,18 +34,46 @@ public class UrovoScannerManager implements ScannerInterface {
     public boolean init() {
         try {
             scanManager = new ScanManager();
-            isScannerOpen = scanManager.openScanner();
+            isScannerOpen = scanManager.getScannerState();
+            if (!isScannerOpen) {
+                isScannerOpen = scanManager.openScanner();
+            }
+            
             if (isScannerOpen) {
-                // Configure scanner for Intent Mode
-                scanManager.switchOutputMode(0); // 0 = Intent Mode
+                // 1. تفعيل وضع الـ Intent أولاً
+                scanManager.switchOutputMode(0); 
                 
-                // Ensure the scan trigger is unlocked
+                // 2. ضبط الإعدادات (بعد الـ Switch لضمان عدم ضياعها)
+                int beepVal = sessionManager.isScannerBeepEnabled() ? 1 : 0;
+                
+                // تفعيل الصوت والاهتزاز معاً لتعزيز تجربة المستخدم
+                int[] ids = {
+                    PropertyID.GOOD_READ_BEEP_ENABLE, 
+                    PropertyID.GOOD_READ_VIBRATE_ENABLE,
+                    PropertyID.WEDGE_KEYBOARD_ENABLE
+                };
+                int[] vals = {
+                    beepVal, // Beep
+                    beepVal, // Vibrate (نفس حالة الـ Beep حالياً)
+                    0        // Disable Keyboard Wedge
+                };
+                scanManager.setParameterInts(ids, vals);
+
+                // 3. ضبط مسارات الـ Intent المخصصة
+                scanManager.setParameterString(
+                    new int[]{
+                        PropertyID.WEDGE_INTENT_ACTION_NAME, 
+                        PropertyID.WEDGE_INTENT_DATA_STRING_TAG,
+                        PropertyID.WEDGE_INTENT_LABEL_TYPE_TAG
+                    }, 
+                    new String[]{
+                        sessionManager.getUrovoIntentAction(), 
+                        sessionManager.getUrovoDataTag(),
+                        sessionManager.getUrovoTypeTag()
+                    }
+                );
+                
                 scanManager.unlockTrigger();
-                
-                // Enable beep on good read
-                int[] id = {PropertyID.GOOD_READ_BEEP_ENABLE};
-                int[] val = {1};
-                scanManager.setParameterInts(id, val);
             }
             return isScannerOpen;
         } catch (Exception e) {
@@ -54,12 +86,10 @@ public class UrovoScannerManager implements ScannerInterface {
     public void register(Context activityContext) {
         if (scanManager != null) {
             IntentFilter filter = new IntentFilter();
-            filter.addAction(ACTION_DECODE);
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-                activityContext.registerReceiver(scanReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
-            } else {
-                activityContext.registerReceiver(scanReceiver, filter);
-            }
+            filter.addAction(sessionManager.getUrovoIntentAction());
+            
+            // Use ContextCompat to safely register with flags for Android 14+ compatibility
+            ContextCompat.registerReceiver(activityContext, scanReceiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED);
         }
     }
 
@@ -82,10 +112,20 @@ public class UrovoScannerManager implements ScannerInterface {
     private final BroadcastReceiver scanReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (ACTION_DECODE.equals(intent.getAction())) {
-                String barcode = intent.getStringExtra(BARCODE_STRING_TAG);
+            String action = sessionManager.getUrovoIntentAction();
+            String dataTag = sessionManager.getUrovoDataTag();
+            String typeTag = sessionManager.getUrovoTypeTag();
+
+            if (action.equals(intent.getAction())) {
+                String barcode = intent.getStringExtra(dataTag);
+                
+                // Get barcode type ID and convert to Symbology name
+                byte typeId = intent.getByteExtra(typeTag, (byte) 0);
+                Symbology symbology = Symbology.fromInt(typeId);
+                String typeName = (symbology != null) ? symbology.name() : "UNKNOWN";
+
                 if (barcode != null && listener != null) {
-                    listener.onScanResult(barcode.trim());
+                    listener.onScanResult(barcode.trim(), typeName);
                 }
             }
         }

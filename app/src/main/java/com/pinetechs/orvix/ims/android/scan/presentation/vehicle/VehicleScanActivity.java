@@ -51,7 +51,7 @@ public class VehicleScanActivity extends AppCompatActivity {
 
     private void initScanner() {
         scannerManager = ScannerFactory.getScanner(this);
-        scannerManager.setOnScanListener(data -> {
+        scannerManager.setOnScanListener((data, type) -> {
             runOnUiThread(() -> {
                 vinEditText.setText(data);
                 performScan();

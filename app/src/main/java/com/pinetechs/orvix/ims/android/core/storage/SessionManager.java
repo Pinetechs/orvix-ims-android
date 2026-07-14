@@ -180,6 +180,49 @@ public class SessionManager {
         return preferences.getString(Constants.KEY_LANGUAGE, "en");
     }
 
+    // --- Scanner Settings ---
+
+    public boolean isScannerBeepEnabled() {
+        return preferences.getBoolean(Constants.KEY_SCANNER_BEEP, true);
+    }
+
+    public void setScannerBeepEnabled(boolean enabled) {
+        preferences.edit().putBoolean(Constants.KEY_SCANNER_BEEP, enabled).apply();
+    }
+
+    public String getUrovoIntentAction() {
+        return preferences.getString(Constants.KEY_UROVO_INTENT_ACTION, Constants.DEFAULT_UROVO_ACTION);
+    }
+
+    public void setUrovoIntentAction(String action) {
+        preferences.edit().putString(Constants.KEY_UROVO_INTENT_ACTION, action).apply();
+    }
+
+    public String getUrovoDataTag() {
+        return preferences.getString(Constants.KEY_UROVO_DATA_TAG, Constants.DEFAULT_UROVO_DATA_TAG);
+    }
+
+    public void setUrovoDataTag(String tag) {
+        preferences.edit().putString(Constants.KEY_UROVO_DATA_TAG, tag).apply();
+    }
+
+    public String getUrovoTypeTag() {
+        return preferences.getString(Constants.KEY_UROVO_TYPE_TAG, Constants.DEFAULT_UROVO_TYPE_TAG);
+    }
+
+    public void setUrovoTypeTag(String tag) {
+        preferences.edit().putString(Constants.KEY_UROVO_TYPE_TAG, tag).apply();
+    }
+
+    public void resetScannerSettings() {
+        preferences.edit()
+                .putBoolean(Constants.KEY_SCANNER_BEEP, true)
+                .putString(Constants.KEY_UROVO_INTENT_ACTION, Constants.DEFAULT_UROVO_ACTION)
+                .putString(Constants.KEY_UROVO_DATA_TAG, Constants.DEFAULT_UROVO_DATA_TAG)
+                .putString(Constants.KEY_UROVO_TYPE_TAG, Constants.DEFAULT_UROVO_TYPE_TAG)
+                .apply();
+    }
+
     /**
      * Backward-compatible clear method. Prefer clearLoginSession or clearClientConfigAndSession.
      */

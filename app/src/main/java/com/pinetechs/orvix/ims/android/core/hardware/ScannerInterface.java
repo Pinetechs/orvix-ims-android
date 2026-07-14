@@ -8,7 +8,11 @@ import android.content.Context;
 public interface ScannerInterface {
 
     interface OnScanListener {
-        void onScanResult(String data);
+        /**
+         * @param data The scanned barcode string
+         * @param type The barcode symbology name (e.g., CODE39, QRCODE)
+         */
+        void onScanResult(String data, String type);
     }
 
     void setOnScanListener(OnScanListener listener);

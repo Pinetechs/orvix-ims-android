@@ -38,7 +38,8 @@
             android:exported="false" />
 
         <activity
-            android:name=".location.presentation.LocationSelectionActivity"
+            android:name=".core.hardware.ScannerSettingsActivity"
+            android:label="Scanner Settings"
             android:exported="false" />
 
         <activity
