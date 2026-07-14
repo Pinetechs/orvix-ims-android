@@ -14,8 +14,8 @@ public class UrovoScannerManager implements ScannerInterface {
     private OnScanListener listener;
     private boolean isScannerOpen = false;
 
-    private static final String ACTION_DECODE = "android.intent.ACTION_DECODE_DATA";
-    private static final String BARCODE_STRING_TAG = "barcode_string";
+    private static final String ACTION_DECODE = ScanManager.ACTION_DECODE;
+    private static final String BARCODE_STRING_TAG = ScanManager.BARCODE_STRING_TAG;
 
     public UrovoScannerManager(Context context) {
         this.context = context.getApplicationContext();

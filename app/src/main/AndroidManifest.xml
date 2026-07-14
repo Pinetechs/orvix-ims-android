@@ -34,10 +34,6 @@
             android:exported="false" />
 
         <activity
-            android:name=".scan.presentation.ScanActivity"
-            android:exported="false" />
-
-        <activity
             android:name=".workarea.presentation.WorkAreaActivity"
             android:exported="false" />
 
