@@ -7,10 +7,20 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.pinetechs.orvix.ims.android.auth.data.dto.AppUserResponse;
 import com.pinetechs.orvix.ims.android.bootstrap.data.dto.BootstrapResolveResponse;
+import com.pinetechs.orvix.ims.android.core.hardware.model.BarcodeSymbology;
+import com.pinetechs.orvix.ims.android.core.hardware.model.ScannerBeepMode;
+import com.pinetechs.orvix.ims.android.core.hardware.model.ScannerOptionKey;
+import com.pinetechs.orvix.ims.android.core.hardware.model.ScannerProfile;
+import com.pinetechs.orvix.ims.android.core.hardware.model.ScannerProfileDefaults;
+import com.pinetechs.orvix.ims.android.core.hardware.model.ScannerProfileSettings;
+import com.pinetechs.orvix.ims.android.core.hardware.model.ScannerSymbologyCatalog;
+import com.pinetechs.orvix.ims.android.core.hardware.model.ScannerSymbologyDefinition;
+import com.pinetechs.orvix.ims.android.core.hardware.model.ScannerSymbologySettings;
 import com.pinetechs.orvix.ims.android.core.util.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class SessionManager {
 
@@ -182,12 +192,46 @@ public class SessionManager {
 
     // --- Scanner Settings ---
 
-    public boolean isScannerBeepEnabled() {
-        return preferences.getBoolean(Constants.KEY_SCANNER_BEEP, true);
+    public ScannerBeepMode getScannerBeepMode() {
+        if (preferences.contains(Constants.KEY_SCANNER_BEEP_MODE)) {
+            return ScannerBeepMode.fromName(
+                    preferences.getString(Constants.KEY_SCANNER_BEEP_MODE, ScannerBeepMode.NATIVE.name())
+            );
+        }
+
+        // Migrate the previous on/off setting without changing the user's behavior.
+        boolean legacyEnabled = preferences.getBoolean(Constants.KEY_SCANNER_BEEP, true);
+        return legacyEnabled ? ScannerBeepMode.NATIVE : ScannerBeepMode.NONE;
     }
 
+    public void setScannerBeepMode(ScannerBeepMode mode) {
+        ScannerBeepMode resolvedMode = mode != null ? mode : ScannerBeepMode.NATIVE;
+        preferences.edit()
+                .putString(Constants.KEY_SCANNER_BEEP_MODE, resolvedMode.name())
+                .putBoolean(Constants.KEY_SCANNER_BEEP, resolvedMode != ScannerBeepMode.NONE)
+                .apply();
+    }
+
+    /**
+     * Backward-compatible helper for code that still treats beep as enabled/disabled.
+     */
+    public boolean isScannerBeepEnabled() {
+        return getScannerBeepMode() != ScannerBeepMode.NONE;
+    }
+
+    /**
+     * Backward-compatible helper. Enabled maps to the native UROVO beep.
+     */
     public void setScannerBeepEnabled(boolean enabled) {
-        preferences.edit().putBoolean(Constants.KEY_SCANNER_BEEP, enabled).apply();
+        setScannerBeepMode(enabled ? ScannerBeepMode.NATIVE : ScannerBeepMode.NONE);
+    }
+
+    public boolean isScannerVibrationEnabled() {
+        return preferences.getBoolean(Constants.KEY_SCANNER_VIBRATE, true);
+    }
+
+    public void setScannerVibrationEnabled(boolean enabled) {
+        preferences.edit().putBoolean(Constants.KEY_SCANNER_VIBRATE, enabled).apply();
     }
 
     public String getUrovoIntentAction() {
@@ -214,13 +258,125 @@ public class SessionManager {
         preferences.edit().putString(Constants.KEY_UROVO_TYPE_TAG, tag).apply();
     }
 
-    public void resetScannerSettings() {
+    public ScannerProfileSettings getScannerProfileSettings(ScannerProfile profile) {
+        ScannerProfile resolvedProfile = profile != null ? profile : ScannerProfile.GENERAL;
+        ScannerProfileSettings defaults = ScannerProfileDefaults.forProfile(resolvedProfile);
+        String prefix = profileKeyPrefix(resolvedProfile);
+        String jsonKey = prefix + "configuration_v2";
+        String json = preferences.getString(jsonKey, null);
+
+        if (json != null && !json.trim().isEmpty()) {
+            try {
+                ScannerProfileSettings stored = gson.fromJson(json, ScannerProfileSettings.class);
+                if (stored != null) {
+                    return stored.mergeWithDefaults(defaults);
+                }
+            } catch (RuntimeException ignored) {
+                // Fall through to legacy migration/defaults.
+            }
+        }
+
+        ScannerProfileSettings migrated = migrateLegacyScannerProfile(resolvedProfile, defaults);
+        preferences.edit().putString(jsonKey, gson.toJson(migrated)).apply();
+        return migrated;
+    }
+
+    private ScannerProfileSettings migrateLegacyScannerProfile(
+            ScannerProfile profile,
+            ScannerProfileSettings defaults
+    ) {
+        String prefix = profileKeyPrefix(profile);
+        ScannerProfileSettings migrated = defaults.copy();
+
+        Set<String> legacySymbologies = preferences.getStringSet(prefix + "symbologies", null);
+        if (legacySymbologies != null) {
+            for (ScannerSymbologySettings settings
+                    : migrated.getSymbologies().values()) {
+                if (settings != null) settings.setEnabled(false);
+            }
+            for (String name : legacySymbologies) {
+                BarcodeSymbology symbology =
+                        BarcodeSymbology.fromStorageName(name);
+                if (symbology != null) {
+                    migrated.getOrCreateSymbologySettings(symbology).setEnabled(true);
+                }
+            }
+        }
+
+        int legacyMinimum = preferences.getInt(prefix + "minimum_length", -1);
+        int legacyMaximum = preferences.getInt(prefix + "maximum_length", -1);
+        if (legacyMinimum > 0 || legacyMaximum > 0) {
+            for (ScannerSymbologyDefinition definition
+                    : ScannerSymbologyCatalog.getDefinitions()) {
+                ScannerSymbologySettings settings =
+                        migrated.getOrCreateSymbologySettings(definition.getSymbology());
+                if (definition.findOption(ScannerOptionKey.MIN_LENGTH) != null
+                        && legacyMinimum > 0) {
+                    settings.setOption(
+                            ScannerOptionKey.MIN_LENGTH,
+                            Integer.toString(legacyMinimum)
+                    );
+                }
+                if (definition.findOption(ScannerOptionKey.MAX_LENGTH) != null
+                        && legacyMaximum > 0) {
+                    settings.setOption(
+                            ScannerOptionKey.MAX_LENGTH,
+                            Integer.toString(legacyMaximum)
+                    );
+                }
+            }
+        }
+
+        migrated.setShowCapturedImage(preferences.getBoolean(
+                prefix + "show_captured_image",
+                defaults.isShowCapturedImage()
+        ));
+        return migrated;
+    }
+
+    public void setScannerProfileSettings(ScannerProfile profile, ScannerProfileSettings settings) {
+        if (profile == null || settings == null) return;
+
+        String prefix = profileKeyPrefix(profile);
         preferences.edit()
+                .putString(prefix + "configuration_v2", gson.toJson(settings))
+                .apply();
+    }
+
+    public void resetScannerProfileSettings(ScannerProfile profile) {
+        if (profile == null) return;
+        String prefix = profileKeyPrefix(profile);
+        preferences.edit()
+                .remove(prefix + "configuration_v2")
+                .remove(prefix + "symbologies")
+                .remove(prefix + "minimum_length")
+                .remove(prefix + "maximum_length")
+                .remove(prefix + "show_captured_image")
+                .apply();
+    }
+
+    public void resetScannerSettings() {
+        SharedPreferences.Editor editor = preferences.edit()
                 .putBoolean(Constants.KEY_SCANNER_BEEP, true)
+                .putString(Constants.KEY_SCANNER_BEEP_MODE, ScannerBeepMode.NATIVE.name())
+                .putBoolean(Constants.KEY_SCANNER_VIBRATE, true)
                 .putString(Constants.KEY_UROVO_INTENT_ACTION, Constants.DEFAULT_UROVO_ACTION)
                 .putString(Constants.KEY_UROVO_DATA_TAG, Constants.DEFAULT_UROVO_DATA_TAG)
-                .putString(Constants.KEY_UROVO_TYPE_TAG, Constants.DEFAULT_UROVO_TYPE_TAG)
-                .apply();
+                .putString(Constants.KEY_UROVO_TYPE_TAG, Constants.DEFAULT_UROVO_TYPE_TAG);
+
+        for (ScannerProfile profile : ScannerProfile.values()) {
+            String prefix = profileKeyPrefix(profile);
+            editor.remove(prefix + "configuration_v2");
+            editor.remove(prefix + "symbologies");
+            editor.remove(prefix + "minimum_length");
+            editor.remove(prefix + "maximum_length");
+            editor.remove(prefix + "show_captured_image");
+        }
+        editor.apply();
+    }
+
+    private String profileKeyPrefix(ScannerProfile profile) {
+        return Constants.KEY_SCANNER_PROFILE_PREFIX + profile.name().toLowerCase() + "_";
     }
 
     /**

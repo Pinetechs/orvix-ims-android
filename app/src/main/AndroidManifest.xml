@@ -38,8 +38,13 @@
             android:exported="false" />
 
         <activity
-            android:name=".core.hardware.ScannerSettingsActivity"
+            android:name=".core.hardware.presentation.ScannerSettingsActivity"
             android:label="Scanner Settings"
+            android:exported="false" />
+
+        <activity
+            android:name=".core.hardware.presentation.SymbologyListActivity"
+            android:label="Select Barcodes"
             android:exported="false" />
 
         <activity

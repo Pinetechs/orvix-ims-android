@@ -1,22 +1,27 @@
 package com.pinetechs.orvix.ims.android.core.hardware;
 
 import android.content.Context;
-import android.os.Build;
 
-public class ScannerFactory {
+import com.pinetechs.orvix.ims.android.core.hardware.model.ScannerProfile;
+
+public final class ScannerFactory {
+
+    private ScannerFactory() {
+    }
 
     public static ScannerInterface getScanner(Context context) {
-        String manufacturer = Build.MANUFACTURER.toUpperCase();
-        
-        // Strategy pattern to return the correct scanner implementation
-        if (manufacturer.contains("UROVO")) {
-            return new UrovoScannerManager(context);
-        }
-        
-        // Add other manufacturers here (Zebra, Honeywell, etc.)
-        // if (manufacturer.contains("ZEBRA")) return new ZebraScannerManager(context);
-        
-        // Default fallback (can be a generic or null)
-        return new UrovoScannerManager(context); 
+        return getScanner(context, ScannerProfile.GENERAL);
+    }
+
+    public static ScannerInterface getScanner(Context context, ScannerProfile profile) {
+        return ScannerProviderRegistry.create(
+                context,
+                profile != null ? profile : ScannerProfile.GENERAL,
+                ScannerDeviceInfo.current()
+        );
+    }
+
+    public static String getCurrentScannerVendor() {
+        return ScannerProviderRegistry.resolveVendorName(ScannerDeviceInfo.current());
     }
 }

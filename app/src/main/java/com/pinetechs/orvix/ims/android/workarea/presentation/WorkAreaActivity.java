@@ -31,6 +31,7 @@ public class WorkAreaActivity extends AppCompatActivity {
 
     private Long taskId;
     private String taskNumber, taskName, companyName, inventoryDomain;
+    private boolean scanImageRequired;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +54,7 @@ public class WorkAreaActivity extends AppCompatActivity {
         taskName = getIntent().getStringExtra("task_name");
         companyName = getIntent().getStringExtra("company_name");
         inventoryDomain = getIntent().getStringExtra("inventory_domain");
+        scanImageRequired = getIntent().getBooleanExtra("scan_image_required", false);
     }
 
     private void initViews() {
@@ -149,6 +151,7 @@ public class WorkAreaActivity extends AppCompatActivity {
         intent.putExtra("task_number", taskNumber);
         intent.putExtra("location_code", workArea.getCode());
         intent.putExtra("location_name", workArea.getName());
+        intent.putExtra("scan_image_required", scanImageRequired);
         startActivity(intent);
     }
 }

@@ -16,7 +16,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.pinetechs.orvix.ims.android.R;
 import com.pinetechs.orvix.ims.android.auth.presentation.LoginActivity;
-import com.pinetechs.orvix.ims.android.core.hardware.ScannerSettingsActivity;
+import com.pinetechs.orvix.ims.android.core.hardware.presentation.ScannerSettingsActivity;
 import com.pinetechs.orvix.ims.android.core.storage.SessionManager;
 import com.pinetechs.orvix.ims.android.core.util.Resource;
 import com.pinetechs.orvix.ims.android.workarea.presentation.WorkAreaActivity;
@@ -148,6 +148,7 @@ public class TaskListActivity extends AppCompatActivity {
         intent.putExtra("task_name", task.getTaskName());
         intent.putExtra("company_name", task.getCompanyName());
         intent.putExtra("inventory_domain", task.getInventoryDomain());
+        intent.putExtra("scan_image_required", task.isScanImageRequired());
         startActivity(intent);
     }
 

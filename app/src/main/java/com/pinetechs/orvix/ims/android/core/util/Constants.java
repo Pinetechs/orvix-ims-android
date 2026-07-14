@@ -32,9 +32,14 @@ public final class Constants {
     public static final String KEY_RELEASE_NOTES = "release_notes";
     public static final String KEY_LANGUAGE = "app_language";
 
+    public static final String EXTRA_SCANNER_PROFILE = "extra_scanner_profile";
+    public static final String EXTRA_SCANNER_SETTINGS_JSON = "extra_scanner_settings_json";
+
     // Scanner Settings
-    public static final String KEY_SCANNER_BEEP = "scanner_beep";
+    public static final String KEY_SCANNER_BEEP = "scanner_beep"; // Legacy boolean key
+    public static final String KEY_SCANNER_BEEP_MODE = "scanner_beep_mode";
     public static final String KEY_SCANNER_VIBRATE = "scanner_vibrate";
+    public static final String KEY_SCANNER_PROFILE_PREFIX = "scanner_profile_";
     public static final String KEY_UROVO_INTENT_ACTION = "urovo_intent_action";
     public static final String KEY_UROVO_DATA_TAG = "urovo_data_tag";
     public static final String KEY_UROVO_TYPE_TAG = "urovo_type_tag";

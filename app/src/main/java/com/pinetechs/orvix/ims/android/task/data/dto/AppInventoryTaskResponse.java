@@ -17,6 +17,7 @@ public class AppInventoryTaskResponse {
     private int processedRecords;
     private double progress;
     private String assignedAt;
+    private boolean scanImageRequired;
 
     public Long getId() {
         return id;
@@ -136,5 +137,13 @@ public class AppInventoryTaskResponse {
 
     public void setAssignedAt(String assignedAt) {
         this.assignedAt = assignedAt;
+    }
+
+    public boolean isScanImageRequired() {
+        return scanImageRequired;
+    }
+
+    public void setScanImageRequired(boolean scanImageRequired) {
+        this.scanImageRequired = scanImageRequired;
     }
 }

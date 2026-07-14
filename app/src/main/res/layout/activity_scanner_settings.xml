@@ -7,7 +7,6 @@
     android:background="@color/orvix_bg_light"
     android:orientation="vertical">
 
-    <!-- Header -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -29,48 +28,64 @@
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Back"
                 android:padding="4dp"
                 android:src="@drawable/ic_back_24"
                 app:tint="@color/white" />
 
-            <TextView
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
                 android:layout_weight="1"
-                android:text="Scanner Settings"
-                android:textColor="@color/white"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Scanner Settings"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Standard hardware configuration and domain profiles"
+                    android:textColor="#DCE7FF"
+                    android:textSize="12sp" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="20dp">
+            android:padding="20dp"
+            android:paddingBottom="32dp">
 
-            <!-- General Settings -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="General"
+                android:letterSpacing="0.1"
+                android:text="STANDARD SETTINGS"
                 android:textColor="@color/orvix_text_sub"
                 android:textSize="12sp"
-                android:textStyle="bold"
-                android:letterSpacing="0.1" />
+                android:textStyle="bold" />
 
             <com.google.android.material.card.MaterialCardView
                 style="@style/OrvixCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                app:cardElevation="2dp">
+                android:layout_marginTop="8dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -78,94 +93,260 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
-                    <com.google.android.material.switchmaterial.SwitchMaterial
-                        android:id="@+id/beepSwitch"
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Success beep type"
+                        android:textColor="@color/orvix_text_main"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <Spinner
+                        android:id="@+id/beepModeSpinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:layout_marginTop="8dp"
+                        android:background="@drawable/bg_input_soft"
+                        android:paddingHorizontal="12dp"
+                        android:spinnerMode="dropdown" />
+
+                    <TextView
+                        android:id="@+id/beepModeDescriptionTextView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Sound Beep on Success"
+                        android:layout_marginTop="6dp"
+                        android:textColor="@color/orvix_text_sub"
+                        android:textSize="12sp" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginVertical="12dp"
+                        android:background="@color/orvix_border" />
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/vibrationSwitch"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Success vibration"
                         android:textColor="@color/orvix_black"
                         android:textSize="16sp" />
 
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="The confirmation sound and vibration use the scanner service feedback settings. Intent output, HOST trigger mode, unlocked scan keys, and disabled keyboard wedge are applied automatically."
+                        android:textColor="@color/orvix_text_sub"
+                        android:textSize="12sp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Urovo Hardware Specific -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:text="Urovo Hardware Configuration"
+                android:letterSpacing="0.1"
+                android:text="DOMAIN PROFILE"
                 android:textColor="@color/orvix_text_sub"
                 android:textSize="12sp"
-                android:textStyle="bold"
-                android:letterSpacing="0.1" />
+                android:textStyle="bold" />
 
             <com.google.android.material.card.MaterialCardView
                 style="@style/OrvixCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                app:cardElevation="2dp">
+                android:layout_marginTop="8dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="20dp">
+                    android:padding="18dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Inventory domain"
+                        android:textColor="@color/orvix_text_main"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <Spinner
+                        android:id="@+id/profileSpinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:layout_marginTop="8dp"
+                        android:background="@drawable/bg_input_soft"
+                        android:paddingHorizontal="12dp"
+                        android:spinnerMode="dropdown" />
+
+                    <TextView
+                        android:id="@+id/profileDescriptionTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:textColor="@color/orvix_text_sub"
+                        android:textSize="12sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/OrvixInputLayout"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="8dp"
+                            android:hint="Min Length">
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/profileMinLengthEditText"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="number"
+                                android:textSize="14sp" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/OrvixInputLayout"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:hint="Max Length">
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/profileMaxLengthEditText"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="number"
+                                android:textSize="14sp" />
+                        </com.google.android.material.textfield.TextInputLayout>
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:text="Barcode symbologies"
+                        android:textColor="@color/orvix_text_main"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/enabledSymbologiesSummary"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:lineSpacingExtra="2dp"
+                        android:textColor="@color/orvix_text_sub"
+                        android:textSize="13sp"
+                        tools:text="CODE128, QRCODE, DATAMATRIX" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/manageSymbologiesButton"
+                        style="@style/OrvixButton.Secondary"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="Manage Enabled Barcodes"
+                        app:icon="@drawable/ic_barcode_24"
+                        app:iconGravity="textStart" />
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/showCapturedImageSwitch"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="18dp"
+                        android:text="Show captured barcode image"
+                        android:textColor="@color/orvix_black" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Requests and displays the scanner image after a successful read for this domain. Task-required images are still captured and uploaded even when this display option is disabled."
+                        android:textColor="@color/orvix_text_sub"
+                        android:textSize="11sp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <TextView
+                android:id="@+id/urovoAdvancedTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:letterSpacing="0.1"
+                android:text="ADVANCED UROVO INTENT"
+                android:textColor="@color/orvix_text_sub"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/urovoAdvancedCard"
+                style="@style/OrvixCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="18dp">
 
                     <com.google.android.material.textfield.TextInputLayout
                         style="@style/OrvixInputLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Intent Action Name">
+                        android:hint="Intent action name">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/actionEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:singleLine="true"
-                            android:textSize="14sp" />
+                            android:textSize="13sp" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
                         style="@style/OrvixInputLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:hint="Data String Tag">
+                        android:layout_marginTop="14dp"
+                        android:hint="Data string tag">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/tagEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:singleLine="true"
-                            android:textSize="14sp" />
+                            android:textSize="13sp" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
                         style="@style/OrvixInputLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:hint="Type String Tag">
+                        android:layout_marginTop="14dp"
+                        android:hint="Barcode type tag">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/typeTagEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:singleLine="true"
-                            android:textSize="14sp" />
+                            android:textSize="13sp" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
-                        android:text="* These values must match the Urovo system scan settings."
+                        android:layout_marginTop="10dp"
+                        android:text="The app writes these values to UROVO ScanManager during initialization. Change them only for firmware compatibility."
                         android:textColor="@color/orvix_text_sub"
-                        android:textSize="11sp"
-                        android:textStyle="italic" />
-
+                        android:textSize="11sp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -174,8 +355,8 @@
                 style="@style/OrvixButton"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:layout_marginTop="32dp"
-                android:text="Save Settings" />
+                android:layout_marginTop="28dp"
+                android:text="Save Scanner Settings" />
 
             <Button
                 android:id="@+id/resetButton"
@@ -183,9 +364,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Reset to Defaults"
+                android:text="Restore Standard Defaults"
+                android:textAllCaps="false"
                 android:textColor="@color/danger" />
-
         </LinearLayout>
     </ScrollView>
 </LinearLayout>
