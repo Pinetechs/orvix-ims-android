@@ -151,6 +151,7 @@ public class WorkAreaActivity extends AppCompatActivity {
         intent.putExtra("task_number", taskNumber);
         intent.putExtra("location_code", workArea.getCode());
         intent.putExtra("location_name", workArea.getName());
+        intent.putExtra("work_area_id", workArea.getId() == null ? -1L : workArea.getId().longValue());
         intent.putExtra("scan_image_required", scanImageRequired);
         startActivity(intent);
     }

@@ -10,6 +10,7 @@ import android.util.Log;
 
 import androidx.core.content.ContextCompat;
 
+import com.google.gson.Gson;
 import com.pinetechs.orvix.ims.android.core.hardware.ScannerInterface;
 import com.pinetechs.orvix.ims.android.core.hardware.model.BarcodeSymbology;
 import com.pinetechs.orvix.ims.android.core.hardware.model.ScannerProfile;
@@ -31,6 +32,7 @@ public class UrovoScannerManager implements ScannerInterface {
 
     private final Context applicationContext;
     private final SessionManager sessionManager;
+    private final Gson gson = new Gson();
 
     private ScanManager scanManager;
     private OnScanListener listener;
@@ -39,6 +41,7 @@ public class UrovoScannerManager implements ScannerInterface {
     private boolean scannerOpen;
     private boolean receiverRegistered;
     private boolean symbologyDetectionMode;
+    private String appliedConfigurationSignature;
     private Context activeDecodeContext;
 
     public UrovoScannerManager(Context context) {
@@ -81,6 +84,19 @@ public class UrovoScannerManager implements ScannerInterface {
     }
 
     @Override
+    public boolean setTriggerEnabled(boolean enabled) {
+        if (scanManager == null || !scannerOpen) return false;
+        try {
+            if (enabled) scanManager.unlockTrigger();
+            else scanManager.lockTrigger();
+            return true;
+        } catch (RuntimeException exception) {
+            Log.e(TAG, "Could not change scanner trigger state", exception);
+            return false;
+        }
+    }
+
+    @Override
     public boolean init() {
         try {
             if (scanManager == null) {
@@ -97,9 +113,18 @@ public class UrovoScannerManager implements ScannerInterface {
                 return false;
             }
 
+            String configurationSignature = buildConfigurationSignature();
+            if (!symbologyDetectionMode
+                    && configurationSignature.equals(appliedConfigurationSignature)) {
+                return true;
+            }
+
             UrovoScannerConfigurator.applyStandardSettings(scanManager, sessionManager);
-            applyProfile(profile);
-            return true;
+            boolean profileApplied = applyProfile(profile);
+            if (profileApplied) {
+                appliedConfigurationSignature = configurationSignature;
+            }
+            return profileApplied;
         } catch (Exception exception) {
             Log.e(TAG, "Failed to initialize UROVO scanner", exception);
             scannerOpen = false;
@@ -161,6 +186,7 @@ public class UrovoScannerManager implements ScannerInterface {
             if (scanManager == null || !scannerOpen) return true;
             ScannerProfileSettings settings = sessionManager.getScannerProfileSettings(profile);
             UrovoScannerConfigurator.applyProfile(scanManager, profile, settings);
+            appliedConfigurationSignature = buildConfigurationSignature();
             Log.d(TAG, "Exited detection mode and restored profile: " + profile.name());
             return true;
         } catch (Exception exception) {
@@ -195,8 +221,8 @@ public class UrovoScannerManager implements ScannerInterface {
     public void register(Context activityContext) {
         if (activityContext == null) return;
 
-        // Reapply settings whenever the scan screen becomes active. This makes
-        // changes saved in ScannerSettingsActivity effective without restarting the app.
+        // init() applies settings only when the scanner opens or their persisted
+        // signature changes. Calling register() repeatedly is therefore inexpensive.
         if (!init()) return;
         if (receiverRegistered) return;
 
@@ -250,8 +276,20 @@ public class UrovoScannerManager implements ScannerInterface {
         } finally {
             symbologyDetectionMode = false;
             scannerOpen = false;
+            appliedConfigurationSignature = null;
             scanManager = null;
         }
+    }
+
+    private String buildConfigurationSignature() {
+        ScannerProfileSettings settings = sessionManager.getScannerProfileSettings(profile);
+        return profile.name()
+                + '|' + sessionManager.getScannerBeepMode().name()
+                + '|' + sessionManager.isScannerVibrationEnabled()
+                + '|' + sessionManager.getUrovoIntentAction()
+                + '|' + sessionManager.getUrovoDataTag()
+                + '|' + sessionManager.getUrovoTypeTag()
+                + '|' + gson.toJson(settings);
     }
 
     private final BroadcastReceiver scanReceiver = new BroadcastReceiver() {

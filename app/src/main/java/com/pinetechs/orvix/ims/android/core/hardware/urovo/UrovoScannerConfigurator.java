@@ -14,14 +14,19 @@ import com.pinetechs.orvix.ims.android.core.hardware.model.ScannerSymbologySetti
 import com.pinetechs.orvix.ims.android.core.storage.SessionManager;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /** Applies Orvix standard settings and vendor-neutral profiles to UROVO ScanManager. */
 final class UrovoScannerConfigurator {
 
     private static final String TAG = "UrovoScannerConfig";
     private static final int OUTPUT_MODE_INTENT = 0;
+    private static final Set<Integer> REJECTED_PROPERTY_IDS =
+            Collections.synchronizedSet(new HashSet<>());
 
     private UrovoScannerConfigurator() {
     }
@@ -128,6 +133,15 @@ final class UrovoScannerConfigurator {
 
         if (properties.isEmpty()) return;
 
+        // Some UROVO firmware versions reject one CODE39 property when all
+        // options are submitted as a batch, causing the entire batch to fail.
+        // Apply these options independently so supported values still take effect
+        // and remember rejected property IDs for the rest of this app process.
+        if (symbology == BarcodeSymbology.CODE39) {
+            applyPropertiesIndividually(scanManager, symbology, properties);
+            return;
+        }
+
         List<Integer> ids = new ArrayList<>();
         List<Integer> values = new ArrayList<>();
         for (UrovoSymbologyAdapter.PropertyValue property : properties) {
@@ -145,6 +159,52 @@ final class UrovoScannerConfigurator {
         int result = scanManager.setParameterInts(idArray, valueArray);
         Log.d(TAG, "Applied " + symbology.getStorageName()
                 + " options=" + properties.size() + ", result=" + result);
+    }
+
+    private static void applyPropertiesIndividually(
+            ScanManager scanManager,
+            BarcodeSymbology symbology,
+            List<UrovoSymbologyAdapter.PropertyValue> properties
+    ) {
+        int appliedCount = 0;
+        int rejectedCount = 0;
+
+        for (UrovoSymbologyAdapter.PropertyValue property : properties) {
+            if (REJECTED_PROPERTY_IDS.contains(property.getPropertyId())) {
+                rejectedCount++;
+                continue;
+            }
+
+            try {
+                int result = scanManager.setParameterInts(
+                        new int[]{property.getPropertyId()},
+                        new int[]{property.getValue()}
+                );
+                if (result == 0) {
+                    appliedCount++;
+                    continue;
+                }
+
+                rejectedCount++;
+                REJECTED_PROPERTY_IDS.add(property.getPropertyId());
+                Log.w(TAG, "Firmware rejected " + symbology.getStorageName()
+                        + " option=" + property.getOptionKey().name()
+                        + ", propertyId=" + property.getPropertyId()
+                        + ", value=" + property.getValue()
+                        + ", result=" + result);
+            } catch (RuntimeException exception) {
+                rejectedCount++;
+                REJECTED_PROPERTY_IDS.add(property.getPropertyId());
+                Log.w(TAG, "Firmware failed to apply " + symbology.getStorageName()
+                        + " option=" + property.getOptionKey().name()
+                        + ", propertyId=" + property.getPropertyId()
+                        + ", value=" + property.getValue(), exception);
+            }
+        }
+
+        Log.d(TAG, "Applied " + symbology.getStorageName()
+                + " options individually: applied=" + appliedCount
+                + ", rejectedOrSkipped=" + rejectedCount);
     }
 
     private static void applyIntParameter(

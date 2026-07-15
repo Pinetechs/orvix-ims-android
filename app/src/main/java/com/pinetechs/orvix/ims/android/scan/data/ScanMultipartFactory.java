@@ -2,6 +2,7 @@ package com.pinetechs.orvix.ims.android.scan.data;
 
 import com.google.gson.Gson;
 import com.pinetechs.orvix.ims.android.scan.data.dto.ScanRequest;
+import com.pinetechs.orvix.ims.android.scan.data.dto.ScanCorrectionRequest;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -17,6 +18,10 @@ public final class ScanMultipartFactory {
     }
 
     public static RequestBody requestBody(ScanRequest request) {
+        return RequestBody.create(JSON, GSON.toJson(request));
+    }
+
+    public static RequestBody requestBody(ScanCorrectionRequest request) {
         return RequestBody.create(JSON, GSON.toJson(request));
     }
 

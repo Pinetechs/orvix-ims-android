@@ -26,14 +26,11 @@ public class AuthInterceptor implements Interceptor {
         Request original = chain.request();
         String token = sessionManager.getAccessToken();
 
-        if (token == null || token.trim().isEmpty()) {
-            return chain.proceed(original);
-        }
-
-        Request authenticatedRequest = original.newBuilder()
-                .header("Authorization", "Bearer " + token)
-                .build();
-
-        return chain.proceed(authenticatedRequest);
+        Request request = token == null || token.trim().isEmpty()
+                ? original
+                : original.newBuilder().header("Authorization", "Bearer " + token).build();
+        Response response = chain.proceed(request);
+        if (response.code() == 401) sessionManager.clearLoginSession();
+        return response;
     }
 }

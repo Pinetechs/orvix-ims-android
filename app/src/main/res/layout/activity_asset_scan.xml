@@ -140,6 +140,34 @@
                         android:textSize="15sp"
                         android:textStyle="bold" />
 
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="Floor"
+                        android:textColor="@color/orvix_text_sub"
+                        android:textStyle="bold" />
+
+                    <Spinner
+                        android:id="@+id/floorSpinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:enabled="false" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Place"
+                        android:textColor="@color/orvix_text_sub"
+                        android:textStyle="bold" />
+
+                    <Spinner
+                        android:id="@+id/placeSpinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:enabled="false" />
+
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/barcodeInputLayout"
                         style="@style/OrvixInputLayout"
@@ -263,6 +291,25 @@
                             android:text="Waiting for scanner input..."
                             android:textColor="@color/orvix_text_sub"
                             android:textSize="13sp" />
+
+                        <Button
+                            android:id="@+id/correctScanButton"
+                            style="@style/OrvixButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:layout_marginTop="12dp"
+                            android:text="Correct this scan"
+                            android:textAllCaps="false"
+                            android:visibility="gone" />
+
+                        <Button
+                            android:id="@+id/retryScanButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:layout_marginTop="8dp"
+                            android:text="Retry upload"
+                            android:textAllCaps="false"
+                            android:visibility="gone" />
                     </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>

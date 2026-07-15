@@ -21,6 +21,7 @@ final class UnsupportedScannerManager implements ScannerInterface {
     @Override public void setOnScanListener(OnScanListener listener) { }
     @Override public void setOnScanImageListener(OnScanImageListener listener) { }
     @Override public boolean requestLastScanImage() { return false; }
+    @Override public boolean setTriggerEnabled(boolean enabled) { return false; }
 
     @Override
     public boolean applyProfile(ScannerProfile profile) {

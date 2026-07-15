@@ -1,6 +1,7 @@
 package com.pinetechs.orvix.ims.android.core.network;
 
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
 
 import com.pinetechs.orvix.ims.android.core.storage.SessionManager;
 import com.pinetechs.orvix.ims.android.core.util.Constants;
@@ -62,7 +63,10 @@ public final class ApiClient {
         }
 
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        loggingInterceptor.redactHeader("Authorization");
+        loggingInterceptor.setLevel(isDebuggable(context)
+                ? HttpLoggingInterceptor.Level.BASIC
+                : HttpLoggingInterceptor.Level.NONE);
 
         OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder()
                 .connectTimeout(30, TimeUnit.SECONDS)
@@ -108,5 +112,10 @@ public final class ApiClient {
         }
 
         return normalized;
+    }
+
+    private static boolean isDebuggable(Context context) {
+        return context != null
+                && (context.getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
     }
 }

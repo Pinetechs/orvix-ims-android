@@ -263,61 +263,25 @@
                             android:textColor="@color/orvix_text_sub"
                             android:textSize="13sp" />
 
-                        <View
+                        <Button
+                            android:id="@+id/correctScanButton"
+                            style="@style/OrvixButton"
                             android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:layout_marginVertical="12dp"
-                            android:background="@color/orvix_border" />
+                            android:layout_height="48dp"
+                            android:layout_marginTop="12dp"
+                            android:text="Correct this scan"
+                            android:textAllCaps="false"
+                            android:visibility="gone" />
 
-                        <LinearLayout
+                        <Button
+                            android:id="@+id/retryScanButton"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
+                            android:layout_height="48dp"
+                            android:layout_marginTop="8dp"
+                            android:text="Retry upload"
+                            android:textAllCaps="false"
+                            android:visibility="gone" />
 
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:orientation="vertical">
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Expected Yard"
-                                    android:textSize="10sp"
-                                    android:textColor="@color/orvix_text_muted"
-                                    android:textStyle="bold" />
-                                <TextView
-                                    android:id="@+id/expectedLocationTv"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:textColor="@color/orvix_black"
-                                    android:textSize="13sp"
-                                    android:textStyle="bold"
-                                    tools:text="YARD-01" />
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:orientation="vertical">
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Current Yard"
-                                    android:textSize="10sp"
-                                    android:textColor="@color/orvix_text_muted"
-                                    android:textStyle="bold" />
-                                <TextView
-                                    android:id="@+id/currentLocationTv"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:textColor="@color/orvix_black"
-                                    android:textSize="13sp"
-                                    android:textStyle="bold"
-                                    tools:text="YARD-01" />
-                            </LinearLayout>
-                        </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>

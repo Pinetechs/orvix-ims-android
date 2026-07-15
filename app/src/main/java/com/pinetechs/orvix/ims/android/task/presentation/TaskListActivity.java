@@ -142,6 +142,11 @@ public class TaskListActivity extends AppCompatActivity {
     }
 
     private void openLocationSelection(AppInventoryTaskResponse task) {
+        String status = task.getStatus() == null ? "" : task.getStatus().toUpperCase();
+        if (!"READY_TO_START".equals(status) && !"IN_PROGRESS".equals(status)) {
+            Toast.makeText(this, "This task is not open for scanning", Toast.LENGTH_LONG).show();
+            return;
+        }
         Intent intent = new Intent(this, WorkAreaActivity.class);
         intent.putExtra("task_id", task.getId());
         intent.putExtra("task_number", task.getTaskNumber());

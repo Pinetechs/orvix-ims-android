@@ -12,6 +12,11 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Spinner;
+import android.widget.ArrayAdapter;
+import android.widget.AdapterView;
+import android.widget.EditText;
+import androidx.appcompat.app.AlertDialog;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -25,6 +30,11 @@ import com.pinetechs.orvix.ims.android.core.storage.SessionManager;
 import com.pinetechs.orvix.ims.android.core.util.Resource;
 import com.pinetechs.orvix.ims.android.scan.data.dto.ScanResponse;
 import com.pinetechs.orvix.ims.android.scan.presentation.common.ScanImageCoordinator;
+import com.pinetechs.orvix.ims.android.workarea.data.dto.HierarchyOptionResponse;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 public class AssetScanActivity extends AppCompatActivity {
 
@@ -36,6 +46,10 @@ public class AssetScanActivity extends AppCompatActivity {
 
     private TextInputEditText barcodeEditText;
     private Button submitButton;
+    private Button correctButton;
+    private Button retryButton;
+    private Spinner floorSpinner;
+    private Spinner placeSpinner;
     private ProgressBar progressBar;
     private View capturedImageCard;
     private ImageView capturedBarcodeImageView;
@@ -45,12 +59,21 @@ public class AssetScanActivity extends AppCompatActivity {
     private TextView symbologyBadge;
 
     private Long taskId;
+    private Long locationId;
+    private HierarchyOptionResponse selectedFloor;
+    private HierarchyOptionResponse selectedPlace;
     private String taskNumber;
     private String locationCode;
     private String locationName;
     private boolean scanImageRequired;
     private boolean showCapturedImage;
     private boolean apiLoading;
+    private boolean hierarchyLoading;
+    private byte[] lastImage;
+    private String lastSymbology = "UNKNOWN";
+    private ScanResponse lastResponse;
+    private Long lastSubmittedFloorId;
+    private Long lastSubmittedPlaceId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +86,8 @@ public class AssetScanActivity extends AppCompatActivity {
 
         viewModel = new ViewModelProvider(this).get(AssetScanViewModel.class);
         observeScanState();
+        observeHierarchy();
+        if (taskId != null && locationId != null) viewModel.loadFloors(taskId, locationId);
         initScanner();
     }
 
@@ -70,6 +95,8 @@ public class AssetScanActivity extends AppCompatActivity {
         taskId = getIntent().getLongExtra("task_id", -1L);
         if (taskId == -1L) taskId = null;
         taskNumber = getIntent().getStringExtra("task_number");
+        long rawLocationId = getIntent().getLongExtra("work_area_id", -1L);
+        locationId = rawLocationId < 0 ? null : rawLocationId;
         locationCode = getIntent().getStringExtra("location_code");
         locationName = getIntent().getStringExtra("location_name");
         scanImageRequired = getIntent().getBooleanExtra("scan_image_required", false);
@@ -78,6 +105,10 @@ public class AssetScanActivity extends AppCompatActivity {
     private void initViews() {
         barcodeEditText = findViewById(R.id.barcodeEditText);
         submitButton = findViewById(R.id.submitScanButton);
+        correctButton = findViewById(R.id.correctScanButton);
+        retryButton = findViewById(R.id.retryScanButton);
+        floorSpinner = findViewById(R.id.floorSpinner);
+        placeSpinner = findViewById(R.id.placeSpinner);
         progressBar = findViewById(R.id.progressBar);
         capturedImageCard = findViewById(R.id.capturedImageCard);
         capturedBarcodeImageView = findViewById(R.id.capturedBarcodeImageView);
@@ -88,6 +119,27 @@ public class AssetScanActivity extends AppCompatActivity {
 
         findViewById(R.id.backButton).setOnClickListener(v -> finish());
         submitButton.setOnClickListener(v -> performManualScan());
+        correctButton.setOnClickListener(v -> requestCorrectionReason());
+        retryButton.setOnClickListener(v -> viewModel.retryLastScan());
+        floorSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Object item = parent.getItemAtPosition(position);
+                selectedFloor = item instanceof HierarchyOptionResponse ? (HierarchyOptionResponse) item : null;
+                selectedPlace = null;
+                bindOptions(placeSpinner, Collections.emptyList());
+                if (selectedFloor != null) viewModel.loadPlaces(taskId, selectedFloor.getId());
+                updateBusyState();
+            }
+            @Override public void onNothingSelected(AdapterView<?> parent) { selectedFloor = null; }
+        });
+        placeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Object item = parent.getItemAtPosition(position);
+                selectedPlace = item instanceof HierarchyOptionResponse ? (HierarchyOptionResponse) item : null;
+                updateBusyState();
+            }
+            @Override public void onNothingSelected(AdapterView<?> parent) { selectedPlace = null; }
+        });
 
         barcodeEditText.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_DONE
@@ -125,7 +177,7 @@ public class AssetScanActivity extends AppCompatActivity {
 
                     @Override
                     public void onScanReady(String barcode, String barcodeType, byte[] uploadImage) {
-                        runOnUiThread(() -> submitScan(barcode, uploadImage));
+                        runOnUiThread(() -> submitScan(barcode, barcodeType, uploadImage));
                     }
 
                     @Override
@@ -153,7 +205,6 @@ public class AssetScanActivity extends AppCompatActivity {
             updateBusyState();
         }));
 
-        scannerManager.init();
     }
 
     private void refreshImageCaptureSettings() {
@@ -189,17 +240,28 @@ public class AssetScanActivity extends AppCompatActivity {
             Toast.makeText(this, "Please enter or scan an asset tag", Toast.LENGTH_SHORT).show();
             return;
         }
-        submitScan(barcode, null);
+        submitScan(barcode, "MANUAL", null);
     }
 
-    private void submitScan(String barcode, byte[] scanImage) {
+    private void submitScan(String barcode, String symbology, byte[] scanImage) {
         if (apiLoading) return;
         String normalizedBarcode = barcode != null ? barcode.trim() : "";
         if (normalizedBarcode.isEmpty()) {
+            if (imageCoordinator != null) imageCoordinator.onSubmissionFinished();
             Toast.makeText(this, "Please enter or scan an asset tag", Toast.LENGTH_SHORT).show();
             return;
         }
-        viewModel.scanAsset(taskId, normalizedBarcode, locationCode, scanImage);
+        if (locationId == null || selectedFloor == null || selectedPlace == null) {
+            if (imageCoordinator != null) imageCoordinator.onSubmissionFinished();
+            Toast.makeText(this, "Select floor and place before scanning", Toast.LENGTH_LONG).show();
+            return;
+        }
+        lastImage = scanImage;
+        lastSymbology = symbology == null ? "UNKNOWN" : symbology;
+        lastSubmittedFloorId = selectedFloor.getId();
+        lastSubmittedPlaceId = selectedPlace.getId();
+        viewModel.scanAsset(taskId, normalizedBarcode, locationId, selectedFloor.getId(),
+                selectedPlace.getId(), lastSymbology, scanImage);
     }
 
     private String textOf(TextInputEditText editText) {
@@ -212,24 +274,30 @@ public class AssetScanActivity extends AppCompatActivity {
 
             if (state.getStatus() == Resource.Status.LOADING) {
                 apiLoading = true;
+                retryButton.setVisibility(View.GONE);
                 updateBusyState();
             } else if (state.getStatus() == Resource.Status.SUCCESS) {
                 apiLoading = false;
+                if (imageCoordinator != null) imageCoordinator.onSubmissionFinished();
                 updateBusyState();
                 displayResult(state.getData());
                 barcodeEditText.setText("");
                 barcodeEditText.requestFocus();
             } else if (state.getStatus() == Resource.Status.ERROR) {
                 apiLoading = false;
+                if (imageCoordinator != null) imageCoordinator.onSubmissionFinished();
                 updateBusyState();
                 displayError(state.getMessage());
+                retryButton.setVisibility(state.getMessage() != null && !state.getMessage().startsWith("[")
+                        ? View.VISIBLE : View.GONE);
                 barcodeEditText.requestFocus();
             }
         });
     }
 
     private boolean isBusy() {
-        return apiLoading || (imageCoordinator != null && imageCoordinator.isWaitingForImage());
+        return apiLoading || hierarchyLoading || selectedFloor == null || selectedPlace == null
+                || (imageCoordinator != null && imageCoordinator.isWaitingForImage());
     }
 
     private void updateBusyState() {
@@ -237,6 +305,9 @@ public class AssetScanActivity extends AppCompatActivity {
         progressBar.setVisibility(busy ? View.VISIBLE : View.GONE);
         submitButton.setEnabled(!busy);
         barcodeEditText.setEnabled(!busy);
+        floorSpinner.setEnabled(!apiLoading && !hierarchyLoading && floorSpinner.getCount() > 0);
+        placeSpinner.setEnabled(!apiLoading && !hierarchyLoading && selectedFloor != null
+                && placeSpinner.getCount() > 0);
     }
 
     private void displayCapturedImage(byte[] imageBytes) {
@@ -254,20 +325,17 @@ public class AssetScanActivity extends AppCompatActivity {
 
     private void displayResult(ScanResponse response) {
         if (response == null) return;
-
-        String status = response.getStatus() != null ? response.getStatus() : "SUCCESS";
-        resultStatusChip.setText(status.replace("_", " "));
-        applyStatusStyle(resultStatusChip, status);
-
-        if (response.getItem() != null) {
-            resultCodeTv.setText(response.getItem().getBarcode());
-            resultMessageTv.setText(response.getItem().getName() != null
-                    ? response.getItem().getName()
-                    : response.getMessage());
-        } else {
-            resultCodeTv.setText("Scan Successful");
-            resultMessageTv.setText(response.getMessage());
-        }
+        lastResponse = response;
+        String result = response.getResultCode() == null ? "RECORDED" : response.getResultCode();
+        resultStatusChip.setText(result.replace("_", " "));
+        applyStatusStyle(resultStatusChip, result);
+        resultCodeTv.setText(response.isIdempotentReplay() ? "Synchronized retry" : "Scan #" + response.getScanId());
+        String fields = response.getMismatchFields().isEmpty() ? "" : " (" + String.join(", ", response.getMismatchFields()) + ")";
+        resultMessageTv.setText(messageFor(response.getMessageKey(), result) + fields);
+        boolean canCorrectHere = response.isCorrectionAllowed()
+                && response.getCurrentAcceptedScanId() != null;
+        correctButton.setVisibility(canCorrectHere ? View.VISIBLE : View.GONE);
+        retryButton.setVisibility(View.GONE);
     }
 
     private void displayError(String message) {
@@ -276,6 +344,68 @@ public class AssetScanActivity extends AppCompatActivity {
         resultStatusChip.setTextColor(getResources().getColor(R.color.danger));
         resultCodeTv.setText("Failed");
         resultMessageTv.setText(message != null ? message : "Scan failed");
+        correctButton.setVisibility(View.GONE);
+    }
+
+    private void observeHierarchy() {
+        viewModel.getFloorsState().observe(this, state -> {
+            if (state == null) return;
+            hierarchyLoading = state.getStatus() == Resource.Status.LOADING;
+            if (state.getStatus() == Resource.Status.SUCCESS) bindOptions(floorSpinner, state.getData());
+            else if (state.getStatus() == Resource.Status.ERROR) displayError(state.getMessage());
+            updateBusyState();
+        });
+        viewModel.getPlacesState().observe(this, state -> {
+            if (state == null) return;
+            hierarchyLoading = state.getStatus() == Resource.Status.LOADING;
+            if (state.getStatus() == Resource.Status.SUCCESS) bindOptions(placeSpinner, state.getData());
+            else if (state.getStatus() == Resource.Status.ERROR) displayError(state.getMessage());
+            updateBusyState();
+        });
+    }
+
+    private void bindOptions(Spinner spinner, List<HierarchyOptionResponse> values) {
+        List<HierarchyOptionResponse> safe = values == null ? Collections.emptyList() : values;
+        ArrayAdapter<HierarchyOptionResponse> adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, safe);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setEnabled(!safe.isEmpty());
+    }
+
+    private String messageFor(String key, String fallback) {
+        if ("scan.matched".equals(key)) return "Asset matched the selected location.";
+        if ("scan.location_mismatch".equals(key)) return "Asset location does not match. Select the correct path and scan again.";
+        if ("scan.duplicate".equals(key)) return "This asset was already scanned in the same location.";
+        if ("scan.location_conflict".equals(key)) return "This asset has an accepted scan in another location.";
+        if ("scan.recorded_for_review".equals(key)) return "Asset is not in the task and was recorded for review.";
+        if ("scan.correction_recorded".equals(key)) return "The asset location correction was recorded.";
+        return fallback.replace('_', ' ');
+    }
+
+    private void requestCorrectionReason() {
+        if (lastResponse == null || lastResponse.getCurrentAcceptedScanId() == null
+                || selectedFloor == null || selectedPlace == null) return;
+        boolean correctingFirstAccepted = lastResponse.getCurrentAcceptedScanId().equals(lastResponse.getScanId());
+        boolean pathUnchanged = Objects.equals(selectedFloor.getId(), lastSubmittedFloorId)
+                && Objects.equals(selectedPlace.getId(), lastSubmittedPlaceId);
+        if (correctingFirstAccepted && pathUnchanged) {
+            Toast.makeText(this, "Select a different floor or place, or return and choose the correct work area", Toast.LENGTH_LONG).show();
+            return;
+        }
+        EditText input = new EditText(this);
+        input.setHint("Correction reason");
+        new AlertDialog.Builder(this).setTitle("Correct asset location").setView(input)
+                .setNegativeButton("Cancel", null)
+                .setPositiveButton("Submit", (dialog, which) -> {
+                    String reason = input.getText() == null ? "" : input.getText().toString().trim();
+                    if (reason.isEmpty()) { Toast.makeText(this, "Correction reason is required", Toast.LENGTH_LONG).show(); return; }
+                    if (scanImageRequired && (lastImage == null || lastImage.length == 0)) {
+                        Toast.makeText(this, "Scan the barcode again to capture the correction image", Toast.LENGTH_LONG).show(); return;
+                    }
+                    viewModel.correctAsset(taskId, lastResponse.getCurrentAcceptedScanId(), locationId,
+                            selectedFloor.getId(), selectedPlace.getId(), reason, lastSymbology, lastImage);
+                }).show();
     }
 
     private void applyStatusStyle(TextView chip, String status) {
@@ -283,7 +413,10 @@ public class AssetScanActivity extends AppCompatActivity {
         if (normalized.contains("MISMATCH") || normalized.contains("FAIL")) {
             chip.setBackgroundResource(R.drawable.bg_chip_danger);
             chip.setTextColor(getResources().getColor(R.color.danger));
-        } else if (normalized.contains("WARN") || normalized.contains("DUPLICATE")) {
+        } else if (normalized.contains("WARN") || normalized.contains("DUPLICATE")
+                || normalized.contains("CONFLICT") || normalized.contains("EXTRA")
+                || normalized.contains("NOT_IN_TASK") || normalized.contains("REVIEW")
+                || normalized.contains("ALREADY")) {
             chip.setBackgroundResource(R.drawable.bg_chip_warning);
             chip.setTextColor(getResources().getColor(R.color.warning));
         } else {

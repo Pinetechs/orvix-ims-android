@@ -11,6 +11,7 @@ public final class ScanImageUtils {
     private static final String TAG = "ScanImageUtils";
     private static final int MAX_DIMENSION = 1280;
     private static final int JPEG_QUALITY = 75;
+    private static final int MAX_UPLOAD_BYTES = 2 * 1024 * 1024;
 
     private ScanImageUtils() {
     }
@@ -40,11 +41,15 @@ public final class ScanImageUtils {
                 scaled = original;
             }
 
-            ByteArrayOutputStream output = new ByteArrayOutputStream();
-            if (!scaled.compress(Bitmap.CompressFormat.JPEG, JPEG_QUALITY, output)) {
-                return null;
-            }
-            return output.toByteArray();
+            int quality = JPEG_QUALITY;
+            byte[] encoded;
+            do {
+                ByteArrayOutputStream output = new ByteArrayOutputStream();
+                if (!scaled.compress(Bitmap.CompressFormat.JPEG, quality, output)) return null;
+                encoded = output.toByteArray();
+                quality -= 10;
+            } while (encoded.length > MAX_UPLOAD_BYTES && quality >= 35);
+            return encoded.length <= MAX_UPLOAD_BYTES ? encoded : null;
         } catch (Exception exception) {
             Log.e(TAG, "Failed to normalize scanner image", exception);
             return null;

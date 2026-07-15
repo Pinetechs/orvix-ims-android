@@ -173,8 +173,12 @@ public class SessionManager {
     public void clearLoginSession() {
         preferences.edit()
                 .remove(Constants.KEY_ACCESS_TOKEN)
+                .remove(Constants.KEY_USER_ID)
                 .remove(Constants.KEY_USERNAME)
+                .remove(Constants.KEY_FULL_NAME)
                 .remove(Constants.KEY_USER_TYPE)
+                .remove(Constants.KEY_PERMISSIONS)
+                .remove(Constants.KEY_COMPANY_NAMES)
                 .apply();
     }
 

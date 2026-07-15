@@ -36,6 +36,9 @@ public interface ScannerInterface {
     /** Requests the still image associated with the most recent successful decode. */
     boolean requestLastScanImage();
 
+    /** Prevents another physical trigger from replacing the frame of the active scan. */
+    boolean setTriggerEnabled(boolean enabled);
+
     /** Selects and applies the logical scanner profile. */
     boolean applyProfile(ScannerProfile profile);
 

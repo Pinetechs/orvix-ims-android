@@ -8,6 +8,9 @@ import androidx.lifecycle.MutableLiveData;
 import com.pinetechs.orvix.ims.android.core.util.Resource;
 import com.pinetechs.orvix.ims.android.workarea.data.WorkAreaRepository;
 import com.pinetechs.orvix.ims.android.workarea.data.dto.WorkAreaSliceResponse;
+import com.pinetechs.orvix.ims.android.workarea.data.dto.WorkAreaResponse;
+import java.util.ArrayList;
+import java.util.List;
 
 public class WorkAreaViewModel extends AndroidViewModel {
     private final WorkAreaRepository repository;
@@ -28,10 +31,22 @@ public class WorkAreaViewModel extends AndroidViewModel {
             return;
         }
         workAreasState.setValue(Resource.loading());
-        repository.getWorkAreas(taskId, 0, 100, new WorkAreaRepository.RepositoryCallback<WorkAreaSliceResponse>() {
+        loadPage(taskId, 0, new ArrayList<>());
+    }
+
+    private void loadPage(Long taskId, int page, List<WorkAreaResponse> collected) {
+        repository.getWorkAreas(taskId, page, 50, new WorkAreaRepository.RepositoryCallback<WorkAreaSliceResponse>() {
             @Override
             public void onSuccess(WorkAreaSliceResponse data) {
-                workAreasState.setValue(Resource.success(data));
+                if (data != null && data.getContent() != null) collected.addAll(data.getContent());
+                if (data != null && !data.isLast()) {
+                    loadPage(taskId, page + 1, collected);
+                    return;
+                }
+                WorkAreaSliceResponse merged = data == null ? new WorkAreaSliceResponse() : data;
+                merged.setContent(collected);
+                merged.setLast(true);
+                workAreasState.setValue(Resource.success(merged));
             }
             @Override
             public void onError(String message) {

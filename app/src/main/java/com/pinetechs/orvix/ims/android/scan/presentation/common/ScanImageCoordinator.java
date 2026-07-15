@@ -61,6 +61,8 @@ public final class ScanImageCoordinator {
             return false;
         }
 
+        scanner.setTriggerEnabled(false);
+
         if (!imageRequired && !showCapturedImage) {
             callback.onScanReady(barcode, barcodeType, null);
             return true;
@@ -84,6 +86,12 @@ public final class ScanImageCoordinator {
     public void cancelPending() {
         handler.removeCallbacks(timeoutRunnable);
         pendingScan = null;
+        scanner.setTriggerEnabled(true);
+    }
+
+    /** Called only after the server accepted the scan or the submission failed. */
+    public void onSubmissionFinished() {
+        scanner.setTriggerEnabled(true);
     }
 
     private void onImageCaptured(byte[] imageData) {
@@ -115,6 +123,7 @@ public final class ScanImageCoordinator {
                 callback.onCaptureFailed(
                         "The scanner returned an invalid image. Please scan again."
                 );
+                scanner.setTriggerEnabled(true);
                 return;
             }
         }
@@ -125,6 +134,7 @@ public final class ScanImageCoordinator {
     private void finishInvalidImage(PendingScan current) {
         if (imageRequired) {
             callback.onCaptureFailed("The scanner returned an empty image. Please scan again.");
+            scanner.setTriggerEnabled(true);
         } else {
             callback.onScanReady(current.barcode, current.barcodeType, null);
         }
@@ -140,6 +150,7 @@ public final class ScanImageCoordinator {
 
         if (imageRequired) {
             callback.onCaptureFailed(message);
+            scanner.setTriggerEnabled(true);
         } else {
             // Preview is optional; do not block the actual inventory scan.
             callback.onScanReady(current.barcode, current.barcodeType, null);
