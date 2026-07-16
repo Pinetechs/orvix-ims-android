@@ -17,11 +17,10 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.pinetechs.orvix.ims.android.R;
 import com.pinetechs.orvix.ims.android.core.util.Resource;
 import com.pinetechs.orvix.ims.android.workarea.data.dto.WorkAreaResponse;
+import com.pinetechs.orvix.ims.android.core.presentation.BaseActivity;
 import com.pinetechs.orvix.ims.android.scan.presentation.vehicle.VehicleScanActivity;
-import com.pinetechs.orvix.ims.android.scan.presentation.sparepart.SparePartScanActivity;
-import com.pinetechs.orvix.ims.android.scan.presentation.asset.AssetScanActivity;
 
-public class WorkAreaActivity extends AppCompatActivity {
+public class WorkAreaActivity extends BaseActivity {
 
     private WorkAreaViewModel viewModel;
     private WorkAreaAdapter adapter;
@@ -32,6 +31,7 @@ public class WorkAreaActivity extends AppCompatActivity {
     private Long taskId;
     private String taskNumber, taskName, companyName, inventoryDomain;
     private boolean scanImageRequired;
+    private String spareProgressMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +55,7 @@ public class WorkAreaActivity extends AppCompatActivity {
         companyName = getIntent().getStringExtra("company_name");
         inventoryDomain = getIntent().getStringExtra("inventory_domain");
         scanImageRequired = getIntent().getBooleanExtra("scan_image_required", false);
+        spareProgressMode = getIntent().getStringExtra("spare_progress_mode");
     }
 
     private void initViews() {
@@ -78,8 +79,8 @@ public class WorkAreaActivity extends AppCompatActivity {
         TextView domainChip = findViewById(R.id.domainChipTextView);
         ImageView taskIcon = findViewById(R.id.taskIconView);
 
-        titleTv.setText(taskNumber != null ? taskNumber : "Task Details");
-        taskNameTv.setText(taskName != null ? taskName : "Inventory Session");
+        titleTv.setText(taskNumber != null ? taskNumber : getString(R.string.task_details));
+        taskNameTv.setText(taskName != null ? taskName : getString(R.string.inventory_session));
         companyTv.setText(companyName != null ? companyName : "Orvix IMS");
         
         if (inventoryDomain != null) {
@@ -123,9 +124,9 @@ public class WorkAreaActivity extends AppCompatActivity {
             } else if (state.getStatus() == Resource.Status.ERROR) {
                 progressBar.setVisibility(View.GONE);
                 swipeRefreshLayout.setRefreshing(false);
-                Toast.makeText(this, state.getMessage(), Toast.LENGTH_LONG).show();
                 emptyTextView.setVisibility(View.VISIBLE);
-                emptyTextView.setText("Failed to load work areas");
+                emptyTextView.setText(R.string.err_failed_to_load_work_areas);
+                Toast.makeText(this, state.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -136,10 +137,14 @@ public class WorkAreaActivity extends AppCompatActivity {
 
         switch (domain) {
             case "SPARE_PART":
-                intent = new Intent(this, SparePartScanActivity.class);
+                intent = new Intent(this, HierarchyListActivity.class);
+                intent.putExtra("hierarchy_mode", HierarchyListActivity.MODE_SPARE_LOCATIONS);
+                intent.putExtra("parent_id", workArea.getId() == null ? -1L : workArea.getId().longValue());
                 break;
             case "ASSET":
-                intent = new Intent(this, AssetScanActivity.class);
+                intent = new Intent(this, HierarchyListActivity.class);
+                intent.putExtra("hierarchy_mode", HierarchyListActivity.MODE_ASSET_FLOORS);
+                intent.putExtra("parent_id", workArea.getId() == null ? -1L : workArea.getId().longValue());
                 break;
             case "VEHICLE":
             default:
@@ -153,6 +158,7 @@ public class WorkAreaActivity extends AppCompatActivity {
         intent.putExtra("location_name", workArea.getName());
         intent.putExtra("work_area_id", workArea.getId() == null ? -1L : workArea.getId().longValue());
         intent.putExtra("scan_image_required", scanImageRequired);
+        intent.putExtra("spare_progress_mode", spareProgressMode);
         startActivity(intent);
     }
 }

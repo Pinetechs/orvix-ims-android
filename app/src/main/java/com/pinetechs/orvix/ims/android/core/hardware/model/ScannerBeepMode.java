@@ -1,38 +1,39 @@
 package com.pinetechs.orvix.ims.android.core.hardware.model;
 
+import com.pinetechs.orvix.ims.android.R;
+
 /**
  * Native UROVO good-read beep setting for Intent/Broadcast output mode.
- *
- * <p>When Orvix uses Intent output, UROVO exposes the beep as an enabled/disabled
- * setting through PropertyID.SEND_GOOD_READ_BEEP_ENABLE. The Short/Sharp values
- * belong to the keyboard-wedge property and do not apply to Intent output.</p>
  */
 public enum ScannerBeepMode {
 
-    NONE(0, "None", "No sound after a successful barcode decode"),
-    NATIVE(1, "Native", "Use the UROVO scanner's standard confirmation beep");
+    NONE(0, R.string.none_label, R.string.none_desc),
+    NATIVE(1, R.string.native_label, R.string.native_desc);
 
     private final int urovoValue;
-    private final String displayName;
-    private final String description;
+    private final int displayNameRes;
+    private final int descriptionRes;
 
-    ScannerBeepMode(int urovoValue, String displayName, String description) {
+    ScannerBeepMode(int urovoValue, int displayNameRes, int descriptionRes) {
         this.urovoValue = urovoValue;
-        this.displayName = displayName;
-        this.description = description;
+        this.displayNameRes = displayNameRes;
+        this.descriptionRes = descriptionRes;
     }
 
     public int getUrovoValue() {
         return urovoValue;
     }
 
-    public String getDisplayName() {
-        return displayName;
+    public String getDisplayName(android.content.Context context) {
+        return context.getString(displayNameRes);
     }
 
-    public String getDescription() {
-        return description;
+    public String getDescription(android.content.Context context) {
+        return context.getString(descriptionRes);
     }
+    
+    // Legacy support
+    public String getDisplayName() { return name(); }
 
     public static ScannerBeepMode fromName(String value) {
         if (value == null || value.trim().isEmpty()) {

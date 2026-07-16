@@ -43,7 +43,7 @@
                 android:textColor="@color/white"
                 android:textSize="19sp"
                 android:textStyle="bold"
-                tools:text="Scan Vehicles" />
+                android:text="@string/scan_vehicles" />
 
             <TextView
                 android:id="@+id/domainChipTextView"
@@ -52,7 +52,7 @@
                 android:background="@drawable/bg_logout_button"
                 android:paddingHorizontal="10dp"
                 android:paddingVertical="4dp"
-                android:text="VEHICLE"
+                android:text="@string/vehicle_label"
                 android:textColor="@color/white"
                 android:textSize="10sp"
                 android:textStyle="bold" />
@@ -134,7 +134,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Vehicle Identification Number"
+                        android:text="@string/vin_label"
                         android:textColor="@color/orvix_black"
                         android:textSize="15sp"
                         android:textStyle="bold" />
@@ -145,7 +145,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
-                        android:hint="Scan or enter VIN"
+                        android:hint="@string/vin_hint"
                         app:startIconDrawable="@drawable/ic_barcode_24">
 
                         <com.google.android.material.textfield.TextInputEditText
@@ -163,7 +163,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="56dp"
                         android:layout_marginTop="20dp"
-                        android:text="Verify &amp; Submit"
+                        android:text="@string/verify_submit"
                         android:textAllCaps="false" />
 
                     <ProgressBar
@@ -203,7 +203,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Last Result"
+                            android:text="@string/last_result"
                             android:textColor="@color/orvix_text_sub"
                             android:textSize="13sp"
                             android:textStyle="bold" />
@@ -215,7 +215,7 @@
                             android:background="@drawable/bg_chip_blue"
                             android:paddingHorizontal="10dp"
                             android:paddingVertical="4dp"
-                            android:text="READY"
+                            android:text="@string/ready_status"
                             android:textColor="@color/orvix_primary"
                             android:textSize="10sp"
                             android:textStyle="bold" />
@@ -259,7 +259,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
-                            android:text="Waiting for scanner input..."
+                            android:text="@string/waiting_input"
                             android:textColor="@color/orvix_text_sub"
                             android:textSize="13sp" />
 
@@ -269,7 +269,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="48dp"
                             android:layout_marginTop="12dp"
-                            android:text="Correct this scan"
+                            android:text="@string/correct_scan"
                             android:textAllCaps="false"
                             android:visibility="gone" />
 
@@ -278,7 +278,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="48dp"
                             android:layout_marginTop="8dp"
-                            android:text="Retry upload"
+                            android:text="@string/retry_upload"
                             android:textAllCaps="false"
                             android:visibility="gone" />
 

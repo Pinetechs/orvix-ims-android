@@ -44,7 +44,7 @@
                     android:id="@+id/titleTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Enabled Barcodes"
+                    android:text="@string/barcode_symbologies"
                     android:textColor="@color/white"
                     android:textSize="20sp"
                     android:textStyle="bold" />
@@ -64,7 +64,7 @@
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Apply"
+                android:text="@string/apply"
                 android:textColor="@color/white"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -108,7 +108,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Detect Symbology"
+                    android:text="@string/detect"
                     android:textColor="@color/orvix_black"
                     android:textSize="14sp"
                     android:textStyle="bold" />
@@ -118,7 +118,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:text="Scan a sample to identify and add its barcode type."
+                    android:text="@string/detect_subtitle"
                     android:textColor="@color/orvix_text_sub"
                     android:textSize="11sp" />
             </LinearLayout>
@@ -129,7 +129,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="44dp"
                 android:layout_marginStart="8dp"
-                android:text="Detect"
+                android:text="@string/detect"
                 android:textAllCaps="false" />
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>

@@ -24,18 +24,13 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.pinetechs.orvix.ims.android.R;
 import com.pinetechs.orvix.ims.android.bootstrap.presentation.SetupActivity;
 import com.pinetechs.orvix.ims.android.core.storage.SessionManager;
-import com.pinetechs.orvix.ims.android.core.util.LocaleHelper;
+import com.pinetechs.orvix.ims.android.core.presentation.BaseActivity;
 import com.pinetechs.orvix.ims.android.core.util.Resource;
 import com.pinetechs.orvix.ims.android.task.presentation.TaskListActivity;
 
 import android.content.Context;
 
-public class LoginActivity extends AppCompatActivity {
-
-    @Override
-    protected void attachBaseContext(Context base) {
-        super.attachBaseContext(LocaleHelper.onAttach(base));
-    }
+public class LoginActivity extends BaseActivity {
 
     private LoginViewModel viewModel;
     private TextInputEditText usernameEditText;
@@ -134,10 +129,11 @@ public class LoginActivity extends AppCompatActivity {
         secretClickCount++;
         if (secretClickCount >= SECRET_CLICK_THRESHOLD) {
             secretClickCount = 0;
+            Toast.makeText(this, R.string.msg_client_reset, Toast.LENGTH_LONG).show();
             changeClient();
         } else if (secretClickCount > 5) {
             // Optional: Show a subtle hint after 5 clicks so the developer knows it's working
-            Toast.makeText(this, (SECRET_CLICK_THRESHOLD - secretClickCount) + " more clicks to reset", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.msg_more_clicks_reset, (SECRET_CLICK_THRESHOLD - secretClickCount)), Toast.LENGTH_SHORT).show();
         }
     }
 

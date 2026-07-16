@@ -14,18 +14,13 @@ import com.pinetechs.orvix.ims.android.bootstrap.data.BootstrapRepository;
 import com.pinetechs.orvix.ims.android.bootstrap.data.dto.BootstrapResolveResponse;
 import com.pinetechs.orvix.ims.android.bootstrap.presentation.SetupActivity;
 import com.pinetechs.orvix.ims.android.bootstrap.presentation.UpdateRequiredActivity;
+import com.pinetechs.orvix.ims.android.core.presentation.BaseActivity;
 import com.pinetechs.orvix.ims.android.core.storage.SessionManager;
-import com.pinetechs.orvix.ims.android.core.util.LocaleHelper;
 import com.pinetechs.orvix.ims.android.core.util.VersionUtils;
 import com.pinetechs.orvix.ims.android.task.presentation.TaskListActivity;
 
 // Refactored Splash Logic
-public class SplashActivity extends AppCompatActivity {
-
-    @Override
-    protected void attachBaseContext(Context base) {
-        super.attachBaseContext(LocaleHelper.onAttach(base));
-    }
+public class SplashActivity extends BaseActivity {
 
     private SessionManager sessionManager;
     private BootstrapRepository repository;

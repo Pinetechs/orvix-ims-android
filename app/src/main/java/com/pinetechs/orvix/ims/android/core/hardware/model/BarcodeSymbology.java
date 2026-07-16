@@ -73,6 +73,12 @@ public enum BarcodeSymbology {
         return displayName;
     }
 
+    public String getDisplayName(android.content.Context context) {
+        // We could map these to string resources if needed, but symbology names 
+        // like "QR Code" are generally universal.
+        return displayName;
+    }
+
     public String getCategory() {
         return category;
     }

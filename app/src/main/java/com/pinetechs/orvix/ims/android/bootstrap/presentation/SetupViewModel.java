@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.pinetechs.orvix.ims.android.R;
 import com.pinetechs.orvix.ims.android.bootstrap.data.BootstrapRepository;
 import com.pinetechs.orvix.ims.android.bootstrap.data.dto.BootstrapResolveResponse;
 import com.pinetechs.orvix.ims.android.core.network.ApiClient;
@@ -31,7 +32,7 @@ public class SetupViewModel extends AndroidViewModel {
 
     public void connectByClientCode(String clientCode) {
         if (clientCode == null || clientCode.trim().isEmpty()) {
-            setupState.setValue(Resource.error("Client code is required"));
+            setupState.setValue(Resource.error(getApplication().getString(R.string.err_client_code_required)));
             return;
         }
 

@@ -85,7 +85,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="54dp"
                     android:layout_marginTop="20dp"
-                    android:text="Download update" />
+                    android:text="@string/download_update" />
 
                 <Button
                     android:id="@+id/resetSetupButton"
@@ -93,7 +93,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="52dp"
                     android:layout_marginTop="12dp"
-                    android:text="Reset client setup" />
+                    android:text="@string/reset_client_setup" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
     </LinearLayout>

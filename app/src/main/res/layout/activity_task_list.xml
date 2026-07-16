@@ -43,7 +43,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:text="Inventory Control Center"
+                    android:text="@string/inventory_control_center"
                     android:textColor="#DDEBFF"
                     android:textSize="12sp"
                     android:alpha="0.9" />
@@ -65,7 +65,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
-                android:text="Logout"
+                android:text="@string/logout"
                 android:textColor="@color/white"
                 android:textSize="12sp"
                 app:icon="@drawable/ic_lock_24"
@@ -100,7 +100,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Assigned"
+                    android:text="@string/assigned"
                     android:textColor="#DDEBFF"
                     android:textSize="11sp" />
             </LinearLayout>
@@ -125,7 +125,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Ready"
+                    android:text="@string/ready"
                     android:textColor="#DDEBFF"
                     android:textSize="11sp" />
             </LinearLayout>
@@ -150,7 +150,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Progress"
+                    android:text="@string/progress"
                     android:textColor="#DDEBFF"
                     android:textSize="11sp" />
             </LinearLayout>
@@ -178,7 +178,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="History"
+                    android:text="@string/history"
                     android:textColor="#DDEBFF"
                     android:textSize="11sp" />
             </LinearLayout>
@@ -211,7 +211,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="32dp"
                 android:gravity="center"
-                android:text="No active tasks assigned to you right now."
+                android:text="@string/no_tasks"
                 android:textColor="@color/orvix_text_sub"
                 android:textSize="15sp"
                 android:visibility="gone" />

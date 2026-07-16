@@ -15,9 +15,10 @@ import com.pinetechs.orvix.ims.android.R;
 import com.pinetechs.orvix.ims.android.auth.presentation.LoginActivity;
 import com.pinetechs.orvix.ims.android.core.storage.SessionManager;
 import com.pinetechs.orvix.ims.android.core.util.Resource;
+import com.pinetechs.orvix.ims.android.core.presentation.BaseActivity;
 import com.pinetechs.orvix.ims.android.core.util.VersionUtils;
 
-public class SetupActivity extends AppCompatActivity {
+public class SetupActivity extends BaseActivity {
 
     private SetupViewModel viewModel;
     private TextInputEditText clientCodeEditText;

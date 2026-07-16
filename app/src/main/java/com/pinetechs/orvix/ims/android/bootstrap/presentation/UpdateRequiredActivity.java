@@ -11,9 +11,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.pinetechs.orvix.ims.android.R;
 import com.pinetechs.orvix.ims.android.core.storage.SessionManager;
+import com.pinetechs.orvix.ims.android.core.presentation.BaseActivity;
 import com.pinetechs.orvix.ims.android.core.util.VersionUtils;
 
-public class UpdateRequiredActivity extends AppCompatActivity {
+public class UpdateRequiredActivity extends BaseActivity {
 
     private SessionManager sessionManager;
 
@@ -33,15 +34,15 @@ public class UpdateRequiredActivity extends AppCompatActivity {
         String clientName = sessionManager.getClientName();
         int currentVersion = VersionUtils.getCurrentVersionCode(this);
 
-        titleTextView.setText("Update Required");
-        messageTextView.setText("This version of Orvix IMS is no longer supported"
-                + (clientName != null ? " for " + clientName : "")
-                + ".\nCurrent version code: " + currentVersion
-                + "\nMinimum required version code: " + sessionManager.getMinSupportedAndroidVersionCode());
+        titleTextView.setText(R.string.update_required_title);
+        messageTextView.setText(getString(R.string.update_required_msg)
+                + (clientName != null ? " (" + clientName + ")" : "")
+                + ".\n" + getString(R.string.current_version, currentVersion)
+                + "\n" + getString(R.string.min_required_version, sessionManager.getMinSupportedAndroidVersionCode()));
 
         String releaseNotes = sessionManager.getReleaseNotes();
         if (releaseNotes == null || releaseNotes.trim().isEmpty()) {
-            releaseNotesTextView.setText("Please download and install the latest APK to continue.");
+            releaseNotesTextView.setText(R.string.msg_download_apk);
         } else {
             releaseNotesTextView.setText(releaseNotes);
         }

@@ -4,6 +4,8 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
+import com.pinetechs.orvix.ims.android.OrvixApplication;
+import com.pinetechs.orvix.ims.android.R;
 import com.pinetechs.orvix.ims.android.core.network.ApiClient;
 import com.pinetechs.orvix.ims.android.core.network.ApiErrorUtils;
 import com.pinetechs.orvix.ims.android.scan.data.dto.ScanCorrectionRequest;
@@ -46,7 +48,7 @@ public class ScanRepository {
 
             @Override
             public void onFailure(@NonNull Call<ScanResponse> call, @NonNull Throwable error) {
-                callback.onError(0, error.getMessage() == null ? "Connection failed" : error.getMessage());
+                callback.onError(0, error.getMessage() == null ? OrvixApplication.getInstance().getString(R.string.err_connection_failed) : error.getMessage());
             }
         });
     }

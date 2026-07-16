@@ -1,6 +1,8 @@
 package com.pinetechs.orvix.ims.android.core.network;
 
 import com.google.gson.Gson;
+import com.pinetechs.orvix.ims.android.OrvixApplication;
+import com.pinetechs.orvix.ims.android.R;
 import com.pinetechs.orvix.ims.android.core.dto.ErrorResponse;
 
 import java.io.IOException;
@@ -14,7 +16,7 @@ public final class ApiErrorUtils {
 
     public static String getErrorMessage(Response<?> response) {
         if (response == null) {
-            return "Unexpected network error";
+            return OrvixApplication.getInstance().getString(R.string.err_unexpected);
         }
 
         try {
@@ -41,6 +43,6 @@ public final class ApiErrorUtils {
         } catch (IOException ignored) {
         }
 
-        return "Request failed. Code: " + response.code();
+        return OrvixApplication.getInstance().getString(R.string.err_request_failed, response.code());
     }
 }

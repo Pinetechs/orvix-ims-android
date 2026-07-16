@@ -43,7 +43,7 @@
                 android:textColor="@color/white"
                 android:textSize="19sp"
                 android:textStyle="bold"
-                tools:text="Scan Spare Parts" />
+                android:text="@string/scan_spare_parts" />
 
             <TextView
                 android:id="@+id/domainChipTextView"
@@ -52,7 +52,7 @@
                 android:background="@drawable/bg_logout_button"
                 android:paddingHorizontal="10dp"
                 android:paddingVertical="4dp"
-                android:text="SPARE PART"
+                android:text="@string/spare_part_label"
                 android:textColor="@color/white"
                 android:textSize="10sp"
                 android:textStyle="bold" />
@@ -135,7 +135,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Part Barcode / Article Number"
+                        android:text="@string/barcode_label"
                         android:textColor="@color/orvix_black"
                         android:textSize="15sp"
                         android:textStyle="bold" />
@@ -144,15 +144,21 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
-                        android:text="Inventory location"
+                        android:text="@string/selected_location"
                         android:textColor="@color/orvix_text_sub"
                         android:textStyle="bold" />
 
-                    <Spinner
-                        android:id="@+id/locationSpinner"
+                    <TextView
+                        android:id="@+id/selectedLocationTextView"
                         android:layout_width="match_parent"
-                        android:layout_height="52dp"
-                        android:enabled="false" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:background="@drawable/bg_info_banner"
+                        android:padding="14dp"
+                        android:textColor="@color/orvix_primary_dark"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        tools:text="Warehouse Shelf A-01" />
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/barcodeInputLayout"
@@ -160,7 +166,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
-                        android:hint="Scan or enter Barcode"
+                        android:hint="@string/barcode_hint"
                         app:startIconDrawable="@drawable/ic_barcode_24">
 
                         <com.google.android.material.textfield.TextInputEditText
@@ -172,28 +178,13 @@
                             android:textColor="@color/orvix_black" />
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/OrvixInputLayout"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
-                        android:hint="Counted quantity">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/quantityEditText"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="numberDecimal"
-                            android:singleLine="true" />
-                    </com.google.android.material.textfield.TextInputLayout>
-
                     <Button
                         android:id="@+id/submitScanButton"
                         style="@style/OrvixButton"
                         android:layout_width="match_parent"
                         android:layout_height="56dp"
                         android:layout_marginTop="20dp"
-                        android:text="Verify Part"
+                        android:text="@string/scan_part"
                         android:textAllCaps="false" />
 
                     <ProgressBar
@@ -233,7 +224,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Scan Result"
+                            android:text="@string/scan_result"
                             android:textColor="@color/orvix_text_sub"
                             android:textSize="13sp"
                             android:textStyle="bold" />
@@ -245,7 +236,7 @@
                             android:background="@drawable/bg_chip_blue"
                             android:paddingHorizontal="10dp"
                             android:paddingVertical="4dp"
-                            android:text="READY"
+                            android:text="@string/ready_status"
                             android:textColor="@color/orvix_primary"
                             android:textSize="10sp"
                             android:textStyle="bold" />
@@ -289,7 +280,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
-                            android:text="Waiting for scanner input..."
+                            android:text="@string/waiting_input"
                             android:textColor="@color/orvix_text_sub"
                             android:textSize="13sp" />
 
@@ -299,7 +290,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="48dp"
                             android:layout_marginTop="12dp"
-                            android:text="Correct this count"
+                            android:text="@string/correct_count"
                             android:textAllCaps="false"
                             android:visibility="gone" />
 
@@ -308,7 +299,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="48dp"
                             android:layout_marginTop="8dp"
-                            android:text="Retry upload"
+                            android:text="@string/retry_upload"
                             android:textAllCaps="false"
                             android:visibility="gone" />
                     </LinearLayout>

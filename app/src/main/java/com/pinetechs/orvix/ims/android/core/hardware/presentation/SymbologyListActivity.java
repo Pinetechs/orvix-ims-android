@@ -13,7 +13,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
+import com.pinetechs.orvix.ims.android.core.presentation.BaseActivity;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.Chip;
@@ -41,10 +41,11 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-public class SymbologyListActivity extends AppCompatActivity {
+public class SymbologyListActivity extends BaseActivity {
 
     private final Gson gson = new Gson();
     private ScannerProfile profile;
@@ -98,7 +99,7 @@ public class SymbologyListActivity extends AppCompatActivity {
         detectionStatusTextView = findViewById(R.id.detectionStatusTextView);
 
         TextView profileTv = findViewById(R.id.profileTextView);
-        profileTv.setText("Profile: " + profile.getDisplayName());
+        profileTv.setText(profile.getDisplayName(this));
 
         findViewById(R.id.backButton).setOnClickListener(v -> {
             stopDetectionSession();
@@ -117,7 +118,7 @@ public class SymbologyListActivity extends AppCompatActivity {
         String[] filters = {"ALL", "1D", "2D", "Retail", "GS1", "Postal"};
         for (String filter : filters) {
             Chip chip = new Chip(this);
-            chip.setText(filter);
+            chip.setText(getCategoryDisplayName(filter));
             chip.setCheckable(true);
             chip.setChecked(filter.equals(currentFilter));
             chip.setOnClickListener(v -> {
@@ -139,7 +140,7 @@ public class SymbologyListActivity extends AppCompatActivity {
 
         if (!scanner.init()) {
             scanner.close();
-            showDetectionUnavailable("The hardware scanner could not be initialized.");
+            showDetectionUnavailable(getString(R.string.err_connection_failed));
             return;
         }
 
@@ -147,7 +148,7 @@ public class SymbologyListActivity extends AppCompatActivity {
         if (!scanner.enterSymbologyDetectionMode()) {
             scanner.unregister(this);
             scanner.close();
-            showDetectionUnavailable("This scanner provider does not support detection mode.");
+            showDetectionUnavailable("Hardware detection not supported");
             return;
         }
 
@@ -155,11 +156,8 @@ public class SymbologyListActivity extends AppCompatActivity {
         detectionActive = true;
 
         Set<BarcodeSymbology> supported = scanner.getSupportedSymbologies();
-        detectionStatusTextView.setText(
-                "Detection mode is active. Scan one sample barcode. "
-                        + supported.size() + " barcode types are supported by this device."
-        );
-        detectSymbologyButton.setText("Stop");
+        detectionStatusTextView.setText(getString(R.string.msg_ready_for_next));
+        detectSymbologyButton.setText(R.string.stop);
     }
 
     private void showDetectionUnavailable(String message) {
@@ -200,31 +198,28 @@ public class SymbologyListActivity extends AppCompatActivity {
         }
 
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this)
-                .setTitle("Detected " + detectedType.getDisplayName())
+                .setTitle(detectedType.getDisplayName())
                 .setMessage(message.toString())
-                .setNegativeButton("Close", (dialog, which) -> detectionResultVisible = false)
-                .setNeutralButton("Scan another", (dialog, which) -> {
+                .setNegativeButton(R.string.close_label, (dialog, which) -> detectionResultVisible = false)
+                .setNeutralButton(R.string.scan_another, (dialog, which) -> {
                     detectionResultVisible = false;
                     startDetectionSession();
                 });
 
         if (!alreadyEnabled) {
-            builder.setPositiveButton("Add to profile", (dialog, which) -> {
+            builder.setPositiveButton(R.string.add_to_profile, (dialog, which) -> {
                 detectedSettings.setEnabled(true);
                 detectionResultVisible = false;
                 renderSymbologyRows();
-                detectionStatusTextView.setText(
-                        detectedType.getDisplayName() + " was added to "
-                                + profile.getDisplayName() + " with default options."
-                );
+                detectionStatusTextView.setText(detectedType.getDisplayName());
                 Toast.makeText(
                         this,
-                        detectedType.getDisplayName() + " enabled",
+                        detectedType.getDisplayName(),
                         Toast.LENGTH_SHORT
                 ).show();
             });
         } else {
-            builder.setPositiveButton("Done", (dialog, which) -> detectionResultVisible = false);
+            builder.setPositiveButton(R.string.continue_label, (dialog, which) -> detectionResultVisible = false);
         }
 
         builder.setOnCancelListener(dialog -> detectionResultVisible = false);
@@ -237,10 +232,10 @@ public class SymbologyListActivity extends AppCompatActivity {
                 + value + "\n\nProvider type\n" + rawType;
 
         new MaterialAlertDialogBuilder(this)
-                .setTitle("Unknown barcode type")
+                .setTitle(R.string.unknown_barcode_type)
                 .setMessage(message)
-                .setNegativeButton("Close", (dialog, which) -> detectionResultVisible = false)
-                .setPositiveButton("Scan another", (dialog, which) -> {
+                .setNegativeButton(R.string.close_label, (dialog, which) -> detectionResultVisible = false)
+                .setPositiveButton(R.string.scan_another, (dialog, which) -> {
                     detectionResultVisible = false;
                     startDetectionSession();
                 })
@@ -280,7 +275,9 @@ public class SymbologyListActivity extends AppCompatActivity {
         }
 
         for (Map.Entry<String, List<ScannerSymbologyDefinition>> entry : groupedMap.entrySet()) {
-            symbologyContainer.addView(createSectionLabel(entry.getKey() + " SYMBOLOGIES"));
+            String category = entry.getKey();
+            String displayCategory = getCategoryDisplayName(category);
+            symbologyContainer.addView(createSectionLabel(getString(R.string.symbology_header_plain, displayCategory)));
             for (ScannerSymbologyDefinition definition : entry.getValue()) {
                 BarcodeSymbology symbology = definition.getSymbology();
                 ScannerSymbologySettings typeSettings =
@@ -412,17 +409,19 @@ public class SymbologyListActivity extends AppCompatActivity {
 
         String currentValue = typeSettings.getOption(option.getKey(), option.getDefaultValue());
         View inputView;
+        
+        String displayName = getOptionDisplayName(option);
 
         if (option.getType() == ScannerOptionType.BOOLEAN) {
             SwitchMaterial sw = new SwitchMaterial(this);
-            sw.setText(option.getDisplayName());
+            sw.setText(displayName);
             sw.setChecked(Boolean.parseBoolean(currentValue));
             sw.setTextColor(getResources().getColor(R.color.orvix_black));
             root.addView(sw);
             inputView = sw;
         } else if (option.getType() == ScannerOptionType.INTEGER) {
             TextInputLayout inputLayout = new TextInputLayout(this);
-            inputLayout.setHint(option.getDisplayName());
+            inputLayout.setHint(displayName);
             TextInputEditText editText = new TextInputEditText(inputLayout.getContext());
             editText.setInputType(InputType.TYPE_CLASS_NUMBER);
             editText.setText(currentValue);
@@ -431,7 +430,7 @@ public class SymbologyListActivity extends AppCompatActivity {
             inputView = editText;
         } else {
             TextView title = new TextView(this);
-            title.setText(option.getDisplayName());
+            title.setText(displayName);
             title.setTextSize(13);
             root.addView(title);
 
@@ -456,6 +455,18 @@ public class SymbologyListActivity extends AppCompatActivity {
             inputView = spinner;
         }
         return new OptionEditor(option, root, inputView);
+    }
+
+    private String getCategoryDisplayName(String category) {
+        String key = "category_" + category.toLowerCase(Locale.ROOT);
+        int resId = getResources().getIdentifier(key, "string", getPackageName());
+        return resId != 0 ? getString(resId) : category;
+    }
+
+    private String getOptionDisplayName(ScannerOptionDefinition option) {
+        String key = "opt_" + option.getKey().name().toLowerCase(Locale.ROOT);
+        int resId = getResources().getIdentifier(key, "string", getPackageName());
+        return resId != 0 ? getString(resId) : option.getDisplayName();
     }
 
     @SuppressWarnings("unchecked")
@@ -492,17 +503,15 @@ public class SymbologyListActivity extends AppCompatActivity {
             ScannerSymbologyDefinition definition,
             ScannerSymbologySettings typeSettings
     ) {
-        StringBuilder summary = new StringBuilder(definition.getSymbology().getCategory());
+        StringBuilder summary = new StringBuilder(getCategoryDisplayName(definition.getSymbology().getCategory()));
         if (ScannerSymbologyCatalog.isCoreDefault(definition.getSymbology())) {
-            summary.append(" • Standard default");
+            summary.append(" • ").append(getString(R.string.standard_default));
         }
         if (definition.findOption(ScannerOptionKey.MIN_LENGTH) != null) {
-            summary.append(" • Global length ")
-                    .append(settings.getMinScanLength())
-                    .append("–")
-                    .append(settings.getMaxScanLength());
+            summary.append(" • ").append(getString(R.string.opt_min_length)).append(" ")
+                    .append(settings.getMinScanLength()).append("–").append(settings.getMaxScanLength());
         }
-        if (!typeSettings.isEnabled()) summary.append(" • Disabled");
+        if (!typeSettings.isEnabled()) summary.append(" • ").append(getString(R.string.disabled_label));
         row.summary.setText(summary.toString());
     }
 

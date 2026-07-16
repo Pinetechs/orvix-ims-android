@@ -13,17 +13,11 @@ import com.pinetechs.orvix.ims.android.scan.data.ScanRequestFactory;
 import com.pinetechs.orvix.ims.android.scan.data.dto.ScanCorrectionRequest;
 import com.pinetechs.orvix.ims.android.scan.data.dto.ScanRequest;
 import com.pinetechs.orvix.ims.android.scan.data.dto.ScanResponse;
-import com.pinetechs.orvix.ims.android.workarea.data.WorkAreaRepository;
-import com.pinetechs.orvix.ims.android.workarea.data.dto.HierarchyOptionResponse;
-
 import java.math.BigDecimal;
-import java.util.List;
 
 public class SparePartScanViewModel extends AndroidViewModel {
     private final ScanRepository scanRepository;
-    private final WorkAreaRepository hierarchyRepository;
     private final MutableLiveData<Resource<ScanResponse>> scanState = new MutableLiveData<>(Resource.idle());
-    private final MutableLiveData<Resource<List<HierarchyOptionResponse>>> locationsState = new MutableLiveData<>(Resource.idle());
     private Long pendingTaskId;
     private ScanRequest pendingRequest;
     private byte[] pendingImage;
@@ -35,21 +29,9 @@ public class SparePartScanViewModel extends AndroidViewModel {
     public SparePartScanViewModel(@NonNull Application app) {
         super(app);
         scanRepository = new ScanRepository(app);
-        hierarchyRepository = new WorkAreaRepository(app);
     }
 
     public LiveData<Resource<ScanResponse>> getScanState() { return scanState; }
-    public LiveData<Resource<List<HierarchyOptionResponse>>> getLocationsState() { return locationsState; }
-
-    public void loadLocations(Long taskId, Long branchId) {
-        locationsState.setValue(Resource.loading());
-        hierarchyRepository.getSpareLocations(taskId, branchId,
-                new WorkAreaRepository.RepositoryCallback<List<HierarchyOptionResponse>>() {
-                    @Override public void onSuccess(List<HierarchyOptionResponse> data) { locationsState.setValue(Resource.success(data)); }
-                    @Override public void onError(String message) { locationsState.setValue(Resource.error(message)); }
-                });
-    }
-
     public void scanSparePart(Long taskId, String code, Long branchId, Long locationId,
                               BigDecimal quantity, String symbology, byte[] image) {
         if (taskId == null || branchId == null || locationId == null || quantity == null

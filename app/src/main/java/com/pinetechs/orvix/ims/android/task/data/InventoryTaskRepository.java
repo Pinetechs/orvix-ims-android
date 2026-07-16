@@ -4,6 +4,8 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
+import com.pinetechs.orvix.ims.android.OrvixApplication;
+import com.pinetechs.orvix.ims.android.R;
 import com.pinetechs.orvix.ims.android.core.network.ApiClient;
 import com.pinetechs.orvix.ims.android.core.network.ApiErrorUtils;
 import com.pinetechs.orvix.ims.android.task.data.dto.AppInventoryTaskSliceResponse;
@@ -34,7 +36,7 @@ public class InventoryTaskRepository {
 
             @Override
             public void onFailure(@NonNull Call<AppInventoryTaskSliceResponse> call, @NonNull Throwable t) {
-                callback.onError(t.getMessage() != null ? t.getMessage() : "Connection failed");
+                callback.onError(t.getMessage() != null ? t.getMessage() : OrvixApplication.getInstance().getString(R.string.err_connection_failed));
             }
         });
     }

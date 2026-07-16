@@ -7,10 +7,31 @@ The Android client now uses the unified app endpoints:
 - `GET tasks/{taskId}/work-areas/{locationId}/floors`
 - `GET tasks/{taskId}/floors/{floorId}/places`
 - `GET tasks/{taskId}/work-areas/{branchId}/locations`
+- `POST tasks/{taskId}/work-areas/{branchId}/locations/{locationId}/complete`
 
 Each physical submission owns an immutable UUID. A network retry reuses the same
 request object, UUID and image bytes. A correction always gets a new UUID and
 targets `currentAcceptedScanId`.
+
+## Scan user experience
+
+- Vehicle scans stay on the same scanner screen. Successful results use a
+  point-of-sale style overlay and close after 2.8 seconds. Mismatch, review,
+  duplicate and correction-capable results remain until the employee closes
+  them or starts the correction.
+- Spare-part tasks open a searchable location list before the scanner. The
+  backend `progressStatus` is the only source for grey, blue, green and orange
+  state badges. In `BASIC` mode only not-started and in-progress are shown. In
+  `DETAILED` mode the list also shows completed and review-required states, and
+  offers completion only when the API returns `canComplete=true`.
+- Spare-part input order is barcode, required sensor image (when configured),
+  counted quantity, then verify. Quantity is never silently defaulted into a
+  submitted request.
+- Asset tasks open searchable floor and place lists before scanning. The chosen
+  path is fixed on the scanner screen to prevent accidental location changes.
+- The result overlay and the persistent last-result card display the safe item
+  summary and actual scanned path returned by the backend. Expected stock,
+  variance and expected location remain hidden.
 
 ## Device verification
 

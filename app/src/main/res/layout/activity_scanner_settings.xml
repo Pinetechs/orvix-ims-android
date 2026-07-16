@@ -43,7 +43,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Scanner Settings"
+                    android:text="@string/scanner_settings"
                     android:textColor="@color/white"
                     android:textSize="20sp"
                     android:textStyle="bold" />
@@ -52,7 +52,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:text="Standard hardware configuration and domain profiles"
+                    android:text="@string/scanner_settings_subtitle"
                     android:textColor="#DCE7FF"
                     android:textSize="12sp" />
             </LinearLayout>
@@ -76,7 +76,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:letterSpacing="0.1"
-                android:text="STANDARD SETTINGS"
+                android:text="@string/standard_settings"
                 android:textColor="@color/orvix_text_sub"
                 android:textSize="12sp"
                 android:textStyle="bold" />
@@ -96,7 +96,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Success beep type"
+                        android:text="@string/beep_type"
                         android:textColor="@color/orvix_text_main"
                         android:textSize="14sp"
                         android:textStyle="bold" />
@@ -128,7 +128,7 @@
                         android:id="@+id/vibrationSwitch"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Success vibration"
+                        android:text="@string/vibration"
                         android:textColor="@color/orvix_black"
                         android:textSize="16sp" />
 
@@ -136,7 +136,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:text="The confirmation sound and vibration use the scanner service feedback settings. Intent output, HOST trigger mode, unlocked scan keys, and disabled keyboard wedge are applied automatically."
+                        android:text="@string/settings_feedback_desc"
                         android:textColor="@color/orvix_text_sub"
                         android:textSize="12sp" />
                 </LinearLayout>
@@ -147,7 +147,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:letterSpacing="0.1"
-                android:text="DOMAIN PROFILE"
+                android:text="@string/domain_profile"
                 android:textColor="@color/orvix_text_sub"
                 android:textSize="12sp"
                 android:textStyle="bold" />
@@ -167,7 +167,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Inventory domain"
+                        android:text="@string/inventory_domain"
                         android:textColor="@color/orvix_text_main"
                         android:textSize="14sp"
                         android:textStyle="bold" />
@@ -195,13 +195,13 @@
                         android:layout_marginTop="20dp"
                         android:orientation="horizontal">
 
-                        <com.google.android.material.textfield.TextInputLayout
+                            <com.google.android.material.textfield.TextInputLayout
                             style="@style/OrvixInputLayout"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:layout_marginEnd="8dp"
-                            android:hint="Min Length">
+                            android:hint="@string/min_length_hint">
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/profileMinLengthEditText"
                                 android:layout_width="match_parent"
@@ -215,7 +215,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:hint="Max Length">
+                            android:hint="@string/max_length_hint">
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/profileMaxLengthEditText"
                                 android:layout_width="match_parent"
@@ -229,7 +229,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
-                        android:text="Barcode symbologies"
+                        android:text="@string/barcode_symbologies"
                         android:textColor="@color/orvix_text_main"
                         android:textSize="14sp"
                         android:textStyle="bold" />
@@ -250,7 +250,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
-                        android:text="Manage Enabled Barcodes"
+                        android:text="@string/manage_barcodes"
                         app:icon="@drawable/ic_barcode_24"
                         app:iconGravity="textStart" />
 
@@ -259,14 +259,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="18dp"
-                        android:text="Show captured barcode image"
+                        android:text="@string/show_scanner_image"
                         android:textColor="@color/orvix_black" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="Requests and displays the scanner image after a successful read for this domain. Task-required images are still captured and uploaded even when this display option is disabled."
+                        android:text="@string/settings_image_desc"
                         android:textColor="@color/orvix_text_sub"
                         android:textSize="11sp" />
                 </LinearLayout>
@@ -278,7 +278,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:letterSpacing="0.1"
-                android:text="ADVANCED UROVO INTENT"
+                android:text="@string/advanced_urovo"
                 android:textColor="@color/orvix_text_sub"
                 android:textSize="12sp"
                 android:textStyle="bold" />
@@ -300,7 +300,7 @@
                         style="@style/OrvixInputLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Intent action name">
+                        android:hint="@string/intent_action_hint">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/actionEditText"
@@ -315,7 +315,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="14dp"
-                        android:hint="Data string tag">
+                        android:hint="@string/data_tag_hint">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/tagEditText"
@@ -330,7 +330,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="14dp"
-                        android:hint="Barcode type tag">
+                        android:hint="@string/type_tag_hint">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/typeTagEditText"
@@ -344,7 +344,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:text="The app writes these values to UROVO ScanManager during initialization. Change them only for firmware compatibility."
+                        android:text="@string/settings_urovo_desc"
                         android:textColor="@color/orvix_text_sub"
                         android:textSize="11sp" />
                 </LinearLayout>
@@ -356,7 +356,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:layout_marginTop="28dp"
-                android:text="Save Scanner Settings" />
+                android:text="@string/save_settings" />
 
             <Button
                 android:id="@+id/resetButton"
@@ -364,7 +364,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Restore Standard Defaults"
+                android:text="@string/restore_defaults"
                 android:textAllCaps="false"
                 android:textColor="@color/danger" />
         </LinearLayout>

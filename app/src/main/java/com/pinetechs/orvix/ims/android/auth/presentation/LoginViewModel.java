@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.pinetechs.orvix.ims.android.R;
 import com.pinetechs.orvix.ims.android.auth.data.AuthRepository;
 import com.pinetechs.orvix.ims.android.auth.data.dto.LoginResponse;
 import com.pinetechs.orvix.ims.android.core.storage.SessionManager;
@@ -30,12 +31,12 @@ public class LoginViewModel extends AndroidViewModel {
 
     public void login(String username, String password) {
         if (username == null || username.trim().isEmpty()) {
-            loginState.setValue(Resource.error("Username is required"));
+            loginState.setValue(Resource.error(getApplication().getString(R.string.err_username_required)));
             return;
         }
 
         if (password == null || password.trim().isEmpty()) {
-            loginState.setValue(Resource.error("Password is required"));
+            loginState.setValue(Resource.error(getApplication().getString(R.string.err_password_required)));
             return;
         }
 

@@ -18,6 +18,8 @@ public class ScanResponse {
     private boolean idempotentReplay;
     private String serverScannedAt;
     private List<String> mismatchFields = new ArrayList<>();
+    private ScanItemSummary item;
+    private ScanLocationSummary actualLocation;
 
     public Long getScanId() { return scanId; }
     public void setScanId(Long scanId) { this.scanId = scanId; }
@@ -49,4 +51,8 @@ public class ScanResponse {
     public void setMismatchFields(List<String> value) {
         mismatchFields = value == null ? new ArrayList<>() : new ArrayList<>(value);
     }
+    public ScanItemSummary getItem() { return item; }
+    public void setItem(ScanItemSummary item) { this.item = item; }
+    public ScanLocationSummary getActualLocation() { return actualLocation; }
+    public void setActualLocation(ScanLocationSummary actualLocation) { this.actualLocation = actualLocation; }
 }

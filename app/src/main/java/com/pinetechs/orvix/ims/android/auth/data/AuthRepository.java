@@ -4,6 +4,8 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
+import com.pinetechs.orvix.ims.android.OrvixApplication;
+import com.pinetechs.orvix.ims.android.R;
 import com.pinetechs.orvix.ims.android.auth.data.dto.LoginRequest;
 import com.pinetechs.orvix.ims.android.auth.data.dto.LoginResponse;
 import com.pinetechs.orvix.ims.android.core.network.ApiClient;
@@ -37,7 +39,7 @@ public class AuthRepository {
             @Override
             public void onFailure(@NonNull Call<LoginResponse> call, @NonNull Throwable t) {
 
-                callback.onError(t.getMessage() != null ? t.getMessage() : "Connection failed");
+                callback.onError(t.getMessage() != null ? t.getMessage() : OrvixApplication.getInstance().getString(R.string.err_connection_failed));
             }
         });
     }

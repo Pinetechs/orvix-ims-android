@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:letterSpacing="0.16"
-            android:text="ENTERPRISE INVENTORY"
+            android:text="@string/enterprise_inventory"
             android:textColor="@color/orvix_text_muted"
             android:textSize="11sp"
             android:textStyle="bold" />
@@ -71,7 +71,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="18dp"
-                    android:text="Connect to Your Client"
+                    android:text="@string/title_connect_client"
                     android:textColor="@color/orvix_black"
                     android:textSize="23sp"
                     android:textStyle="bold" />
@@ -81,7 +81,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:lineSpacingExtra="3dp"
-                    android:text="Enter the client code provided by your administrator to connect this scanner app to the correct Orvix IMS backend."
+                    android:text="@string/desc_connect_client"
                     android:textColor="@color/orvix_text_sub"
                     android:textSize="14sp" />
 
@@ -91,7 +91,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"
-                    android:hint="Client Code"
+                    android:hint="@string/client_code_hint"
                     app:startIconDrawable="@drawable/ic_business_24">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -110,7 +110,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:layout_marginTop="22dp"
-                    android:text="Connect"
+                    android:text="@string/connect_label"
                     android:textAllCaps="false" />
 
                 <ProgressBar
@@ -144,7 +144,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_weight="1"
-                android:text="Secure tenant bootstrap. One scanner app can serve multiple clients."
+                android:text="@string/footer_setup_info"
                 android:textColor="@color/orvix_text_main"
                 android:textSize="12sp" />
         </LinearLayout>
@@ -159,7 +159,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="28dp"
             android:alpha="0.72"
-            android:text="Powered by Pinetechs"
+            android:text="@string/powered_by"
             android:textColor="@color/orvix_text_sub"
             android:textSize="12sp" />
     </LinearLayout>

@@ -1,5 +1,6 @@
 package com.pinetechs.orvix.ims.android.scan.presentation.vehicle;
 
+import android.app.Dialog;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -28,8 +29,10 @@ import com.pinetechs.orvix.ims.android.core.storage.SessionManager;
 import com.pinetechs.orvix.ims.android.core.util.Resource;
 import com.pinetechs.orvix.ims.android.scan.data.dto.ScanResponse;
 import com.pinetechs.orvix.ims.android.scan.presentation.common.ScanImageCoordinator;
+import com.pinetechs.orvix.ims.android.core.presentation.BaseActivity;
+import com.pinetechs.orvix.ims.android.scan.presentation.common.ScanResultDialog;
 
-public class VehicleScanActivity extends AppCompatActivity {
+public class VehicleScanActivity extends BaseActivity {
 
     private static final String TAG = "VehicleScanActivity";
 
@@ -61,6 +64,10 @@ public class VehicleScanActivity extends AppCompatActivity {
     private byte[] lastImage;
     private String lastSymbology = "UNKNOWN";
     private ScanResponse lastResponse;
+    private boolean resultOverlayVisible;
+    private boolean correctionDialogVisible;
+    private Dialog resultDialog;
+    private Dialog correctionDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -196,7 +203,7 @@ public class VehicleScanActivity extends AppCompatActivity {
         if (scanImageRequired) {
             Toast.makeText(
                     this,
-                    "This task requires a scanner image. Use the physical scan button.",
+                    R.string.err_image_required_hardware,
                     Toast.LENGTH_LONG
             ).show();
             return;
@@ -204,7 +211,7 @@ public class VehicleScanActivity extends AppCompatActivity {
 
         String vin = textOf(vinEditText);
         if (vin.isEmpty()) {
-            Toast.makeText(this, "Please enter or scan a VIN", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.err_vin_required, Toast.LENGTH_SHORT).show();
             return;
         }
         submitScan(vin, "MANUAL", null);
@@ -215,12 +222,12 @@ public class VehicleScanActivity extends AppCompatActivity {
         String normalizedVin = vin != null ? vin.trim() : "";
         if (normalizedVin.isEmpty()) {
             if (imageCoordinator != null) imageCoordinator.onSubmissionFinished();
-            Toast.makeText(this, "Please enter or scan a VIN", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.err_vin_required, Toast.LENGTH_SHORT).show();
             return;
         }
         if (locationId == null) {
             if (imageCoordinator != null) imageCoordinator.onSubmissionFinished();
-            displayError("Location ID is missing. Return to the work-area list and select the location again.");
+            displayError(getString(R.string.err_location_id_missing));
             return;
         }
         lastImage = scanImage;
@@ -242,9 +249,13 @@ public class VehicleScanActivity extends AppCompatActivity {
                 updateBusyState();
             } else if (state.getStatus() == Resource.Status.SUCCESS) {
                 apiLoading = false;
-                if (imageCoordinator != null) imageCoordinator.onSubmissionFinished();
                 updateBusyState();
-                displayResult(state.getData());
+                if (state.getData() == null) {
+                    if (imageCoordinator != null) imageCoordinator.onSubmissionFinished();
+                    displayError("Empty scan response");
+                } else {
+                    displayResult(state.getData());
+                }
                 vinEditText.setText("");
                 vinEditText.requestFocus();
             } else if (state.getStatus() == Resource.Status.ERROR) {
@@ -260,7 +271,8 @@ public class VehicleScanActivity extends AppCompatActivity {
     }
 
     private boolean isBusy() {
-        return apiLoading || (imageCoordinator != null && imageCoordinator.isWaitingForImage());
+        return apiLoading || resultOverlayVisible || correctionDialogVisible
+                || (imageCoordinator != null && imageCoordinator.isWaitingForImage());
     }
 
     private void updateBusyState() {
@@ -290,55 +302,98 @@ public class VehicleScanActivity extends AppCompatActivity {
         String result = response.getResultCode() == null ? "RECORDED" : response.getResultCode();
         resultStatusChip.setText(result.replace("_", " "));
         applyStatusStyle(resultStatusChip, result);
-        resultCodeTv.setText(response.isIdempotentReplay() ? "Synchronized retry" : "Scan #" + response.getScanId());
-        resultMessageTv.setText(messageFor(response.getMessageKey(), result));
+        String scanReference = response.isIdempotentReplay() 
+                ? getString(R.string.synchronized_retry) 
+                : getString(R.string.scan_id_label, response.getScanId());
+        resultCodeTv.setText(ScanResultDialog.itemTitle(this, response.getItem()) + "  •  " + scanReference);
+        resultMessageTv.setText(compactResultMessage(response, messageFor(response.getMessageKey(), result)));
         boolean canCorrectHere = response.isCorrectionAllowed()
-                && response.getCurrentAcceptedScanId() != null
-                && !response.getCurrentAcceptedScanId().equals(response.getScanId());
+                && response.getCurrentAcceptedScanId() != null;
         correctButton.setVisibility(canCorrectHere ? View.VISIBLE : View.GONE);
         retryButton.setVisibility(View.GONE);
+        showResultOverlay(response, messageFor(response.getMessageKey(), result));
+    }
+
+    private void showResultOverlay(ScanResponse response, String message) {
+        resultOverlayVisible = true;
+        updateBusyState();
+        resultDialog = ScanResultDialog.show(this, response, message, new ScanResultDialog.Callback() {
+            @Override public void onCorrect() { requestCorrectionReason(); }
+            @Override public void onDismiss() {
+                resultOverlayVisible = false;
+                resultDialog = null;
+                if (!correctionDialogVisible && imageCoordinator != null) imageCoordinator.onSubmissionFinished();
+                updateBusyState();
+                vinEditText.requestFocus();
+            }
+        });
+    }
+
+    private String compactResultMessage(ScanResponse response, String message) {
+        String details = ScanResultDialog.itemDetails(this, response.getItem());
+        String location = ScanResultDialog.locationDetails(this, response.getActualLocation());
+        return message + (details.isEmpty() ? "" : "\n" + details)
+                + (location.isEmpty() ? "" : "\n" + location);
     }
 
     private void displayError(String message) {
-        resultStatusChip.setText("ERROR");
+        resultStatusChip.setText(R.string.error_label);
         resultStatusChip.setBackgroundResource(R.drawable.bg_chip_danger);
         resultStatusChip.setTextColor(getResources().getColor(R.color.danger));
-        resultCodeTv.setText("Failed");
-        resultMessageTv.setText(message != null ? message : "Scan failed");
+        resultCodeTv.setText(R.string.failed_label);
+        resultMessageTv.setText(message != null ? message : getString(R.string.failed_label));
         correctButton.setVisibility(View.GONE);
     }
 
     private String messageFor(String key, String fallback) {
-        if ("scan.matched".equals(key)) return "Vehicle matched the selected location.";
-        if ("scan.location_mismatch".equals(key)) return "The vehicle was recorded in a different location. Move to the correct location and scan again to correct it.";
-        if ("scan.duplicate".equals(key)) return "This vehicle was already scanned in the same location.";
-        if ("scan.location_conflict".equals(key)) return "This vehicle has an accepted scan in another location. You may correct it to the current location.";
-        if ("scan.recorded_for_review".equals(key)) return "Vehicle is not in the task and was recorded for review.";
-        if ("scan.correction_recorded".equals(key)) return "The vehicle location correction was recorded.";
+        if ("scan.matched".equals(key)) return getString(R.string.msg_scan_matched);
+        if ("scan.location_mismatch".equals(key)) return getString(R.string.msg_scan_location_mismatch);
+        if ("scan.duplicate".equals(key)) return getString(R.string.msg_scan_duplicate);
+        if ("scan.location_conflict".equals(key)) return getString(R.string.msg_scan_location_conflict);
+        if ("scan.recorded_for_review".equals(key)) return getString(R.string.msg_scan_recorded_for_review);
+        if ("scan.correction_recorded".equals(key)) return getString(R.string.msg_scan_correction_recorded);
         return fallback.replace('_', ' ');
     }
 
     private void requestCorrectionReason() {
         if (lastResponse == null || lastResponse.getCurrentAcceptedScanId() == null || locationId == null) return;
         EditText input = new EditText(this);
-        input.setHint("Correction reason");
-        new AlertDialog.Builder(this)
-                .setTitle("Correct vehicle location")
+        input.setHint(R.string.hint_correction_reason);
+        correctionDialogVisible = true;
+        updateBusyState();
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle(R.string.title_correct_location)
                 .setView(input)
-                .setNegativeButton("Cancel", null)
-                .setPositiveButton("Submit", (dialog, which) -> {
+                .setNegativeButton(R.string.cancel, null)
+                .setPositiveButton(R.string.submit, null)
+                .create();
+        correctionDialog = dialog;
+        dialog.setOnDismissListener(ignored -> finishCorrectionDialog());
+        dialog.setOnShowListener(ignored -> dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
                     String reason = input.getText() == null ? "" : input.getText().toString().trim();
                     if (reason.isEmpty()) {
-                        Toast.makeText(this, "Correction reason is required", Toast.LENGTH_LONG).show();
+                        input.setError(getString(R.string.err_reason_required));
                         return;
                     }
                     if (scanImageRequired && (lastImage == null || lastImage.length == 0)) {
-                        Toast.makeText(this, "Scan the barcode again to capture the correction image", Toast.LENGTH_LONG).show();
+                        Toast.makeText(this, R.string.err_rescan_for_image, Toast.LENGTH_LONG).show();
                         return;
                     }
+                    dialog.setOnDismissListener(null);
+                    correctionDialogVisible = false;
+                    correctionDialog = null;
+                    dialog.dismiss();
                     viewModel.correctVehicle(taskId, lastResponse.getCurrentAcceptedScanId(), locationId,
                             reason, lastSymbology, lastImage);
-                }).show();
+                }));
+        dialog.show();
+    }
+
+    private void finishCorrectionDialog() {
+        correctionDialogVisible = false;
+        correctionDialog = null;
+        if (!apiLoading && imageCoordinator != null) imageCoordinator.onSubmissionFinished();
+        updateBusyState();
     }
 
     private void applyStatusStyle(TextView chip, String status) {
@@ -368,6 +423,8 @@ public class VehicleScanActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        if (correctionDialog != null && correctionDialog.isShowing()) correctionDialog.dismiss();
+        if (resultDialog != null && resultDialog.isShowing()) resultDialog.dismiss();
         if (imageCoordinator != null) imageCoordinator.cancelPending();
         if (scannerManager != null) scannerManager.unregister(this);
         updateBusyState();

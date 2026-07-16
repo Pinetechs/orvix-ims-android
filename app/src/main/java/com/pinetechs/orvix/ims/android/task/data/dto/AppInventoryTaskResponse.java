@@ -18,6 +18,7 @@ public class AppInventoryTaskResponse {
     private double progress;
     private String assignedAt;
     private boolean scanImageRequired;
+    private String sparePartLocationProgressMode;
 
     public Long getId() {
         return id;
@@ -145,5 +146,13 @@ public class AppInventoryTaskResponse {
 
     public void setScanImageRequired(boolean scanImageRequired) {
         this.scanImageRequired = scanImageRequired;
+    }
+
+    public String getSparePartLocationProgressMode() {
+        return sparePartLocationProgressMode;
+    }
+
+    public void setSparePartLocationProgressMode(String value) {
+        this.sparePartLocationProgressMode = value;
     }
 }

@@ -4,6 +4,8 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
+import com.pinetechs.orvix.ims.android.OrvixApplication;
+import com.pinetechs.orvix.ims.android.R;
 import com.pinetechs.orvix.ims.android.bootstrap.data.dto.BootstrapResolveRequest;
 import com.pinetechs.orvix.ims.android.bootstrap.data.dto.BootstrapResolveResponse;
 import com.pinetechs.orvix.ims.android.core.network.ApiClient;
@@ -38,7 +40,7 @@ public class BootstrapRepository {
 
             @Override
             public void onFailure(@NonNull Call<BootstrapResolveResponse> call, @NonNull Throwable t) {
-                callback.onError(t.getMessage() != null ? t.getMessage() : "Bootstrap service connection failed");
+                callback.onError(t.getMessage() != null ? t.getMessage() : OrvixApplication.getInstance().getString(R.string.err_bootstrap_failed));
             }
         });
     }
@@ -51,12 +53,12 @@ public class BootstrapRepository {
 
         BootstrapResolveResponse body = response.body();
         if (body.getData() == null || body.getData().getClient() == null) {
-            callback.onError("Invalid bootstrap response");
+            callback.onError(OrvixApplication.getInstance().getString(R.string.err_invalid_bootstrap));
             return;
         }
 
         if (body.getData().getClient().getActive() != null && !body.getData().getClient().getActive()) {
-            callback.onError("Client is inactive. Please contact support.");
+            callback.onError(OrvixApplication.getInstance().getString(R.string.err_client_inactive));
             return;
         }
 

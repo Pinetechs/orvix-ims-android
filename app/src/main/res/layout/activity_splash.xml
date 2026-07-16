@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:letterSpacing="0.18"
-            android:text="ANDROID SCANNER APP"
+            android:text="@string/splash_subtitle"
             android:textColor="@color/orvix_text_muted"
             android:textSize="11sp"
             android:textStyle="bold" />
@@ -51,7 +51,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:letterSpacing="0.12"
-            android:text="ORVIX ERP - IMS"
+            android:text="@string/splash_title"
             android:textColor="@color/orvix_text_secondary"
             android:textSize="12sp"
             android:textStyle="bold" />
@@ -61,7 +61,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:alpha="0.7"
-            android:text="Powered by Pinetechs"
+            android:text="@string/powered_by"
             android:textColor="@color/orvix_text_secondary"
             android:textSize="10sp" />
     </LinearLayout>

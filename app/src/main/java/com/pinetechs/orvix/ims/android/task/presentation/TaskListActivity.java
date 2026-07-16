@@ -21,9 +21,10 @@ import com.pinetechs.orvix.ims.android.core.storage.SessionManager;
 import com.pinetechs.orvix.ims.android.core.util.Resource;
 import com.pinetechs.orvix.ims.android.workarea.presentation.WorkAreaActivity;
 import com.pinetechs.orvix.ims.android.task.data.dto.AppInventoryTaskResponse;
+import com.pinetechs.orvix.ims.android.core.presentation.BaseActivity;
 import com.pinetechs.orvix.ims.android.task.data.dto.AppInventoryTaskSliceResponse;
 
-public class TaskListActivity extends AppCompatActivity {
+public class TaskListActivity extends BaseActivity {
 
     private TaskListViewModel viewModel;
     private TaskListAdapter adapter;
@@ -59,7 +60,7 @@ public class TaskListActivity extends AppCompatActivity {
 
         if (welcomeTextView != null) {
             String fullName = sessionManager.getFullName();
-            welcomeTextView.setText("Welcome, " + (fullName != null ? fullName : "User"));
+            welcomeTextView.setText(getString(R.string.welcome_label, fullName != null ? fullName : "User"));
         }
 
         RecyclerView recyclerView = findViewById(R.id.tasksRecyclerView);
@@ -120,16 +121,16 @@ public class TaskListActivity extends AppCompatActivity {
                         boolean empty = data.getTasks().getContent() == null || data.getTasks().getContent().isEmpty();
                         emptyTextView.setVisibility(empty ? View.VISIBLE : View.GONE);
                         if (empty) {
-                            emptyTextView.setText(showingCompleted ? "No completed tasks yet." : "No active tasks assigned to you.");
+                            emptyTextView.setText(showingCompleted ? R.string.no_completed_tasks : R.string.no_active_tasks);
                         }
                     }
                 }
             } else if (state.getStatus() == Resource.Status.ERROR) {
                 progressBar.setVisibility(View.GONE);
                 swipeRefreshLayout.setRefreshing(false);
-                Toast.makeText(this, state.getMessage(), Toast.LENGTH_LONG).show();
                 emptyTextView.setVisibility(View.VISIBLE);
-                emptyTextView.setText("Failed to load tasks");
+                emptyTextView.setText(R.string.err_failed_to_load_tasks);
+                Toast.makeText(this, state.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -144,7 +145,7 @@ public class TaskListActivity extends AppCompatActivity {
     private void openLocationSelection(AppInventoryTaskResponse task) {
         String status = task.getStatus() == null ? "" : task.getStatus().toUpperCase();
         if (!"READY_TO_START".equals(status) && !"IN_PROGRESS".equals(status)) {
-            Toast.makeText(this, "This task is not open for scanning", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.err_task_not_scannable, Toast.LENGTH_LONG).show();
             return;
         }
         Intent intent = new Intent(this, WorkAreaActivity.class);
@@ -154,6 +155,7 @@ public class TaskListActivity extends AppCompatActivity {
         intent.putExtra("company_name", task.getCompanyName());
         intent.putExtra("inventory_domain", task.getInventoryDomain());
         intent.putExtra("scan_image_required", task.isScanImageRequired());
+        intent.putExtra("spare_progress_mode", task.getSparePartLocationProgressMode());
         startActivity(intent);
     }
 

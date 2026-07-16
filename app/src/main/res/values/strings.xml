@@ -1,4 +1,251 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Orvix IMS</string>
+    <string name="inventory_management">INVENTORY MANAGEMENT</string>
+    <string name="welcome_back">Welcome Back</string>
+    <string name="login_subtitle">Sign in to continue scanning inventory tasks.</string>
+    <string name="username_hint">Username</string>
+    <string name="password_hint">Password</string>
+    <string name="sign_in">Sign In</string>
+    <string name="language_label">العربية</string>
+    <string name="powered_by">Powered by Pinetechs</string>
+
+    <string name="inventory_control_center">Inventory Control Center</string>
+    <string name="logout">Logout</string>
+    <string name="assigned">Assigned</string>
+    <string name="ready">Ready</string>
+    <string name="progress">Progress</string>
+    <string name="history">History</string>
+    <string name="no_tasks">No active tasks assigned to you right now.</string>
+
+    <string name="scan_vehicles">Scan Vehicles</string>
+    <string name="scan_spare_parts">Scan Spare Parts</string>
+    <string name="asset_tracking">Asset Tracking</string>
+
+    <string name="vehicle_label">VEHICLE</string>
+    <string name="spare_part_label">SPARE PART</string>
+    <string name="asset_label">ASSET</string>
+
+    <string name="vin_label">Vehicle Identification Number</string>
+    <string name="vin_hint">Scan or enter VIN</string>
+    <string name="barcode_label">Part Barcode / Article Number</string>
+    <string name="barcode_hint">Scan or enter Barcode</string>
+    <string name="asset_tag_label">Asset Tag / Barcode</string>
+    <string name="asset_tag_hint">Scan or enter Tag</string>
+
+    <string name="verify_submit">Verify &amp; Submit</string>
+    <string name="verify_part">Verify Part</string>
+    <string name="verify_asset">Verify Asset</string>
+
+    <string name="last_result">Last Result</string>
+    <string name="scan_result">Scan Result</string>
+    <string name="asset_info">Asset Info</string>
+    <string name="ready_status">READY</string>
+    <string name="waiting_input">Waiting for scanner input...</string>
+    <string name="correct_scan">Correct this scan</string>
+    <string name="retry_upload">Retry upload</string>
+
+    <string name="scanner_settings">Scanner Settings</string>
+    <string name="scanner_settings_subtitle">Standard hardware configuration and domain profiles</string>
+    <string name="standard_settings">STANDARD SETTINGS</string>
+    <string name="beep_type">Success beep type</string>
+    <string name="vibration">Success vibration</string>
+    <string name="domain_profile">DOMAIN PROFILE</string>
+    <string name="inventory_domain">Inventory domain</string>
+    <string name="barcode_symbologies">Barcode symbologies</string>
+    <string name="manage_barcodes">Manage Enabled Barcodes</string>
+    <string name="show_scanner_image">Show captured barcode image</string>
+    <string name="advanced_urovo">ADVANCED UROVO INTENT</string>
+    <string name="save_settings">Save Scanner Settings</string>
+    <string name="restore_defaults">Restore Standard Defaults</string>
+
+    <string name="apply">Apply</string>
+    <string name="detect">Detect</string>
+    <string name="stop">Stop</string>
+    <string name="detect_subtitle">Scan a sample to identify and add its barcode type.</string>
+    <string name="selected_location">Selected inventory location</string>
+    <string name="selected_path">Selected inventory path</string>
+    <string name="scan_part">Scan Part</string>
+    <string name="correct_count">Correct this count</string>
+
+    <string name="scan_id_label">Scan #%d</string>
+    <string name="synchronized_retry">Synchronized retry</string>
+    <string name="location_label">Location: %s</string>
+    <string name="quantity_label">Quantity: %s</string>
+    <string name="item_found">Item found</string>
+    <string name="ready_next_scan">Ready for the next scan in %d seconds</string>
+    <string name="close_label">Close</string>
+    <string name="continue_label">Continue</string>
+    <string name="recorded_status">RECORDED</string>
+    <string name="error_label">ERROR</string>
+    <string name="failed_label">Failed</string>
+
+    <string name="msg_scan_matched">Vehicle matched the selected location.</string>
+    <string name="msg_scan_location_mismatch">The vehicle was recorded in a different location. Move to the correct location and scan again to correct it.</string>
+    <string name="msg_scan_duplicate">This vehicle was already scanned in the same location.</string>
+    <string name="msg_scan_location_conflict">This vehicle has an accepted scan in another location. You may correct it to the current location.</string>
+    <string name="msg_scan_recorded_for_review">Item is not in the task and was recorded for review.</string>
+    <string name="msg_scan_correction_recorded">The location correction was recorded.</string>
+    <string name="msg_scan_recorded">The counted quantity was recorded.</string>
+    <string name="msg_scan_already_counted">This item was already counted. You may submit a correction.</string>
+    <string name="msg_scan_correction_recorded_spare">The count correction was recorded.</string>
+
+    <string name="err_vin_required">Please enter or scan a VIN</string>
+    <string name="err_image_required_hardware">This task requires a scanner image. Use the physical scan button.</string>
+    <string name="err_location_id_missing">Location ID is missing. Return to the work-area list and select the location again.</string>
+
+    <string name="title_correct_location">Correct vehicle location</string>
+    <string name="hint_correction_reason">Correction reason</string>
+    <string name="err_reason_required">Correction reason is required</string>
+    <string name="err_rescan_for_image">Scan the barcode again to capture the correction image</string>
+    <string name="cancel">Cancel</string>
+    <string name="submit">Submit</string>
+
+    <string name="title_setup">Setup client configuration</string>
+    <string name="client_code_hint">Client Code</string>
+    <string name="setup_label">Setup</string>
+    <string name="err_client_code_required">Client code is required</string>
+    <string name="title_connect_client">Connect to Your Client</string>
+    <string name="desc_connect_client">Enter the client code provided by your administrator to connect this scanner app to the correct Orvix IMS backend.</string>
+    <string name="connect_label">Connect</string>
+    <string name="footer_setup_info">Secure tenant bootstrap. One scanner app can serve multiple clients.</string>
+
+    <string name="unnamed_location">Unnamed location</string>
+    <string name="scan_count_single">1 scan</string>
+    <string name="scan_count_plural">%d scans</string>
+    <string name="status_completed">Completed</string>
+    <string name="status_review_required">Needs review</string>
+    <string name="status_in_progress">In progress</string>
+    <string name="status_not_started">Not started</string>
+    <string name="err_all_fields_required">All fields are required</string>
+    <string name="msg_settings_saved">Scanner settings saved successfully</string>
+    <string name="msg_reset_defaults">Reset to default settings</string>
+    <string name="standard_default">Standard default</string>
+    <string name="disabled_label">Disabled</string>
+
+    <string name="splash_subtitle">ANDROID SCANNER APP</string>
+    <string name="splash_title">ORVIX ERP - IMS</string>
+
+    <!-- Additional missing strings -->
+    <string name="enterprise_inventory">ENTERPRISE INVENTORY</string>
+    <string name="update_required_title">Update Required</string>
+    <string name="update_required_msg">This version of Orvix IMS is no longer supported.</string>
+    <string name="err_apk_url_missing">APK download URL is not configured.</string>
+    <string name="reset_client_setup">Reset client setup</string>
+    <string name="download_update">Download update</string>
+    <string name="none_enabled">None enabled</string>
+    <string name="scan_another">Scan another</string>
+    <string name="add_to_profile">Add to profile</string>
+    <string name="unknown_barcode_type">Unknown barcode type</string>
+    <string name="unknown_point">Unknown Point</string>
+    <string name="unknown_location">Unknown Location</string>
+    <string name="unknown_branch">Unknown Branch</string>
+    <string name="err_empty_scan_response">Empty scan response</string>
+    <string name="inventory_locations">Inventory locations</string>
+    <string name="search_hint">Search</string>
+    <string name="search_location_hint">Search location name or code</string>
+    <string name="select_place">Select place</string>
+    <string name="choose_place_legend">Choose the exact place before scanning the asset</string>
+    <string name="search_places">Search places</string>
+    <string name="select_floor">Select floor</string>
+    <string name="search_floors">Search floors</string>
+    <string name="err_task_parent_missing">Task or parent location is missing</string>
+    <string name="no_matching_locations">No matching locations found</string>
+    <string name="err_could_not_load_locations">Could not load locations</string>
+    <string name="msg_location_completed">Location completed</string>
+    <string name="title_location_not_completed">Location not completed</string>
+    <string name="task_details">Task Details</string>
+    <string name="inventory_session">Inventory Session</string>
+    <string name="err_failed_to_load_tasks">Failed to load tasks</string>
+    <string name="err_failed_to_load_work_areas">Failed to load work areas</string>
+
+    <string name="welcome_label">Welcome, %s</string>
+    <string name="no_completed_tasks">No completed tasks yet.</string>
+    <string name="no_active_tasks">No active tasks assigned to you.</string>
+    <string name="err_task_not_scannable">This task is not open for scanning</string>
+
+    <string name="err_task_id_missing">Task ID is missing</string>
+    <string name="min_length_hint">Min Length</string>
+    <string name="max_length_hint">Max Length</string>
+    <string name="intent_action_hint">Intent action name</string>
+    <string name="data_tag_hint">Data string tag</string>
+    <string name="type_tag_hint">Barcode type tag</string>
+    <string name="correct_qty_hint">Correct quantity</string>
+    <string name="counted_quantity">Counted quantity</string>
+    <string name="scanned_barcode_label">Scanned barcode</string>
+    <string name="complete_label">Complete</string>
+    <string name="processed_items">Processed Items</string>
+    <string name="captured_image_label">Captured barcode image</string>
+
+    <string name="profile_general">General</string>
+    <string name="profile_general_desc">All supported barcode types</string>
+    <string name="profile_spare_part">Spare Parts</string>
+    <string name="profile_spare_part_desc">Part numbers and manufacturer labels</string>
+    <string name="profile_asset">Assets</string>
+    <string name="profile_asset_desc">Asset tags and internal labels</string>
+
+    <string name="err_username_required">Username is required</string>
+    <string name="err_password_required">Password is required</string>
+    <string name="err_connection_failed">Connection failed</string>
+    <string name="err_bootstrap_failed">Bootstrap service connection failed</string>
+    <string name="err_invalid_bootstrap">Invalid bootstrap response</string>
+    <string name="err_no_location_selected">No location selected</string>
+    <string name="err_task_not_open">This task is not open for scanning</string>
+    <string name="title_enter_quantity">Enter counted quantity</string>
+    <string name="err_qty_invalid">Invalid quantity</string>
+    <string name="err_qty_non_negative">Quantity must be non-negative with at most 3 decimal places</string>
+    <string name="err_change_value_for_correction">Enter a different quantity or location for this correction</string>
+    <string name="msg_ready_for_next">Ready for the next scan</string>
+
+    <string name="category_1d">1D</string>
+    <string name="category_2d">2D</string>
+    <string name="category_retail">Retail</string>
+    <string name="category_gs1">GS1</string>
+    <string name="category_postal">Postal</string>
+    <string name="category_all">All</string>
+    <string name="category_composite">Composite</string>
+
+    <string name="symbology_header">%s SYMBOLOGIES (%d/%d)</string>
+    <string name="symbology_header_plain">%s SYMBOLOGIES</string>
+    <string name="err_unexpected">Unexpected network error</string>
+    <string name="err_request_failed">Request failed. Code: %d</string>
+    <string name="qty_helper_text">Required • up to 3 decimal places</string>
+    <string name="legend_basic">Grey: not started  •  Blue: scans recorded</string>
+    <string name="legend_detailed">Green: completed  •  Orange: needs review</string>
+
+    <string name="settings_feedback_desc">The confirmation sound and vibration use the scanner service feedback settings. Intent output, HOST trigger mode, unlocked scan keys, and disabled keyboard wedge are applied automatically.</string>
+    <string name="settings_image_desc">Requests and displays the scanner image after a successful read for this domain. Task-required images are still captured and uploaded even when this display option is disabled.</string>
+    <string name="settings_urovo_desc">The app writes these values to UROVO ScanManager during initialization. Change them only for firmware compatibility.</string>
+    <string name="symbology_config_desc">Enable multiple barcode types for this domain. Use Configure to edit type-specific options such as length, check digits, Full ASCII, or ISBT processing.</string>
+
+    <string name="msg_download_apk">Please download and install the latest APK to continue.</string>
+    <string name="current_version">Current version code: %d</string>
+    <string name="min_required_version">Minimum required version code: %d</string>
+
+    <string name="opt_enable_check_digit">Enable check digit</string>
+    <string name="opt_send_check_digit">Send check digit</string>
+    <string name="opt_full_ascii">Full ASCII</string>
+    <string name="opt_isbt_128">ISBT 128</string>
+    <string name="opt_check_isbt_table">Check ISBT table</string>
+    <string name="opt_reduced_quiet_zone">Reduced quiet zone</string>
+    <string name="opt_check_digit_mode">Check digit mode</string>
+    <string name="opt_convert_to_ean13">Convert to EAN-13</string>
+    <string name="opt_notis_editing">NOTIS editing</string>
+    <string name="opt_clsi_editing">CLSI editing</string>
+    <string name="opt_send_start_stop">Send start/stop</string>
+    <string name="opt_require_two_check_digits">Require two check digits</string>
+    <string name="opt_second_check_mod11">Second check Mod 11</string>
+    <string name="opt_send_system_digit">Send system digit</string>
+    <string name="opt_bookland_ean">Bookland EAN</string>
+    <string name="opt_convert_to_upca">Convert to UPC-A</string>
+    <string name="opt_min_length">Minimum length</string>
+    <string name="opt_max_length">Maximum length</string>
+
+    <string name="none_label">None</string>
+    <string name="none_desc">No sound after a successful barcode decode</string>
+    <string name="native_label">Native</string>
+    <string name="native_desc">Use the standard confirmation beep</string>
+    <string name="msg_more_clicks_reset">%d more clicks to reset</string>
+    <string name="msg_client_reset">Client configuration has been reset</string>
+    <string name="err_client_inactive">Client is inactive. Please contact support.</string>
 </resources>

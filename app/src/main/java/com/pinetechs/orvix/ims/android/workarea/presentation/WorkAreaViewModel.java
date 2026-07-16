@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import com.pinetechs.orvix.ims.android.R;
 import com.pinetechs.orvix.ims.android.core.util.Resource;
 import com.pinetechs.orvix.ims.android.workarea.data.WorkAreaRepository;
 import com.pinetechs.orvix.ims.android.workarea.data.dto.WorkAreaSliceResponse;
@@ -27,7 +28,7 @@ public class WorkAreaViewModel extends AndroidViewModel {
 
     public void loadWorkAreas(Long taskId) {
         if (taskId == null) {
-            workAreasState.setValue(Resource.error("Task ID is missing"));
+            workAreasState.setValue(Resource.error(getApplication().getString(R.string.err_task_id_missing)));
             return;
         }
         workAreasState.setValue(Resource.loading());

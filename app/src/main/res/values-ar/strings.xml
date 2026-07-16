@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Orvix IMS</string>
+    <string name="inventory_management">إدارة المخزون</string>
+    <string name="welcome_back">مرحباً بك مجدداً</string>
+    <string name="login_subtitle">قم بتسجيل الدخول لمتابعة مهام جرد المخزون.</string>
+    <string name="username_hint">اسم المستخدم</string>
+    <string name="password_hint">كلمة المرور</string>
+    <string name="sign_in">تسجيل الدخول</string>
+    <string name="language_label">English</string>
+    <string name="powered_by">مشغل بواسطة Pinetechs</string>
+
+    <string name="inventory_control_center">مركز التحكم بالمخزون</string>
+    <string name="logout">خروج</string>
+    <string name="assigned">المسندة</string>
+    <string name="ready">الجاهزة</string>
+    <string name="progress">قيد التنفيذ</string>
+    <string name="history">السجل</string>
+    <string name="no_tasks">لا توجد مهام نشطة مسندة إليك حالياً.</string>
+
+    <string name="scan_vehicles">مسح المركبات</string>
+    <string name="scan_spare_parts">مسح قطع الغيار</string>
+    <string name="asset_tracking">تتبع الأصول</string>
+
+    <string name="vehicle_label">مركبة</string>
+    <string name="spare_part_label">قطعة غيار</string>
+    <string name="asset_label">أصل</string>
+
+    <string name="vin_label">رقم شاصي المركبة (VIN)</string>
+    <string name="vin_hint">امسح أو أدخل رقم الشاصي</string>
+    <string name="barcode_label">باركود القطعة / رقم المادة</string>
+    <string name="barcode_hint">امسح أو أدخل الباركود</string>
+    <string name="asset_tag_label">رقم الأصل / الباركود</string>
+    <string name="asset_tag_hint">امسح أو أدخل رقم الأصل</string>
+
+    <string name="verify_submit">تحقق وإرسال</string>
+    <string name="verify_part">التحقق من القطعة</string>
+    <string name="verify_asset">التحقق من الأصل</string>
+
+    <string name="last_result">آخر نتيجة</string>
+    <string name="scan_result">نتيجة المسح</string>
+    <string name="asset_info">معلومات الأصل</string>
+    <string name="ready_status">جاهز</string>
+    <string name="waiting_input">في انتظار مدخلات الماسح الضوئي...</string>
+    <string name="correct_scan">تصحيح هذا المسح</string>
+    <string name="retry_upload">إعادة محاولة الرفع</string>
+
+    <string name="scanner_settings">إعدادات الماسح</string>
+    <string name="scanner_settings_subtitle">تكوين الهاردوير القياسي وبروفايلات النطاق</string>
+    <string name="standard_settings">الإعدادات القياسية</string>
+    <string name="beep_type">نوع صوت النجاح</string>
+    <string name="vibration">الاهتزاز عند النجاح</string>
+    <string name="domain_profile">بروفايل النطاق</string>
+    <string name="inventory_domain">نطاق المخزون</string>
+    <string name="barcode_symbologies">أنواع الباركود</string>
+    <string name="manage_barcodes">إدارة أنواع الباركود المفعلة</string>
+    <string name="show_scanner_image">عرض صورة الباركود الملتقطة</string>
+    <string name="advanced_urovo">إعدادات UROVO المتقدمة</string>
+    <string name="save_settings">حفظ إعدادات الماسح</string>
+    <string name="restore_defaults">استعادة الإعدادات الافتراضية</string>
+
+    <string name="apply">تطبيق</string>
+    <string name="detect">كشف</string>
+    <string name="stop">إيقاف</string>
+    <string name="detect_subtitle">امسح عينة لتحديد وإضافة نوع الباركود الخاص بها.</string>
+    <string name="selected_location">موقع الجرد المحدد</string>
+    <string name="selected_path">مسار الجرد المحدد</string>
+    <string name="scan_part">مسح القطعة</string>
+    <string name="correct_count">تصحيح هذا العد</string>
+
+    <string name="scan_id_label">مسح رقم %d</string>
+    <string name="synchronized_retry">إعادة محاولة متزامنة</string>
+    <string name="location_label">الموقع: %s</string>
+    <string name="quantity_label">الكمية: %s</string>
+    <string name="item_found">تم العثور على مادة</string>
+    <string name="ready_next_scan">جاهز للمسح التالي خلال %d ثوانٍ</string>
+    <string name="close_label">إغلاق</string>
+    <string name="continue_label">استمرار</string>
+    <string name="recorded_status">تم التسجيل</string>
+    <string name="error_label">خطأ</string>
+    <string name="failed_label">فشل</string>
+
+    <string name="msg_scan_matched">تمت مطابقة المركبة مع الموقع المحدد.</string>
+    <string name="msg_scan_location_mismatch">تم تسجيل المركبة في موقع مختلف. انتقل للموقع الصحيح وامسح مجدداً للتصحيح.</string>
+    <string name="msg_scan_duplicate">تم مسح هذه المركبة بالفعل في هذا الموقع.</string>
+    <string name="msg_scan_location_conflict">هذه المركبة لديها مسح مقبول في موقع آخر. يمكنك تصحيحها للموقع الحالي.</string>
+    <string name="msg_scan_recorded_for_review">المادة ليست ضمن المهمة وتم تسجيلها للمراجعة.</string>
+    <string name="msg_scan_correction_recorded">تم تسجيل تصحيح موقع المركبة.</string>
+    <string name="msg_scan_recorded">تم تسجيل الكمية المحصورة.</string>
+    <string name="msg_scan_already_counted">تم جرد هذه المادة بالفعل. يمكنك تقديم طلب تصحيح.</string>
+    <string name="msg_scan_correction_recorded_spare">تم تسجيل تصحيح العد.</string>
+
+    <string name="err_vin_required">يرجى إدخال أو مسح رقم الشاصي</string>
+    <string name="err_image_required_hardware">تتطلب هذه المهمة صورة ماسح ضوئي. استخدم زر المسح الفعلي.</string>
+    <string name="err_location_id_missing">معرف الموقع مفقود. ارجع لقائمة مناطق العمل وحدد الموقع مجدداً.</string>
+
+    <string name="title_correct_location">تصحيح موقع المركبة</string>
+    <string name="hint_correction_reason">سبب التصحيح</string>
+    <string name="err_reason_required">سبب التصحيح مطلوب</string>
+    <string name="err_rescan_for_image">امسح الباركود مجدداً لالتقاط صورة التصحيح</string>
+    <string name="cancel">إلغاء</string>
+    <string name="submit">إرسال</string>
+
+    <string name="title_setup">إعداد تكوين العميل</string>
+    <string name="client_code_hint">كود العميل</string>
+    <string name="setup_label">إعداد</string>
+    <string name="err_client_code_required">كود العميل مطلوب</string>
+    <string name="title_connect_client">اتصل بالعميل الخاص بك</string>
+    <string name="desc_connect_client">أدخل كود العميل المقدم من مدير النظام لربط هذا التطبيق بخادم Orvix IMS الصحيح.</string>
+    <string name="connect_label">اتصال</string>
+    <string name="footer_setup_info">بدء تشغيل آمن. يمكن لتطبيق ماسح واحد خدمة عدة عملاء.</string>
+
+    <string name="unnamed_location">موقع بدون اسم</string>
+    <string name="scan_count_single">مسح واحد</string>
+    <string name="scan_count_plural">%d مسحات</string>
+    <string name="status_completed">مكتمل</string>
+    <string name="status_review_required">بحاجة لمراجعة</string>
+    <string name="status_in_progress">قيد التنفيذ</string>
+    <string name="status_not_started">لم يبدأ</string>
+    <string name="err_all_fields_required">كافة الحقول مطلوبة</string>
+    <string name="msg_settings_saved">تم حفظ إعدادات الماسح بنجاح</string>
+    <string name="msg_reset_defaults">تمت استعادة الإعدادات الافتراضية</string>
+    <string name="standard_default">افتراضي قياسي</string>
+    <string name="disabled_label">معطل</string>
+
+    <string name="splash_subtitle">تطبيق الماسح للأندرويد</string>
+    <string name="splash_title">نظام أورفيكس لإدارة المخزون</string>
+
+    <string name="enterprise_inventory">جرد المؤسسة</string>
+    <string name="update_required_title">تحديث مطلوب</string>
+    <string name="update_required_msg">هذا الإصدار من Orvix IMS لم يعد مدعوماً.</string>
+    <string name="err_apk_url_missing">رابط تحميل التطبيق غير مكون.</string>
+    <string name="reset_client_setup">إعادة ضبط العميل</string>
+    <string name="download_update">تحميل التحديث</string>
+    <string name="none_enabled">لا يوجد مفعل</string>
+    <string name="scan_another">مسح آخر</string>
+    <string name="add_to_profile">إضافة للبروفايل</string>
+    <string name="unknown_barcode_type">نوع باركود غير معروف</string>
+    <string name="unknown_point">نقطة غير معروفة</string>
+    <string name="unknown_location">موقع غير معروف</string>
+    <string name="unknown_branch">فرع غير معروف</string>
+    <string name="err_empty_scan_response">رد مسح فارغ</string>
+    <string name="inventory_locations">مواقع الجرد</string>
+    <string name="search_hint">بحث</string>
+    <string name="search_location_hint">بحث بالاسم أو الكود</string>
+    <string name="select_place">اختر المكان</string>
+    <string name="choose_place_legend">اختر المكان بدقة قبل مسح الأصل</string>
+    <string name="search_places">بحث في الأماكن</string>
+    <string name="select_floor">اختر الدور</string>
+    <string name="search_floors">بحث في الأدوار</string>
+    <string name="err_task_parent_missing">المهمة أو الموقع الأب مفقود</string>
+    <string name="no_matching_locations">لا توجد مواقع مطابقة</string>
+    <string name="err_could_not_load_locations">تعذر تحميل المواقع</string>
+    <string name="msg_location_completed">تم إكمال الموقع</string>
+    <string name="title_location_not_completed">الموقع لم يكتمل</string>
+    <string name="task_details">تفاصيل المهمة</string>
+    <string name="inventory_session">جلسة جرد</string>
+    <string name="err_failed_to_load_tasks">فشل تحميل المهام</string>
+    <string name="err_failed_to_load_work_areas">فشل تحميل مناطق العمل</string>
+
+    <string name="welcome_label">أهلاً، %s</string>
+    <string name="no_completed_tasks">لا توجد مهام مكتملة بعد.</string>
+    <string name="no_active_tasks">لا توجد مهام نشطة مسندة إليك.</string>
+    <string name="err_task_not_scannable">هذه المهمة ليست مفتوحة للمسح</string>
+
+    <string name="err_task_id_missing">معرف المهمة مفقود</string>
+    <string name="min_length_hint">أقل طول</string>
+    <string name="max_length_hint">أقصى طول</string>
+    <string name="intent_action_hint">اسم Intent Action</string>
+    <string name="data_tag_hint">وسم البيانات (Data Tag)</string>
+    <string name="type_tag_hint">وسم النوع (Type Tag)</string>
+    <string name="correct_qty_hint">تصحيح الكمية</string>
+    <string name="counted_quantity">الكمية المحصورة</string>
+    <string name="scanned_barcode_label">الباركود الممسوح</string>
+    <string name="complete_label">إكمال</string>
+    <string name="processed_items">المواد المعالجة</string>
+    <string name="captured_image_label">صورة الباركود الملتقطة</string>
+
+    <string name="profile_general">عام</string>
+    <string name="profile_general_desc">كافة أنواع الباركود المدعومة</string>
+    <string name="profile_spare_part">قطع الغيار</string>
+    <string name="profile_spare_part_desc">أرقام القطع وملصقات المصنع</string>
+    <string name="profile_asset">الأصول</string>
+    <string name="profile_asset_desc">أرقام الأصول والملصقات الداخلية</string>
+
+    <string name="err_username_required">اسم المستخدم مطلوب</string>
+    <string name="err_password_required">كلمة المرور مطلوب</string>
+    <string name="err_connection_failed">فشل الاتصال</string>
+    <string name="err_bootstrap_failed">فشل الاتصال بخدمة التشغيل</string>
+    <string name="err_invalid_bootstrap">رد تشغيل غير صالح</string>
+    <string name="err_no_location_selected">لم يتم اختيار موقع</string>
+    <string name="err_task_not_open">هذه المهمة ليست مفتوحة للمسح</string>
+    <string name="title_enter_quantity">أدخل الكمية المحصورة</string>
+    <string name="err_qty_invalid">كمية غير صالحة</string>
+    <string name="err_qty_non_negative">الكمية يجب أن تكون موجبة وبحد أقصى 3 خانات عشرية</string>
+    <string name="err_change_value_for_correction">أدخل كمية أو موقعاً مختلفاً لهذا التصحيح</string>
+    <string name="msg_ready_for_next">جاهز للمسح التالي</string>
+
+    <string name="category_1d">1D</string>
+    <string name="category_2d">2D</string>
+    <string name="category_retail">التجزئة</string>
+    <string name="category_gs1">GS1</string>
+    <string name="category_postal">البريدي</string>
+    <string name="category_all">الكل</string>
+    <string name="category_composite">مركب</string>
+
+    <string name="symbology_header">أنواع %s (%d/%d)</string>
+    <string name="symbology_header_plain">أنواع %s</string>
+    <string name="err_unexpected">خطأ غير متوقع في الشبكة</string>
+    <string name="err_request_failed">فشل الطلب. الكود: %d</string>
+    <string name="qty_helper_text">مطلوب • بحد أقصى 3 خانات عشرية</string>
+    <string name="legend_basic">الرمادي: لم يبدأ  •  الأزرق: تم تسجيل مسحات</string>
+    <string name="legend_detailed">الأخضر: مكتمل  •  البرتقالي: بحاجة لمراجعة</string>
+
+    <string name="settings_feedback_desc">تستخدم أصوات واهتزازات التأكيد إعدادات خدمة الماسح. يتم تطبيق وضع الـ Intent، ووضع الـ HOST، ومفاتيح المسح غير المقفلة، وتعطيل الـ keyboard wedge تلقائياً.</string>
+    <string name="settings_image_desc">يطلب ويعرض صورة الماسح بعد القراءة الناجحة لهذا النطاق. الصور المطلوبة للمهام لا تزال تُلتقط وتُرفع حتى لو تم تعطيل هذا الخيار.</string>
+    <string name="settings_urovo_desc">يقوم التطبيق بكتابة هذه القيم لـ UROVO ScanManager أثناء التشغيل. قم بتغييرها فقط للتوافق مع الفيرموير.</string>
+    <string name="symbology_config_desc">قم بتفعيل أنواع باركود متعددة لهذا النطاق. استخدم "تهيئة" لتعديل خيارات محددة مثل الطول، خانات التحقق، أو معالجة ISBT.</string>
+
+    <string name="msg_download_apk">يرجى تحميل وتثبيت أحدث نسخة APK للمتابعة.</string>
+    <string name="current_version">كود الإصدار الحالي: %d</string>
+    <string name="min_required_version">أقل كود إصدار مطلوب: %d</string>
+
+    <string name="opt_enable_check_digit">تفعيل خانة التحقق</string>
+    <string name="opt_send_check_digit">إرسال خانة التحقق</string>
+    <string name="opt_full_ascii">Full ASCII</string>
+    <string name="opt_isbt_128">ISBT 128</string>
+    <string name="opt_check_isbt_table">التحقق من جدول ISBT</string>
+    <string name="opt_reduced_quiet_zone">منطقة هدوء مخفضة</string>
+    <string name="opt_check_digit_mode">وضع خانة التحقق</string>
+    <string name="opt_convert_to_ean13">تحويل إلى EAN-13</string>
+    <string name="opt_notis_editing">تحرير NOTIS</string>
+    <string name="opt_clsi_editing">تحرير CLSI</string>
+    <string name="opt_send_start_stop">إرسال البداية/النهاية</string>
+    <string name="opt_require_two_check_digits">طلب خانتي تحقق</string>
+    <string name="opt_second_check_mod11">خانة التحقق الثانية Mod 11</string>
+    <string name="opt_send_system_digit">إرسال رقم النظام</string>
+    <string name="opt_bookland_ean">Bookland EAN</string>
+    <string name="opt_convert_to_upca">تحويل إلى UPC-A</string>
+    <string name="opt_min_length">أقل طول</string>
+    <string name="opt_max_length">أقصى طول</string>
+
+    <string name="none_label">بدون</string>
+    <string name="none_desc">لا يوجد صوت بعد مسح الباركود بنجاح</string>
+    <string name="native_label">افتراضي</string>
+    <string name="native_desc">استخدم صوت التأكيد القياسي للجهاز</string>
+    <string name="msg_more_clicks_reset">بقي %d نقرات لإعادة الضبط</string>
+    <string name="msg_client_reset">تمت إعادة ضبط تكوين العميل</string>
+    <string name="err_client_inactive">العميل غير نشط. يرجى التواصل مع الدعم.</string>
+</resources>

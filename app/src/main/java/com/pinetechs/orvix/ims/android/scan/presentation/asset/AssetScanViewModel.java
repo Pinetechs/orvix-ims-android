@@ -13,17 +13,10 @@ import com.pinetechs.orvix.ims.android.scan.data.ScanRequestFactory;
 import com.pinetechs.orvix.ims.android.scan.data.dto.ScanCorrectionRequest;
 import com.pinetechs.orvix.ims.android.scan.data.dto.ScanRequest;
 import com.pinetechs.orvix.ims.android.scan.data.dto.ScanResponse;
-import com.pinetechs.orvix.ims.android.workarea.data.WorkAreaRepository;
-import com.pinetechs.orvix.ims.android.workarea.data.dto.HierarchyOptionResponse;
-
-import java.util.List;
 
 public class AssetScanViewModel extends AndroidViewModel {
     private final ScanRepository scanRepository;
-    private final WorkAreaRepository hierarchyRepository;
     private final MutableLiveData<Resource<ScanResponse>> scanState = new MutableLiveData<>(Resource.idle());
-    private final MutableLiveData<Resource<List<HierarchyOptionResponse>>> floorsState = new MutableLiveData<>(Resource.idle());
-    private final MutableLiveData<Resource<List<HierarchyOptionResponse>>> placesState = new MutableLiveData<>(Resource.idle());
     private Long pendingTaskId;
     private ScanRequest pendingRequest;
     private byte[] pendingImage;
@@ -35,23 +28,9 @@ public class AssetScanViewModel extends AndroidViewModel {
     public AssetScanViewModel(@NonNull Application app) {
         super(app);
         scanRepository = new ScanRepository(app);
-        hierarchyRepository = new WorkAreaRepository(app);
     }
 
     public LiveData<Resource<ScanResponse>> getScanState() { return scanState; }
-    public LiveData<Resource<List<HierarchyOptionResponse>>> getFloorsState() { return floorsState; }
-    public LiveData<Resource<List<HierarchyOptionResponse>>> getPlacesState() { return placesState; }
-
-    public void loadFloors(Long taskId, Long locationId) {
-        floorsState.setValue(Resource.loading());
-        hierarchyRepository.getFloors(taskId, locationId, optionCallback(floorsState));
-    }
-
-    public void loadPlaces(Long taskId, Long floorId) {
-        placesState.setValue(Resource.loading());
-        hierarchyRepository.getPlaces(taskId, floorId, optionCallback(placesState));
-    }
-
     public void scanAsset(Long taskId, String code, Long locationId, Long floorId, Long placeId,
                           String symbology, byte[] image) {
         if (taskId == null || locationId == null || floorId == null || placeId == null
@@ -109,11 +88,4 @@ public class AssetScanViewModel extends AndroidViewModel {
         };
     }
 
-    private WorkAreaRepository.RepositoryCallback<List<HierarchyOptionResponse>> optionCallback(
-            MutableLiveData<Resource<List<HierarchyOptionResponse>>> target) {
-        return new WorkAreaRepository.RepositoryCallback<List<HierarchyOptionResponse>>() {
-            @Override public void onSuccess(List<HierarchyOptionResponse> data) { target.setValue(Resource.success(data)); }
-            @Override public void onError(String message) { target.setValue(Resource.error(message)); }
-        };
-    }
 }

@@ -11,7 +11,7 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.appcompat.app.AppCompatActivity;
+import com.pinetechs.orvix.ims.android.core.presentation.BaseActivity;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.switchmaterial.SwitchMaterial;
@@ -31,7 +31,7 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class ScannerSettingsActivity extends AppCompatActivity {
+public class ScannerSettingsActivity extends BaseActivity {
 
     private static final ScannerProfile[] EDITABLE_PROFILES = {
             ScannerProfile.VEHICLE,
@@ -114,7 +114,7 @@ public class ScannerSettingsActivity extends AppCompatActivity {
     private void setupBeepModeSelector() {
         ScannerBeepMode[] modes = ScannerBeepMode.values();
         String[] names = new String[modes.length];
-        for (int i = 0; i < modes.length; i++) names[i] = modes[i].getDisplayName();
+        for (int i = 0; i < modes.length; i++) names[i] = modes[i].getDisplayName(this);
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, names);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -122,7 +122,7 @@ public class ScannerSettingsActivity extends AppCompatActivity {
         beepModeSpinner.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(android.widget.AdapterView<?> p, View v, int pos, long id) {
-                beepModeDescriptionTextView.setText(modes[pos].getDescription());
+                beepModeDescriptionTextView.setText(modes[pos].getDescription(ScannerSettingsActivity.this));
             }
             @Override public void onNothingSelected(android.widget.AdapterView<?> p) {}
         });
@@ -130,7 +130,7 @@ public class ScannerSettingsActivity extends AppCompatActivity {
 
     private void setupProfileSelector() {
         String[] names = new String[EDITABLE_PROFILES.length];
-        for (int i = 0; i < EDITABLE_PROFILES.length; i++) names[i] = EDITABLE_PROFILES[i].getDisplayName();
+        for (int i = 0; i < EDITABLE_PROFILES.length; i++) names[i] = EDITABLE_PROFILES[i].getDisplayName(this);
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, names);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -169,7 +169,7 @@ public class ScannerSettingsActivity extends AppCompatActivity {
         loadingProfile = true;
         ScannerProfileSettings s = profileSettings.get(profile);
         if (s != null) {
-            profileDescriptionTextView.setText(profile.getDescription());
+            profileDescriptionTextView.setText(profile.getDescription(this));
             showCapturedImageSwitch.setChecked(s.isShowCapturedImage());
             profileMinLengthEditText.setText(String.valueOf(s.getMinScanLength()));
             profileMaxLengthEditText.setText(String.valueOf(s.getMaxScanLength()));
@@ -196,7 +196,7 @@ public class ScannerSettingsActivity extends AppCompatActivity {
                 .filter(name -> !name.isEmpty())
                 .collect(Collectors.joining(", "));
 
-        enabledSymbologiesSummary.setText(summary.isEmpty() ? "None enabled" : summary);
+        enabledSymbologiesSummary.setText(summary.isEmpty() ? getString(R.string.none_enabled) : summary);
     }
 
     private void launchSymbologyManager() {
@@ -229,7 +229,7 @@ public class ScannerSettingsActivity extends AppCompatActivity {
             sessionManager.setScannerProfileSettings(entry.getKey(), entry.getValue());
         }
 
-        Toast.makeText(this, "Settings saved successfully", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.msg_settings_saved, Toast.LENGTH_SHORT).show();
         finish();
     }
 
@@ -240,6 +240,6 @@ public class ScannerSettingsActivity extends AppCompatActivity {
     private void resetToDefaults() {
         sessionManager.resetScannerSettings();
         loadCurrentSettings();
-        Toast.makeText(this, "Reset to defaults", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.msg_reset_defaults, Toast.LENGTH_SHORT).show();
     }
 }
