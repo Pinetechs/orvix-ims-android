@@ -26,15 +26,6 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="ORVIX"
-            android:textColor="@color/orvix_primary"
-            android:textSize="32sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:text="Inventory Management System"
             android:textColor="@color/orvix_text_sub"
             android:textSize="14sp" />
