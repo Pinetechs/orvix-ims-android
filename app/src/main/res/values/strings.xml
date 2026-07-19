@@ -245,6 +245,7 @@
     <string name="none_desc">No sound after a successful barcode decode</string>
     <string name="native_label">Native</string>
     <string name="native_desc">Use the standard confirmation beep</string>
+    <string name="msg_session_expired">Session expired. Please sign in again.</string>
     <string name="msg_more_clicks_reset">%d more clicks to reset</string>
     <string name="msg_client_reset">Client configuration has been reset</string>
     <string name="err_client_inactive">Client is inactive. Please contact support.</string>

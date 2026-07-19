@@ -244,6 +244,7 @@
     <string name="none_desc">لا يوجد صوت بعد مسح الباركود بنجاح</string>
     <string name="native_label">افتراضي</string>
     <string name="native_desc">استخدم صوت التأكيد القياسي للجهاز</string>
+    <string name="msg_session_expired">انتهت الجلسة. يرجى تسجيل الدخول مرة أخرى.</string>
     <string name="msg_more_clicks_reset">بقي %d نقرات لإعادة الضبط</string>
     <string name="msg_client_reset">تمت إعادة ضبط تكوين العميل</string>
     <string name="err_client_inactive">العميل غير نشط. يرجى التواصل مع الدعم.</string>
