@@ -248,5 +248,8 @@
     <string name="msg_session_expired">Session expired. Please sign in again.</string>
     <string name="msg_more_clicks_reset">%d more clicks to reset</string>
     <string name="msg_client_reset">Client configuration has been reset</string>
+    <string name="about_app">About Orvix IMS</string>
+    <string name="app_version">App Version</string>
+    <string name="device_info">Device Info</string>
     <string name="err_client_inactive">Client is inactive. Please contact support.</string>
 </resources>

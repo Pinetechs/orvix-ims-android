@@ -40,25 +40,25 @@ public class BootstrapRepository {
 
             @Override
             public void onFailure(@NonNull Call<BootstrapResolveResponse> call, @NonNull Throwable t) {
-                callback.onError(t.getMessage() != null ? t.getMessage() : OrvixApplication.getInstance().getString(R.string.err_bootstrap_failed));
+                callback.onError(0, t.getMessage() != null ? t.getMessage() : OrvixApplication.getInstance().getString(R.string.err_bootstrap_failed));
             }
         });
     }
 
     private void handleResponse(Response<BootstrapResolveResponse> response, RepositoryCallback<BootstrapResolveResponse> callback) {
         if (!response.isSuccessful() || response.body() == null) {
-            callback.onError(ApiErrorUtils.getErrorMessage(response));
+            callback.onError(response.code(), ApiErrorUtils.getErrorMessage(response));
             return;
         }
 
         BootstrapResolveResponse body = response.body();
         if (body.getData() == null || body.getData().getClient() == null) {
-            callback.onError(OrvixApplication.getInstance().getString(R.string.err_invalid_bootstrap));
+            callback.onError(0, OrvixApplication.getInstance().getString(R.string.err_invalid_bootstrap));
             return;
         }
 
         if (body.getData().getClient().getActive() != null && !body.getData().getClient().getActive()) {
-            callback.onError(OrvixApplication.getInstance().getString(R.string.err_client_inactive));
+            callback.onError(0, OrvixApplication.getInstance().getString(R.string.err_client_inactive));
             return;
         }
 
@@ -67,6 +67,6 @@ public class BootstrapRepository {
 
     public interface RepositoryCallback<T> {
         void onSuccess(T data);
-        void onError(String message);
+        void onError(int code, String message);
     }
 }

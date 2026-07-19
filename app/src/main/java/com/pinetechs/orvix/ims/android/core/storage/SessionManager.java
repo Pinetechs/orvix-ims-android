@@ -58,7 +58,13 @@ public class SessionManager {
         }
 
         if (update != null) {
-            editor.putString(Constants.KEY_ANDROID_APK_URL, update.getApkUrl());
+            String apkUrl = update.getApkUrl();
+            if (apkUrl != null && !apkUrl.trim().isEmpty()) {
+                if (!apkUrl.startsWith("http")) {
+                    apkUrl = Constants.BOOTSTRAP_BASE_URL + (apkUrl.startsWith("/") ? apkUrl.substring(1) : apkUrl);
+                }
+                editor.putString(Constants.KEY_ANDROID_APK_URL, apkUrl);
+            }
             editor.putString(Constants.KEY_RELEASE_NOTES, update.getReleaseNotes());
             editor.putInt(Constants.KEY_MIN_SUPPORTED_ANDROID_VERSION_CODE, 
                     update.getMinSupportedVersionCode() != null ? update.getMinSupportedVersionCode() : 1);
@@ -137,7 +143,11 @@ public class SessionManager {
     }
 
     public String getLogoUrl() {
-        return preferences.getString(Constants.KEY_LOGO_URL, null);
+        String url = preferences.getString(Constants.KEY_LOGO_URL, null);
+        if (url != null && !url.trim().isEmpty() && !url.startsWith("http")) {
+            return Constants.BOOTSTRAP_BASE_URL + (url.startsWith("/") ? url.substring(1) : url);
+        }
+        return url;
     }
 
     public int getMinSupportedAndroidVersionCode() {
@@ -153,7 +163,11 @@ public class SessionManager {
     }
 
     public String getAndroidApkUrl() {
-        return preferences.getString(Constants.KEY_ANDROID_APK_URL, null);
+        String url = preferences.getString(Constants.KEY_ANDROID_APK_URL, null);
+        if (url != null && !url.trim().isEmpty() && !url.startsWith("http")) {
+            return Constants.BOOTSTRAP_BASE_URL + (url.startsWith("/") ? url.substring(1) : url);
+        }
+        return url;
     }
 
     public String getReleaseNotes() {

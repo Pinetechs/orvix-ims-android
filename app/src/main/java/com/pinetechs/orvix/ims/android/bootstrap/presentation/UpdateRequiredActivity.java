@@ -58,8 +58,12 @@ public class UpdateRequiredActivity extends BaseActivity {
             return;
         }
 
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(apkUrl));
-        startActivity(intent);
+        try {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(apkUrl));
+            startActivity(intent);
+        } catch (Exception e) {
+            Toast.makeText(this, "Could not open download URL: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        }
     }
 
     private void resetSetup() {

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_bottom_sheet"
+    android:orientation="vertical"
+    android:paddingBottom="32dp">
+
+    <!-- Handle Bar -->
+    <View
+        android:layout_width="40dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="12dp"
+        android:background="#E2E8F0" />
+
+    <!-- User Info Section -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="24dp">
+
+        <FrameLayout
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:background="@drawable/bg_icon_circle_blue">
+
+            <TextView
+                android:id="@+id/userInitialsTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textColor="@color/orvix_primary"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                tools:text="JD" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/userNameTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/orvix_black"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                tools:text="John Doe" />
+
+            <TextView
+                android:id="@+id/userRoleTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:textColor="@color/orvix_text_sub"
+                android:textSize="13sp"
+                tools:text="Inventory Supervisor" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginHorizontal="24dp"
+        android:background="@color/orvix_border" />
+
+    <!-- Actions Section -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="12dp"
+        android:paddingTop="12dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/settingsActionItem"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:gravity="center_vertical|start"
+            android:text="@string/scanner_settings"
+            android:textColor="@color/orvix_text_main"
+            android:textSize="15sp"
+            app:icon="@drawable/ic_settings_24"
+            app:iconPadding="16dp"
+            app:iconSize="22dp"
+            app:iconTint="@color/orvix_text_sub" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/languageActionItem"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:gravity="center_vertical|start"
+            android:text="@string/language_label"
+            android:textColor="@color/orvix_text_main"
+            android:textSize="15sp"
+            app:icon="@drawable/ic_cloud_24"
+            app:iconPadding="16dp"
+            app:iconSize="22dp"
+            app:iconTint="@color/orvix_text_sub" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/aboutActionItem"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:gravity="center_vertical|start"
+            android:text="@string/about_app"
+            android:textColor="@color/orvix_text_main"
+            android:textSize="15sp"
+            app:icon="@drawable/ic_info_24"
+            app:iconPadding="16dp"
+            app:iconSize="22dp"
+            app:iconTint="@color/orvix_text_sub" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="12dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/logoutActionItem"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:gravity="center_vertical|start"
+            android:text="@string/logout"
+            android:textColor="@color/danger"
+            android:textSize="15sp"
+            app:icon="@drawable/ic_lock_24"
+            app:iconPadding="16dp"
+            app:iconSize="22dp"
+            app:iconTint="@color/danger" />
+
+    </LinearLayout>
+
+</LinearLayout>

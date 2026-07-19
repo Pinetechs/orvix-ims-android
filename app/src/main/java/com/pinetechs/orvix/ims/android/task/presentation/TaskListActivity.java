@@ -23,6 +23,13 @@ import com.pinetechs.orvix.ims.android.workarea.presentation.WorkAreaActivity;
 import com.pinetechs.orvix.ims.android.task.data.dto.AppInventoryTaskResponse;
 import com.pinetechs.orvix.ims.android.core.presentation.BaseActivity;
 import com.pinetechs.orvix.ims.android.task.data.dto.AppInventoryTaskSliceResponse;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+
+import com.pinetechs.orvix.ims.android.core.util.VersionUtils;
+import com.pinetechs.orvix.ims.android.core.util.DeviceUtils;
+import androidx.appcompat.app.AlertDialog;
+
+import com.pinetechs.orvix.ims.android.bootstrap.presentation.AboutActivity;
 
 public class TaskListActivity extends BaseActivity {
 
@@ -33,7 +40,7 @@ public class TaskListActivity extends BaseActivity {
     private TextView emptyTextView;
     private TextView welcomeTextView;
     private TextView assignedTasksCount, readyTasksCount, inProgressTasksCount, completedTasksCount;
-    private Button logoutButton, settingsButton;
+    private View profileAvatarContainer;
     private boolean showingCompleted = false;
 
     @Override
@@ -47,8 +54,7 @@ public class TaskListActivity extends BaseActivity {
         progressBar = findViewById(R.id.progressBar);
         emptyTextView = findViewById(R.id.emptyTextView);
         welcomeTextView = findViewById(R.id.welcomeTextView);
-        logoutButton = findViewById(R.id.logoutButton);
-        settingsButton = findViewById(R.id.settingsButton);
+        profileAvatarContainer = findViewById(R.id.profileAvatarContainer);
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
 
         assignedTasksCount = findViewById(R.id.assignedTasksCount);
@@ -76,11 +82,7 @@ public class TaskListActivity extends BaseActivity {
     }
 
     private void setupClickListeners() {
-        logoutButton.setOnClickListener(v -> logout());
-        settingsButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, ScannerSettingsActivity.class);
-            startActivity(intent);
-        });
+        profileAvatarContainer.setOnClickListener(v -> showProfileBottomSheet());
 
         // Toggle when clicking on History box
         View historyBox = findViewById(R.id.historyBox);
@@ -96,6 +98,69 @@ public class TaskListActivity extends BaseActivity {
             // Initial state: slightly faded when not active
             historyBox.setAlpha(showingCompleted ? 1.0f : 0.6f);
         }
+    }
+
+    private void showProfileBottomSheet() {
+        SessionManager sessionManager = new SessionManager(this);
+        BottomSheetDialog dialog = new BottomSheetDialog(this);
+        View view = getLayoutInflater().inflate(R.layout.bottom_sheet_user_profile, null);
+
+        TextView initialsTv = view.findViewById(R.id.userInitialsTextView);
+        TextView nameTv = view.findViewById(R.id.userNameTextView);
+        TextView roleTv = view.findViewById(R.id.userRoleTextView);
+
+        String fullName = sessionManager.getFullName();
+        nameTv.setText(fullName != null ? fullName : "User");
+        roleTv.setText(sessionManager.getClientName());
+
+        if (fullName != null && !fullName.isEmpty()) {
+            String[] parts = fullName.split(" ");
+            String initials = parts[0].substring(0, 1).toUpperCase();
+            if (parts.length > 1) initials += parts[parts.length - 1].substring(0, 1).toUpperCase();
+            initialsTv.setText(initials);
+        } else {
+            initialsTv.setText("U");
+        }
+
+        view.findViewById(R.id.settingsActionItem).setOnClickListener(v -> {
+            dialog.dismiss();
+            startActivity(new Intent(this, ScannerSettingsActivity.class));
+        });
+
+        view.findViewById(R.id.languageActionItem).setOnClickListener(v -> {
+            dialog.dismiss();
+            toggleLanguage();
+        });
+
+        view.findViewById(R.id.aboutActionItem).setOnClickListener(v -> {
+            dialog.dismiss();
+            showAboutDialog();
+        });
+
+        view.findViewById(R.id.logoutActionItem).setOnClickListener(v -> {
+            dialog.dismiss();
+            logout();
+        });
+
+        dialog.setContentView(view);
+        dialog.show();
+    }
+
+    private void toggleLanguage() {
+        SessionManager sessionManager = new SessionManager(this);
+        String currentLang = sessionManager.getLanguage();
+        String newLang = "ar".equals(currentLang) ? "en" : "ar";
+        
+        sessionManager.setLanguage(newLang);
+        
+        // Restart the activity to apply changes
+        Intent intent = getIntent();
+        finish();
+        startActivity(intent);
+    }
+
+    private void showAboutDialog() {
+        startActivity(new Intent(this, AboutActivity.class));
     }
 
     private void observeTasks() {

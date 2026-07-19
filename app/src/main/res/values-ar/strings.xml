@@ -247,5 +247,8 @@
     <string name="msg_session_expired">انتهت الجلسة. يرجى تسجيل الدخول مرة أخرى.</string>
     <string name="msg_more_clicks_reset">بقي %d نقرات لإعادة الضبط</string>
     <string name="msg_client_reset">تمت إعادة ضبط تكوين العميل</string>
+    <string name="about_app">حول أورفيكس IMS</string>
+    <string name="app_version">إصدار التطبيق</string>
+    <string name="device_info">معلومات الجهاز</string>
     <string name="err_client_inactive">العميل غير نشط. يرجى التواصل مع الدعم.</string>
 </resources>

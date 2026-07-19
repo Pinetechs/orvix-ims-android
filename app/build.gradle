@@ -10,7 +10,7 @@ android {
         applicationId 'com.pinetechs.orvix.ims.android'
         minSdk 26
         targetSdk 35
-        versionCode 4
+        versionCode 1
         versionName '1.2.0'
     }
 

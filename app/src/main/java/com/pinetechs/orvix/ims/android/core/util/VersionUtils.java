@@ -11,6 +11,15 @@ public final class VersionUtils {
     private VersionUtils() {
     }
 
+    public static String getCurrentVersionName(Context context) {
+        try {
+            PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            return packageInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            return "1.0.0";
+        }
+    }
+
     public static int getCurrentVersionCode(Context context) {
         try {
             PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
@@ -25,6 +34,9 @@ public final class VersionUtils {
 
     public static boolean isForceUpdateRequired(Context context, SessionManager sessionManager) {
         int currentVersionCode = getCurrentVersionCode(context);
+        System.err.println("currentVersionCode =" + currentVersionCode);
+        System.err.println("sessionManager.getMinSupportedAndroidVersionCode() =" + sessionManager.getMinSupportedAndroidVersionCode());
+
         return sessionManager.isForceUpdate()
                 || currentVersionCode < sessionManager.getMinSupportedAndroidVersionCode();
     }

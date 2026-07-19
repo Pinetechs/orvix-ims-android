@@ -57,13 +57,22 @@ public class SplashActivity extends BaseActivity {
             }
 
             @Override
-            public void onError(String message) {
+            public void onError(int code, String message) {
+                if (code == 404) {
+                    // Client code not found on server anymore.
+                    // Clear everything and go back to setup.
+                    sessionManager.clearClientConfigAndSession();
+                    Toast.makeText(SplashActivity.this, R.string.err_client_code_required, Toast.LENGTH_LONG).show();
+                    waitAndOpen(SetupActivity.class);
+                    return;
+                }
+
                 // If we already have config, we can proceed even if API fails (offline/resilience)
                 if (sessionManager.hasClientConfig()) {
                     checkNavigationAndProceed();
                 } else {
                     // Critical failure: no config and can't fetch it
-                    Toast.makeText(SplashActivity.this, "Connection failed: " + message, Toast.LENGTH_LONG).show();
+                    Toast.makeText(SplashActivity.this, message, Toast.LENGTH_LONG).show();
                     waitAndOpen(SetupActivity.class);
                 }
             }

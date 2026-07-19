@@ -50,7 +50,7 @@ public class SetupViewModel extends AndroidViewModel {
             }
 
             @Override
-            public void onError(String message) {
+            public void onError(int code, String message) {
                 setupState.setValue(Resource.error(message));
             }
         };

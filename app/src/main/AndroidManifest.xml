@@ -22,6 +22,10 @@
             android:exported="false" />
 
         <activity
+            android:name=".bootstrap.presentation.AboutActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".scan.presentation.vehicle.VehicleScanActivity"
             android:exported="false" />
 
