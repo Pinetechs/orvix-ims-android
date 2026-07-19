@@ -429,6 +429,9 @@ public class SparePartScanActivity extends BaseActivity {
         TextInputEditText quantityInput = content.findViewById(R.id.correctionQuantityEditText);
         TextInputEditText reasonInput = content.findViewById(R.id.correctionReasonEditText);
         quantityInput.setText(lastSubmittedQuantity == null ? "1" : lastSubmittedQuantity.toPlainString());
+        
+        correctionDialogVisible = true;
+        updateBusyState();
         AlertDialog dialog = new AlertDialog.Builder(this)
                 .setTitle(R.string.correct_scan)
                 .setView(content)

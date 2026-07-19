@@ -24,6 +24,8 @@ public final class ScanImageCoordinator {
         void onCaptureFailed(String message);
     }
 
+
+
     private final ScannerInterface scanner;
     private final Callback callback;
     private final Handler handler = new Handler(Looper.getMainLooper());
@@ -36,12 +38,7 @@ public final class ScanImageCoordinator {
             "The scanner image was not received. Please scan the barcode again."
     );
 
-    public ScanImageCoordinator(
-            ScannerInterface scanner,
-            boolean imageRequired,
-            boolean showCapturedImage,
-            Callback callback
-    ) {
+    public ScanImageCoordinator(ScannerInterface scanner, boolean imageRequired, boolean showCapturedImage, Callback callback) {
         this.scanner = scanner;
         this.callback = callback;
         updateOptions(imageRequired, showCapturedImage);

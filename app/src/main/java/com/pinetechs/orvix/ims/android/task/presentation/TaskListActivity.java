@@ -112,6 +112,7 @@ public class TaskListActivity extends BaseActivity {
             } else if (state.getStatus() == Resource.Status.SUCCESS) {
                 progressBar.setVisibility(View.GONE);
                 swipeRefreshLayout.setRefreshing(false);
+
                 
                 AppInventoryTaskSliceResponse data = state.getData();
                 if (data != null) {

@@ -366,12 +366,12 @@ public class AssetScanActivity extends BaseActivity {
     }
 
     private String messageFor(String key, String fallback) {
-        if ("scan.matched".equals(key)) return "Asset matched the selected location.";
-        if ("scan.location_mismatch".equals(key)) return "Asset location does not match. Select the correct path and scan again.";
-        if ("scan.duplicate".equals(key)) return "This asset was already scanned in the same location.";
-        if ("scan.location_conflict".equals(key)) return "This asset has an accepted scan in another location.";
-        if ("scan.recorded_for_review".equals(key)) return "Asset is not in the task and was recorded for review.";
-        if ("scan.correction_recorded".equals(key)) return "The asset location correction was recorded.";
+        if ("scan.matched".equals(key)) return getString(R.string.msg_scan_matched);
+        if ("scan.location_mismatch".equals(key)) return getString(R.string.msg_scan_location_mismatch);
+        if ("scan.duplicate".equals(key)) return getString(R.string.msg_scan_duplicate);
+        if ("scan.location_conflict".equals(key)) return getString(R.string.msg_scan_location_conflict);
+        if ("scan.recorded_for_review".equals(key)) return getString(R.string.msg_scan_recorded_for_review);
+        if ("scan.correction_recorded".equals(key)) return getString(R.string.msg_scan_correction_recorded);
         return fallback.replace('_', ' ');
     }
 
@@ -382,24 +382,30 @@ public class AssetScanActivity extends BaseActivity {
         boolean pathUnchanged = Objects.equals(floorId, lastSubmittedFloorId)
                 && Objects.equals(placeId, lastSubmittedPlaceId);
         if (correctingFirstAccepted && pathUnchanged) {
-            Toast.makeText(this, "Select a different floor or place, or return and choose the correct work area", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.err_change_value_for_correction, Toast.LENGTH_LONG).show();
             return;
         }
         EditText input = new EditText(this);
-        input.setHint("Correction reason");
+        input.setHint(R.string.hint_correction_reason);
         correctionDialogVisible = true;
         updateBusyState();
-        AlertDialog dialog = new AlertDialog.Builder(this).setTitle("Correct asset location").setView(input)
-                .setNegativeButton("Cancel", null)
-                .setPositiveButton("Submit", null)
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle(R.string.title_correct_location)
+                .setView(input)
+                .setNegativeButton(R.string.cancel, null)
+                .setPositiveButton(R.string.submit, null)
                 .create();
         correctionDialog = dialog;
         dialog.setOnDismissListener(ignored -> finishCorrectionDialog());
         dialog.setOnShowListener(ignored -> dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
                     String reason = input.getText() == null ? "" : input.getText().toString().trim();
-                    if (reason.isEmpty()) { input.setError("Correction reason is required"); return; }
+                    if (reason.isEmpty()) {
+                        input.setError(getString(R.string.err_reason_required));
+                        return;
+                    }
                     if (scanImageRequired && (lastImage == null || lastImage.length == 0)) {
-                        Toast.makeText(this, "Scan the barcode again to capture the correction image", Toast.LENGTH_LONG).show(); return;
+                        Toast.makeText(this, R.string.err_rescan_for_image, Toast.LENGTH_LONG).show();
+                        return;
                     }
                     dialog.setOnDismissListener(null);
                     correctionDialogVisible = false;
