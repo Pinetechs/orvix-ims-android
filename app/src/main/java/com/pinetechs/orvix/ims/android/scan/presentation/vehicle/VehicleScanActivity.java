@@ -32,6 +32,9 @@ import com.pinetechs.orvix.ims.android.scan.presentation.common.ScanImageCoordin
 import com.pinetechs.orvix.ims.android.core.presentation.BaseActivity;
 import com.pinetechs.orvix.ims.android.scan.presentation.common.ScanResultDialog;
 
+import com.pinetechs.orvix.ims.android.task.presentation.TaskListActivity;
+import android.content.Intent;
+
 public class VehicleScanActivity extends BaseActivity {
 
     private static final String TAG = "VehicleScanActivity";
@@ -266,8 +269,20 @@ public class VehicleScanActivity extends BaseActivity {
                 retryButton.setVisibility(state.getMessage() != null && !state.getMessage().startsWith("[")
                         ? View.VISIBLE : View.GONE);
                 vinEditText.requestFocus();
+
+                if (state.getMessage() != null && state.getMessage().contains("is not open")) {
+                    restToTaskPage();
+                }
             }
         });
+    }
+
+    private void restToTaskPage() {
+        Toast.makeText(this, R.string.err_task_not_open, Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(this, TaskListActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent);
+        finish();
     }
 
     private boolean isBusy() {
