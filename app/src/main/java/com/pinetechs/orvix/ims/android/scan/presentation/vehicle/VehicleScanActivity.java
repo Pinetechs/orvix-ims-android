@@ -35,6 +35,8 @@ import com.pinetechs.orvix.ims.android.scan.presentation.common.ScanResultDialog
 import com.pinetechs.orvix.ims.android.task.presentation.TaskListActivity;
 import android.content.Intent;
 
+import java.util.Objects;
+
 public class VehicleScanActivity extends BaseActivity {
 
     private static final String TAG = "VehicleScanActivity";
@@ -320,13 +322,14 @@ public class VehicleScanActivity extends BaseActivity {
         String scanReference = response.isIdempotentReplay() 
                 ? getString(R.string.synchronized_retry) 
                 : getString(R.string.scan_id_label, response.getScanId());
+        String resultMessage = messageFor(response, result);
         resultCodeTv.setText(ScanResultDialog.itemTitle(this, response.getItem()) + "  •  " + scanReference);
-        resultMessageTv.setText(compactResultMessage(response, messageFor(response.getMessageKey(), result)));
+        resultMessageTv.setText(compactResultMessage(response, resultMessage));
         boolean canCorrectHere = response.isCorrectionAllowed()
                 && response.getCurrentAcceptedScanId() != null;
         correctButton.setVisibility(canCorrectHere ? View.VISIBLE : View.GONE);
         retryButton.setVisibility(View.GONE);
-        showResultOverlay(response, messageFor(response.getMessageKey(), result));
+        showResultOverlay(response, resultMessage);
     }
 
     private void showResultOverlay(ScanResponse response, String message) {
@@ -360,18 +363,31 @@ public class VehicleScanActivity extends BaseActivity {
         correctButton.setVisibility(View.GONE);
     }
 
-    private String messageFor(String key, String fallback) {
-        if ("scan.matched".equals(key)) return getString(R.string.msg_scan_matched);
-        if ("scan.location_mismatch".equals(key)) return getString(R.string.msg_scan_location_mismatch);
-        if ("scan.duplicate".equals(key)) return getString(R.string.msg_scan_duplicate);
-        if ("scan.location_conflict".equals(key)) return getString(R.string.msg_scan_location_conflict);
-        if ("scan.recorded_for_review".equals(key)) return getString(R.string.msg_scan_recorded_for_review);
-        if ("scan.correction_recorded".equals(key)) return getString(R.string.msg_scan_correction_recorded);
+    private String messageFor(ScanResponse response, String fallback) {
+        String key = response.getMessageKey();
+        if ("CONFLICT".equalsIgnoreCase(response.getEventType())) {
+            return getString(response.isCorrectionAllowed()
+                    ? R.string.vehicle_conflict_correctable
+                    : R.string.vehicle_conflict_review);
+        }
+        if ("scan.matched".equals(key)) return getString(R.string.vehicle_scan_matched);
+        if ("scan.location_mismatch".equals(key)) return getString(R.string.vehicle_location_mismatch);
+        if ("scan.duplicate".equals(key)) return getString(R.string.vehicle_scan_duplicate);
+        if ("scan.recorded_for_review".equals(key)) return getString(R.string.vehicle_scan_review);
+        if ("scan.correction_recorded".equals(key)) return getString(R.string.vehicle_correction_recorded);
         return fallback.replace('_', ' ');
     }
 
     private void requestCorrectionReason() {
-        if (lastResponse == null || lastResponse.getCurrentAcceptedScanId() == null || locationId == null) return;
+        if (lastResponse == null || !lastResponse.isCorrectionAllowed()
+                || lastResponse.getCurrentAcceptedScanId() == null || locationId == null) return;
+        boolean correctingFirstAccepted = lastResponse.getCurrentAcceptedScanId().equals(lastResponse.getScanId());
+        Long scannedLocationId = lastResponse.getActualLocation() == null
+                ? null : lastResponse.getActualLocation().getLocationId();
+        if (correctingFirstAccepted && Objects.equals(locationId, scannedLocationId)) {
+            Toast.makeText(this, R.string.vehicle_correction_same_location, Toast.LENGTH_LONG).show();
+            return;
+        }
         EditText input = new EditText(this);
         input.setHint(R.string.hint_correction_reason);
         correctionDialogVisible = true;

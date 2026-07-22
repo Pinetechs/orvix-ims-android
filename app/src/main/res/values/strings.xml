@@ -252,4 +252,33 @@
     <string name="app_version">App Version</string>
     <string name="device_info">Device Info</string>
     <string name="err_client_inactive">Client is inactive. Please contact support.</string>
+    <string name="vehicle_scan_matched">Vehicle matched the selected location.</string>
+    <string name="vehicle_location_mismatch">The vehicle was recorded in a different location. Select the correct location and scan it again.</string>
+    <string name="vehicle_scan_duplicate">This vehicle was already scanned in the same location.</string>
+    <string name="vehicle_conflict_correctable">The first accepted scan is still active. You can correct it to the current location.</string>
+    <string name="vehicle_conflict_review">The first accepted scan is still active. This conflict was recorded for supervisor review.</string>
+    <string name="vehicle_scan_review">Vehicle is not in the task and was recorded for supervisor review.</string>
+    <string name="vehicle_correction_recorded">The vehicle location correction was recorded.</string>
+    <string name="vehicle_correction_same_location">Select a different location before submitting a correction.</string>
+
+    <string name="asset_scan_matched">Asset matched the selected location.</string>
+    <string name="asset_location_mismatch">Asset location does not match. Select the correct floor and place, then scan it again.</string>
+    <string name="asset_scan_duplicate">This asset was already scanned in the same location.</string>
+    <string name="asset_conflict_correctable">The first accepted scan is still active. You can correct it to the current location.</string>
+    <string name="asset_conflict_review">The first accepted scan is still active. This conflict was recorded for supervisor review.</string>
+    <string name="asset_scan_review">Asset is not in the task and was recorded for supervisor review.</string>
+    <string name="asset_correction_recorded">The asset location correction was recorded.</string>
+    <string name="asset_correction_title">Correct asset location</string>
+
+    <string name="spare_scan_recorded">The counted quantity was recorded.</string>
+    <string name="spare_scan_review">The item was recorded for supervisor review.</string>
+    <string name="spare_scan_duplicate">This item was already counted with the same location and quantity.</string>
+    <string name="spare_conflict_correctable">The first accepted count is still active. You can submit a correction.</string>
+    <string name="spare_conflict_review">The first accepted count is still active. This conflict was recorded for supervisor review.</string>
+    <string name="spare_correction_recorded">The count correction was recorded.</string>
+    <string name="spare_correction_title">Correct spare-part count</string>
+
+    <string name="complete_location_title">Complete this location?</string>
+    <string name="complete_location_message">You can complete this location even when it has differences. It will appear as Needs review, and any new scan will reopen it automatically.</string>
+    <string name="location_not_completed_fallback">The location could not be completed.</string>
 </resources>

@@ -9,7 +9,7 @@ public final class Constants {
      * Change this value to the public Bootstrap Service URL when deployed.
      * Emulator localhost uses 10.0.2.2.
      */
-    public static final String BOOTSTRAP_BASE_URL = "http://192.168.0.102:8081/";
+    public static final String BOOTSTRAP_BASE_URL = "http://192.168.0.104:8081/";
 
     public static final String PREF_NAME = "orvix_ims_session";
 

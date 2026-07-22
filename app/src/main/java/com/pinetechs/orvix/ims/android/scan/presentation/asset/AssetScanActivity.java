@@ -345,23 +345,16 @@ public class AssetScanActivity extends BaseActivity {
         String scanReference = response.isIdempotentReplay() 
                 ? getString(R.string.synchronized_retry) 
                 : getString(R.string.scan_id_label, response.getScanId());
+        String resultMessage = messageFor(response, result);
         resultCodeTv.setText(ScanResultDialog.itemTitle(this, response.getItem()) + "  •  " + scanReference);
         String fields = response.getMismatchFields().isEmpty() ? "" : " (" + String.join(", ", response.getMismatchFields()) + ")";
-        resultMessageTv.setText(compactResultMessage(response, messageFor(response.getMessageKey(), result) + fields));
+        resultMessageTv.setText(compactResultMessage(response, resultMessage + fields));
         boolean canCorrectHere = response.isCorrectionAllowed()
                 && response.getCurrentAcceptedScanId() != null;
         correctButton.setVisibility(canCorrectHere ? View.VISIBLE : View.GONE);
         retryButton.setVisibility(View.GONE);
-        showResultOverlay(response, messageFor(response.getMessageKey(), result) + fields);
+        showResultOverlay(response, resultMessage + fields);
     }
-    
-    
-    
-    private void backToTaskActivety(){
-        
-        
-    }
-    
 
     private void showResultOverlay(ScanResponse response, String message) {
         resultOverlayVisible = true;
@@ -394,18 +387,24 @@ public class AssetScanActivity extends BaseActivity {
         correctButton.setVisibility(View.GONE);
     }
 
-    private String messageFor(String key, String fallback) {
-        if ("scan.matched".equals(key)) return getString(R.string.msg_scan_matched);
-        if ("scan.location_mismatch".equals(key)) return getString(R.string.msg_scan_location_mismatch);
-        if ("scan.duplicate".equals(key)) return getString(R.string.msg_scan_duplicate);
-        if ("scan.location_conflict".equals(key)) return getString(R.string.msg_scan_location_conflict);
-        if ("scan.recorded_for_review".equals(key)) return getString(R.string.msg_scan_recorded_for_review);
-        if ("scan.correction_recorded".equals(key)) return getString(R.string.msg_scan_correction_recorded);
+    private String messageFor(ScanResponse response, String fallback) {
+        String key = response.getMessageKey();
+        if ("CONFLICT".equalsIgnoreCase(response.getEventType())) {
+            return getString(response.isCorrectionAllowed()
+                    ? R.string.asset_conflict_correctable
+                    : R.string.asset_conflict_review);
+        }
+        if ("scan.matched".equals(key)) return getString(R.string.asset_scan_matched);
+        if ("scan.location_mismatch".equals(key)) return getString(R.string.asset_location_mismatch);
+        if ("scan.duplicate".equals(key)) return getString(R.string.asset_scan_duplicate);
+        if ("scan.recorded_for_review".equals(key)) return getString(R.string.asset_scan_review);
+        if ("scan.correction_recorded".equals(key)) return getString(R.string.asset_correction_recorded);
         return fallback.replace('_', ' ');
     }
 
     private void requestCorrectionReason() {
-        if (lastResponse == null || lastResponse.getCurrentAcceptedScanId() == null
+        if (lastResponse == null || !lastResponse.isCorrectionAllowed()
+                || lastResponse.getCurrentAcceptedScanId() == null
                 || floorId == null || placeId == null) return;
         boolean correctingFirstAccepted = lastResponse.getCurrentAcceptedScanId().equals(lastResponse.getScanId());
         boolean pathUnchanged = Objects.equals(floorId, lastSubmittedFloorId)
@@ -419,7 +418,7 @@ public class AssetScanActivity extends BaseActivity {
         correctionDialogVisible = true;
         updateBusyState();
         AlertDialog dialog = new AlertDialog.Builder(this)
-                .setTitle(R.string.title_correct_location)
+                .setTitle(R.string.asset_correction_title)
                 .setView(input)
                 .setNegativeButton(R.string.cancel, null)
                 .setPositiveButton(R.string.submit, null)

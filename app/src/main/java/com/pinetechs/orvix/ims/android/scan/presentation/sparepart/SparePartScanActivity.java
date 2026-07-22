@@ -374,13 +374,14 @@ public class SparePartScanActivity extends BaseActivity {
         String scanReference = response.isIdempotentReplay() 
                 ? getString(R.string.synchronized_retry) 
                 : getString(R.string.scan_id_label, response.getScanId());
+        String resultMessage = messageFor(response, result);
         resultCodeTv.setText(ScanResultDialog.itemTitle(this, response.getItem()) + "  •  " + scanReference);
-        resultMessageTv.setText(compactResultMessage(response, messageFor(response.getMessageKey(), result)));
+        resultMessageTv.setText(compactResultMessage(response, resultMessage));
         boolean canCorrectHere = response.isCorrectionAllowed()
                 && response.getCurrentAcceptedScanId() != null;
         correctButton.setVisibility(canCorrectHere ? View.VISIBLE : View.GONE);
         retryButton.setVisibility(View.GONE);
-        showResultOverlay(response, messageFor(response.getMessageKey(), result));
+        showResultOverlay(response, resultMessage);
     }
 
     private void showResultOverlay(ScanResponse response, String message) {
@@ -430,25 +431,32 @@ public class SparePartScanActivity extends BaseActivity {
         }
     }
 
-    private String messageFor(String key, String fallback) {
-        if ("scan.recorded".equals(key)) return getString(R.string.msg_scan_recorded);
-        if ("scan.recorded_for_review".equals(key)) return getString(R.string.msg_scan_recorded_for_review);
-        if ("scan.already_counted".equals(key)) return getString(R.string.msg_scan_already_counted);
-        if ("scan.correction_recorded".equals(key)) return getString(R.string.msg_scan_correction_recorded_spare);
+    private String messageFor(ScanResponse response, String fallback) {
+        String key = response.getMessageKey();
+        if ("CONFLICT".equalsIgnoreCase(response.getEventType())) {
+            return getString(response.isCorrectionAllowed()
+                    ? R.string.spare_conflict_correctable
+                    : R.string.spare_conflict_review);
+        }
+        if ("DUPLICATE".equalsIgnoreCase(response.getEventType())) {
+            return getString(R.string.spare_scan_duplicate);
+        }
+        if ("scan.recorded".equals(key)) return getString(R.string.spare_scan_recorded);
+        if ("scan.recorded_for_review".equals(key)) return getString(R.string.spare_scan_review);
+        if ("scan.correction_recorded".equals(key)) return getString(R.string.spare_correction_recorded);
         return fallback.replace('_', ' ');
     }
 
     private void requestCorrectionReason() {
-        if (lastResponse == null || lastResponse.getCurrentAcceptedScanId() == null || selectedLocationId == null) return;
+        if (lastResponse == null || !lastResponse.isCorrectionAllowed()
+                || lastResponse.getCurrentAcceptedScanId() == null || selectedLocationId == null) return;
         View content = getLayoutInflater().inflate(R.layout.dialog_spare_correction, null);
         TextInputEditText quantityInput = content.findViewById(R.id.correctionQuantityEditText);
         TextInputEditText reasonInput = content.findViewById(R.id.correctionReasonEditText);
         quantityInput.setText(lastSubmittedQuantity == null ? "1" : lastSubmittedQuantity.toPlainString());
         
-        correctionDialogVisible = true;
-        updateBusyState();
         AlertDialog dialog = new AlertDialog.Builder(this)
-                .setTitle(R.string.correct_scan)
+                .setTitle(R.string.spare_correction_title)
                 .setView(content)
                 .setNegativeButton(R.string.cancel, null)
                 .setPositiveButton(R.string.submit, null)

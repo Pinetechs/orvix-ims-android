@@ -19,11 +19,19 @@ targets `currentAcceptedScanId`.
   point-of-sale style overlay and close after 2.8 seconds. Mismatch, review,
   duplicate and correction-capable results remain until the employee closes
   them or starts the correction.
+- `CONFLICT` never replaces the first accepted scan. When `correctionAllowed`
+  is true, the employee may submit an explicit correction; otherwise the app
+  explains that the conflict was recorded for supervisor review.
+- Extra and ambiguous items are warning results and stay open until the
+  employee closes the result dialog. They are never shown as auto-closing
+  successes.
 - Spare-part tasks open a searchable location list before the scanner. The
   backend `progressStatus` is the only source for grey, blue, green and orange
   state badges. In `BASIC` mode only not-started and in-progress are shown. In
   `DETAILED` mode the list also shows completed and review-required states, and
   offers completion only when the API returns `canComplete=true`.
+- A spare-part location may be completed with differences. It remains visible
+  as `REVIEW_REQUIRED`, and a later scan reopens it automatically.
 - Spare-part input order is barcode, required sensor image (when configured),
   counted quantity, then verify. Quantity is never silently defaulted into a
   submitted request.

@@ -98,6 +98,7 @@ public final class ScanResultDialog {
         return value.contains("MISMATCH") || value.contains("CONFLICT")
                 || value.contains("DUPLICATE") || value.contains("ALREADY")
                 || value.contains("REVIEW") || value.contains("NOT_IN_TASK")
+                || value.contains("EXTRA") || value.contains("AMBIGUOUS")
                 || value.contains("WARNING") || value.contains("FAIL");
     }
 

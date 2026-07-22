@@ -188,10 +188,10 @@ public class HierarchyListActivity extends BaseActivity implements HierarchyOpti
     public void onComplete(HierarchyOptionResponse item) {
         if (!MODE_SPARE_LOCATIONS.equals(mode) || item == null || !item.isCanComplete()) return;
         new AlertDialog.Builder(this)
-                .setTitle("Complete this location?")
-                .setMessage("New scans will reopen it automatically. A location with pending review cannot be completed.")
-                .setNegativeButton("Cancel", null)
-                .setPositiveButton("Complete", (dialog, which) -> completeLocation(item))
+                .setTitle(R.string.complete_location_title)
+                .setMessage(R.string.complete_location_message)
+                .setNegativeButton(R.string.cancel, null)
+                .setPositiveButton(R.string.complete_label, (dialog, which) -> completeLocation(item))
                 .show();
     }
 
@@ -207,7 +207,9 @@ public class HierarchyListActivity extends BaseActivity implements HierarchyOpti
                         progressBar.setVisibility(View.GONE);
                         new AlertDialog.Builder(HierarchyListActivity.this)
                                 .setTitle(R.string.title_location_not_completed)
-                                .setMessage(message)
+                                .setMessage(message == null
+                                        ? getString(R.string.location_not_completed_fallback)
+                                        : message)
                                 .setPositiveButton(R.string.continue_label, null)
                                 .show();
                     }

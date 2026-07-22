@@ -251,4 +251,33 @@
     <string name="app_version">إصدار التطبيق</string>
     <string name="device_info">معلومات الجهاز</string>
     <string name="err_client_inactive">العميل غير نشط. يرجى التواصل مع الدعم.</string>
+    <string name="vehicle_scan_matched">المركبة مطابقة للموقع المحدد.</string>
+    <string name="vehicle_location_mismatch">تم تسجيل المركبة في موقع مختلف. اختر الموقع الصحيح ثم امسحها مرة أخرى.</string>
+    <string name="vehicle_scan_duplicate">تم مسح هذه المركبة مسبقًا في الموقع نفسه.</string>
+    <string name="vehicle_conflict_correctable">ما زال المسح الأول المعتمد فعالًا. يمكنك تصحيحه إلى الموقع الحالي.</string>
+    <string name="vehicle_conflict_review">ما زال المسح الأول المعتمد فعالًا. تم تسجيل هذا التعارض لمراجعة المشرف.</string>
+    <string name="vehicle_scan_review">المركبة غير موجودة في المهمة وتم تسجيلها لمراجعة المشرف.</string>
+    <string name="vehicle_correction_recorded">تم تسجيل تصحيح موقع المركبة.</string>
+    <string name="vehicle_correction_same_location">اختر موقعًا مختلفًا قبل إرسال التصحيح.</string>
+
+    <string name="asset_scan_matched">الأصل مطابق للموقع المحدد.</string>
+    <string name="asset_location_mismatch">موقع الأصل غير مطابق. اختر الطابق والمكان الصحيحين ثم امسحه مرة أخرى.</string>
+    <string name="asset_scan_duplicate">تم مسح هذا الأصل مسبقًا في الموقع نفسه.</string>
+    <string name="asset_conflict_correctable">ما زال المسح الأول المعتمد فعالًا. يمكنك تصحيحه إلى الموقع الحالي.</string>
+    <string name="asset_conflict_review">ما زال المسح الأول المعتمد فعالًا. تم تسجيل هذا التعارض لمراجعة المشرف.</string>
+    <string name="asset_scan_review">الأصل غير موجود في المهمة وتم تسجيله لمراجعة المشرف.</string>
+    <string name="asset_correction_recorded">تم تسجيل تصحيح موقع الأصل.</string>
+    <string name="asset_correction_title">تصحيح موقع الأصل</string>
+
+    <string name="spare_scan_recorded">تم تسجيل الكمية المعدودة.</string>
+    <string name="spare_scan_review">تم تسجيل الصنف لمراجعة المشرف.</string>
+    <string name="spare_scan_duplicate">تم عد هذا الصنف مسبقًا بالموقع والكمية نفسيهما.</string>
+    <string name="spare_conflict_correctable">ما زال العد الأول المعتمد فعالًا. يمكنك إرسال تصحيح.</string>
+    <string name="spare_conflict_review">ما زال العد الأول المعتمد فعالًا. تم تسجيل هذا التعارض لمراجعة المشرف.</string>
+    <string name="spare_correction_recorded">تم تسجيل تصحيح العد.</string>
+    <string name="spare_correction_title">تصحيح عد قطع الغيار</string>
+
+    <string name="complete_location_title">إنهاء هذا الموقع؟</string>
+    <string name="complete_location_message">يمكنك إنهاء الموقع حتى عند وجود اختلافات. سيظهر بحالة يحتاج إلى مراجعة، وأي مسح جديد سيعيد فتحه تلقائيًا.</string>
+    <string name="location_not_completed_fallback">تعذر إنهاء الموقع.</string>
 </resources>
