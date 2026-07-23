@@ -30,6 +30,7 @@ import com.pinetechs.orvix.ims.android.core.util.DeviceUtils;
 import androidx.appcompat.app.AlertDialog;
 
 import com.pinetechs.orvix.ims.android.bootstrap.presentation.AboutActivity;
+import com.pinetechs.orvix.ims.android.recheck.presentation.list.RecheckListActivity;
 
 public class TaskListActivity extends BaseActivity {
 
@@ -83,6 +84,11 @@ public class TaskListActivity extends BaseActivity {
 
     private void setupClickListeners() {
         profileAvatarContainer.setOnClickListener(v -> showProfileBottomSheet());
+        View recheckShortcut = findViewById(R.id.recheckShortcutCard);
+        if (recheckShortcut != null) {
+            recheckShortcut.setOnClickListener(v ->
+                    startActivity(new Intent(this, RecheckListActivity.class)));
+        }
 
         // Toggle when clicking on History box
         View historyBox = findViewById(R.id.historyBox);

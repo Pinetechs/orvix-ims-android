@@ -281,4 +281,108 @@
     <string name="complete_location_title">Complete this location?</string>
     <string name="complete_location_message">You can complete this location even when it has differences. It will appear as Needs review, and any new scan will reopen it automatically.</string>
     <string name="location_not_completed_fallback">The location could not be completed.</string>
+
+    <!-- Review Center / Recheck -->
+    <string name="back">Back</string>
+    <string name="open">Open</string>
+    <string name="retry">Retry</string>
+    <string name="domain_vehicle">Vehicles</string>
+    <string name="domain_asset">Assets</string>
+    <string name="domain_spare_part">Spare parts</string>
+
+    <string name="recheck_requests_title">Recheck requests</string>
+    <string name="recheck_requests_subtitle">Only locations and items assigned to you</string>
+    <string name="recheck_shortcut_subtitle">Verify the specific items requested by your supervisor</string>
+    <plurals name="recheck_active_request_count">
+        <item quantity="one">%1$d active request</item>
+        <item quantity="other">%1$d active requests</item>
+    </plurals>
+    <string name="recheck_no_active_requests">You have no active recheck requests.</string>
+    <string name="recheck_load_error">Recheck requests could not be loaded. Pull down to try again.</string>
+    <string name="recheck_details_title">Recheck details</string>
+    <string name="recheck_verify_item_title">Verify item</string>
+    <string name="recheck_task_reference">Task %1$s</string>
+    <string name="recheck_task_title_value">%1$s (%2$s)</string>
+    <string name="recheck_work_area_value">Work area: %1$s</string>
+    <string name="recheck_due_value">Due: %1$s</string>
+    <string name="recheck_items_progress">%1$d / %2$d items</string>
+    <string name="recheck_image_required_short">Image required</string>
+    <string name="recheck_image_required">Evidence image required</string>
+    <string name="recheck_image_optional">Evidence image optional</string>
+    <string name="recheck_supervisor_instructions">Supervisor instructions</string>
+    <string name="recheck_items_title">Items to verify</string>
+    <string name="recheck_start_button">Start recheck</string>
+    <string name="recheck_open_item">Open and verify</string>
+
+    <string name="recheck_status_unknown">Unknown</string>
+    <string name="recheck_status_pending">Pending</string>
+    <string name="recheck_status_in_progress">In progress</string>
+    <string name="recheck_status_submitted">Submitted</string>
+    <string name="recheck_status_completed">Completed</string>
+    <string name="recheck_status_cancelled">Cancelled</string>
+    <string name="recheck_item_accepted">Accepted</string>
+    <string name="recheck_item_rejected">Rejected</string>
+
+    <string name="recheck_issue">Review issue</string>
+    <string name="recheck_issue_not_processed">Not processed</string>
+    <string name="recheck_issue_location_mismatch">Location mismatch</string>
+    <string name="recheck_issue_shortage">Quantity shortage</string>
+    <string name="recheck_issue_overage">Quantity overage</string>
+    <string name="recheck_issue_conflict">Conflicting scans</string>
+    <string name="recheck_issue_extra">Not in source data</string>
+    <string name="recheck_issue_ambiguous">Ambiguous item</string>
+
+    <string name="recheck_result_found_matched">Found in expected location</string>
+    <string name="recheck_result_different_location">Found in a different location</string>
+    <string name="recheck_result_quantity_confirmed">Quantity confirmed</string>
+    <string name="recheck_result_quantity_different">Quantity is different</string>
+    <string name="recheck_result_not_found">Not found</string>
+    <string name="recheck_result_unable">Unable to verify</string>
+
+    <string name="recheck_expected_location_value">Expected: %1$s</string>
+    <string name="recheck_previous_result_value">Previous result: %1$s</string>
+    <string name="recheck_submitted_result_value">Submitted result: %1$s</string>
+    <string name="recheck_expected_quantity_value">Expected quantity: %1$s</string>
+    <string name="recheck_what_did_you_find">What did you find?</string>
+    <string name="recheck_found">Found</string>
+    <string name="recheck_not_found">Not found</string>
+    <string name="recheck_unable">Unable</string>
+    <string name="recheck_actual_floor">Actual floor</string>
+    <string name="recheck_actual_place">Actual place</string>
+    <string name="recheck_actual_spare_location">Actual cabinet / shelf</string>
+    <string name="recheck_counted_quantity">Counted quantity</string>
+    <string name="recheck_scan_barcode">Scan or enter barcode</string>
+    <string name="recheck_reason">Reason</string>
+    <string name="recheck_note">Note</string>
+    <string name="recheck_capture_evidence">Capture evidence photo</string>
+    <string name="recheck_evidence_preview">Evidence image preview</string>
+    <string name="recheck_submit_result">Submit result to supervisor</string>
+    <string name="recheck_expected_selection">Expected location</string>
+
+    <string name="recheck_reason_missing">Item is missing</string>
+    <string name="recheck_reason_moved">Item was moved</string>
+    <string name="recheck_reason_barcode_damaged">Barcode is damaged</string>
+    <string name="recheck_reason_access_restricted">Access is restricted</string>
+    <string name="recheck_reason_other">Other</string>
+
+    <string name="recheck_item_submitted">The result was submitted to the supervisor. It will not change the inventory result until approved.</string>
+    <string name="recheck_camera_unavailable">No camera application is available on this device.</string>
+    <string name="recheck_camera_image_error">The evidence photo could not be prepared.</string>
+    <string name="recheck_evidence_required_error">Capture or scan an evidence image before submitting.</string>
+    <string name="recheck_scan_required">Scan the requested barcode before submitting.</string>
+    <string name="recheck_wrong_barcode">The scanned barcode does not match the requested item.</string>
+    <string name="recheck_location_context_missing">The expected location context is missing. Refresh the request or contact the supervisor.</string>
+    <string name="recheck_asset_location_required">Select the floor and place where the asset was found.</string>
+    <string name="recheck_spare_location_required">Select the cabinet or shelf where the item was counted.</string>
+    <string name="recheck_expected_quantity_missing">The expected quantity is missing from this request.</string>
+    <string name="recheck_unknown_domain">This inventory domain is not supported.</string>
+    <string name="recheck_reason_required">Select a reason.</string>
+    <string name="recheck_note_required">Write a note explaining why the item was not verified.</string>
+    <string name="recheck_quantity_required">Enter the counted quantity before scanning.</string>
+    <string name="recheck_quantity_invalid">Enter a valid non-negative quantity with no more than three decimal places.</string>
+    <string name="recheck_item_not_found">The requested recheck item was not found.</string>
+    <string name="recheck_item_not_open">This item is no longer open for recheck.</string>
+    <string name="recheck_select_found_before_scan">Select Found before scanning a barcode.</string>
+    <string name="recheck_enter_quantity_before_scan">Enter the counted quantity before scanning the spare part.</string>
+    <string name="recheck_submission_error">The recheck result could not be submitted.</string>
 </resources>

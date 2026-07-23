@@ -189,6 +189,72 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/recheckShortcutCard"
+                style="@style/OrvixCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="14dp"
+                android:layout_marginEnd="16dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="14dp">
+
+                    <FrameLayout
+                        android:layout_width="42dp"
+                        android:layout_height="42dp"
+                        android:background="@drawable/bg_icon_circle_orange">
+
+                        <ImageView
+                            android:layout_width="23dp"
+                            android:layout_height="23dp"
+                            android:layout_gravity="center"
+                            android:contentDescription="@string/recheck_requests_title"
+                            android:src="@drawable/ic_warning_24"
+                            app:tint="@color/warning" />
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/recheck_requests_title"
+                            android:textColor="@color/orvix_text_main"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="@string/recheck_shortcut_subtitle"
+                            android:textColor="@color/orvix_text_sub"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:contentDescription="@string/open"
+                        android:src="@drawable/ic_arrow_right_24"
+                        app:tint="@color/orvix_text_sub" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
             <ProgressBar
                 android:id="@+id/progressBar"
                 android:layout_width="32dp"
@@ -212,7 +278,8 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/tasksRecyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
                 android:clipToPadding="false"
                 android:paddingVertical="12dp" />
         </LinearLayout>

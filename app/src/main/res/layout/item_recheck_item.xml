@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/OrvixCard"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="15dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/itemCodeTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/orvix_text_main"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                tools:text="SP-10024" />
+
+            <TextView
+                android:id="@+id/itemStatusChipTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_chip_warning"
+                android:paddingHorizontal="9dp"
+                android:paddingVertical="5dp"
+                android:textColor="@color/warning"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                tools:text="Pending" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/itemDescriptionTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:textColor="@color/orvix_text_sub"
+            android:textSize="13sp"
+            tools:text="Oil filter" />
+
+        <TextView
+            android:id="@+id/issueTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_chip_danger"
+            android:paddingHorizontal="9dp"
+            android:paddingVertical="5dp"
+            android:textColor="@color/danger"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            tools:text="Quantity shortage" />
+
+        <TextView
+            android:id="@+id/expectedLocationTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="11dp"
+            android:textColor="@color/orvix_text_main"
+            android:textSize="13sp"
+            tools:text="Expected: Marka / Cabinet 4 / Shelf 2" />
+
+        <TextView
+            android:id="@+id/previousResultTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textColor="@color/orvix_text_sub"
+            android:textSize="12sp"
+            tools:text="Previous: 8" />
+
+        <TextView
+            android:id="@+id/submittedResultTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textColor="@color/orvix_primary"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            tools:text="Submitted: Quantity confirmed"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/itemActionTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginTop="10dp"
+            android:text="@string/recheck_open_item"
+            android:textColor="@color/orvix_primary"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

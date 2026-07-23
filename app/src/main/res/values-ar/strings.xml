@@ -280,4 +280,111 @@
     <string name="complete_location_title">إنهاء هذا الموقع؟</string>
     <string name="complete_location_message">يمكنك إنهاء الموقع حتى عند وجود اختلافات. سيظهر بحالة يحتاج إلى مراجعة، وأي مسح جديد سيعيد فتحه تلقائيًا.</string>
     <string name="location_not_completed_fallback">تعذر إنهاء الموقع.</string>
+
+    <!-- مركز المراجعة / إعادة التحقق -->
+    <string name="back">رجوع</string>
+    <string name="open">فتح</string>
+    <string name="retry">إعادة المحاولة</string>
+    <string name="domain_vehicle">المركبات</string>
+    <string name="domain_asset">الأصول</string>
+    <string name="domain_spare_part">قطع الغيار</string>
+
+    <string name="recheck_requests_title">طلبات إعادة التحقق</string>
+    <string name="recheck_requests_subtitle">تظهر لك المواقع والعناصر المكلّف بها فقط</string>
+    <string name="recheck_shortcut_subtitle">تحقق من العناصر المحددة التي طلبها المشرف</string>
+    <plurals name="recheck_active_request_count">
+        <item quantity="one">طلب نشط واحد</item>
+        <item quantity="two">طلبان نشطان</item>
+        <item quantity="few">%1$d طلبات نشطة</item>
+        <item quantity="many">%1$d طلبًا نشطًا</item>
+        <item quantity="other">%1$d طلب نشط</item>
+    </plurals>
+    <string name="recheck_no_active_requests">لا توجد لديك طلبات إعادة تحقق نشطة.</string>
+    <string name="recheck_load_error">تعذر تحميل طلبات إعادة التحقق. اسحب للأسفل لإعادة المحاولة.</string>
+    <string name="recheck_details_title">تفاصيل إعادة التحقق</string>
+    <string name="recheck_verify_item_title">التحقق من العنصر</string>
+    <string name="recheck_task_reference">المهمة %1$s</string>
+    <string name="recheck_task_title_value">%1$s (%2$s)</string>
+    <string name="recheck_work_area_value">منطقة العمل: %1$s</string>
+    <string name="recheck_due_value">الموعد المطلوب: %1$s</string>
+    <string name="recheck_items_progress">%1$d / %2$d عناصر</string>
+    <string name="recheck_image_required_short">الصورة مطلوبة</string>
+    <string name="recheck_image_required">صورة الإثبات مطلوبة</string>
+    <string name="recheck_image_optional">صورة الإثبات اختيارية</string>
+    <string name="recheck_supervisor_instructions">تعليمات المشرف</string>
+    <string name="recheck_items_title">العناصر المطلوب التحقق منها</string>
+    <string name="recheck_start_button">بدء إعادة التحقق</string>
+    <string name="recheck_open_item">فتح والتحقق</string>
+
+    <string name="recheck_status_unknown">غير معروفة</string>
+    <string name="recheck_status_pending">بانتظار البدء</string>
+    <string name="recheck_status_in_progress">قيد التنفيذ</string>
+    <string name="recheck_status_submitted">تم الإرسال</string>
+    <string name="recheck_status_completed">مكتملة</string>
+    <string name="recheck_status_cancelled">ملغاة</string>
+    <string name="recheck_item_accepted">معتمدة</string>
+    <string name="recheck_item_rejected">مرفوضة</string>
+
+    <string name="recheck_issue">مشكلة مراجعة</string>
+    <string name="recheck_issue_not_processed">لم تتم معالجته</string>
+    <string name="recheck_issue_location_mismatch">اختلاف في الموقع</string>
+    <string name="recheck_issue_shortage">نقص في الكمية</string>
+    <string name="recheck_issue_overage">زيادة في الكمية</string>
+    <string name="recheck_issue_conflict">نتائج مسح متعارضة</string>
+    <string name="recheck_issue_extra">غير موجود في بيانات المصدر</string>
+    <string name="recheck_issue_ambiguous">عنصر غير محدد</string>
+
+    <string name="recheck_result_found_matched">موجود في الموقع المتوقع</string>
+    <string name="recheck_result_different_location">موجود في موقع مختلف</string>
+    <string name="recheck_result_quantity_confirmed">تم تأكيد الكمية</string>
+    <string name="recheck_result_quantity_different">الكمية مختلفة</string>
+    <string name="recheck_result_not_found">غير موجود</string>
+    <string name="recheck_result_unable">تعذر التحقق</string>
+
+    <string name="recheck_expected_location_value">الموقع المتوقع: %1$s</string>
+    <string name="recheck_previous_result_value">النتيجة السابقة: %1$s</string>
+    <string name="recheck_submitted_result_value">النتيجة المرسلة: %1$s</string>
+    <string name="recheck_expected_quantity_value">الكمية المتوقعة: %1$s</string>
+    <string name="recheck_what_did_you_find">ما الذي وجدته؟</string>
+    <string name="recheck_found">موجود</string>
+    <string name="recheck_not_found">غير موجود</string>
+    <string name="recheck_unable">تعذر التحقق</string>
+    <string name="recheck_actual_floor">الطابق الفعلي</string>
+    <string name="recheck_actual_place">المكان الفعلي</string>
+    <string name="recheck_actual_spare_location">الخزانة / الرف الفعلي</string>
+    <string name="recheck_counted_quantity">الكمية المعدودة</string>
+    <string name="recheck_scan_barcode">امسح أو أدخل الباركود</string>
+    <string name="recheck_reason">السبب</string>
+    <string name="recheck_note">ملاحظة</string>
+    <string name="recheck_capture_evidence">التقاط صورة إثبات</string>
+    <string name="recheck_evidence_preview">معاينة صورة الإثبات</string>
+    <string name="recheck_submit_result">إرسال النتيجة إلى المشرف</string>
+    <string name="recheck_expected_selection">الموقع المتوقع</string>
+
+    <string name="recheck_reason_missing">العنصر مفقود</string>
+    <string name="recheck_reason_moved">تم نقل العنصر</string>
+    <string name="recheck_reason_barcode_damaged">الباركود تالف</string>
+    <string name="recheck_reason_access_restricted">تعذر الوصول إلى الموقع</string>
+    <string name="recheck_reason_other">سبب آخر</string>
+
+    <string name="recheck_item_submitted">تم إرسال النتيجة إلى المشرف، ولن تتغير نتيجة الجرد حتى يعتمدها.</string>
+    <string name="recheck_camera_unavailable">لا يوجد تطبيق كاميرا متاح على هذا الجهاز.</string>
+    <string name="recheck_camera_image_error">تعذر تجهيز صورة الإثبات.</string>
+    <string name="recheck_evidence_required_error">التقط أو امسح صورة إثبات قبل الإرسال.</string>
+    <string name="recheck_scan_required">امسح باركود العنصر المطلوب قبل الإرسال.</string>
+    <string name="recheck_wrong_barcode">الباركود الممسوح لا يطابق العنصر المطلوب.</string>
+    <string name="recheck_location_context_missing">بيانات الموقع المتوقع غير متوفرة. حدّث الطلب أو تواصل مع المشرف.</string>
+    <string name="recheck_asset_location_required">اختر الطابق والمكان الذي وُجد فيه الأصل.</string>
+    <string name="recheck_spare_location_required">اختر الخزانة أو الرف الذي عُدت فيه القطعة.</string>
+    <string name="recheck_expected_quantity_missing">الكمية المتوقعة غير موجودة في هذا الطلب.</string>
+    <string name="recheck_unknown_domain">نوع الجرد هذا غير مدعوم.</string>
+    <string name="recheck_reason_required">اختر سببًا.</string>
+    <string name="recheck_note_required">اكتب ملاحظة تشرح سبب عدم التحقق من العنصر.</string>
+    <string name="recheck_quantity_required">أدخل الكمية المعدودة قبل المسح.</string>
+    <string name="recheck_quantity_invalid">أدخل كمية صحيحة غير سالبة وبحد أقصى ثلاث منازل عشرية.</string>
+    <string name="recheck_item_not_found">لم يتم العثور على عنصر إعادة التحقق المطلوب.</string>
+    <string name="recheck_item_not_open">هذا العنصر لم يعد مفتوحًا لإعادة التحقق.</string>
+    <string name="recheck_select_found_before_scan">اختر «موجود» قبل مسح الباركود.</string>
+    <string name="recheck_enter_quantity_before_scan">أدخل الكمية المعدودة قبل مسح قطعة الغيار.</string>
+    <string name="recheck_submission_error">تعذر إرسال نتيجة إعادة التحقق.</string>
 </resources>

@@ -13,6 +13,16 @@
         android:theme="@style/Theme.OrvixIMS"
         android:usesCleartextTraffic="${usesCleartextTraffic}">
 
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
         <activity
             android:name=".bootstrap.presentation.UpdateRequiredActivity"
             android:exported="false" />
@@ -23,6 +33,18 @@
 
         <activity
             android:name=".bootstrap.presentation.AboutActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".recheck.presentation.submit.RecheckSubmissionActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".recheck.presentation.detail.RecheckDetailActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".recheck.presentation.list.RecheckListActivity"
             android:exported="false" />
 
         <activity
